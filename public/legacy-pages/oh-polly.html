@@ -4,26 +4,28 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+<link rel="stylesheet" href="https://use.typekit.net/eal8wec.css"/>
 <title>From data-aware to data-driven — FSP</title>
 <meta content="How FSP's Data &amp; AI practice took a fast-growing UK fashion retailer from manual reporting and gut-feel decisions to automated insight and analytical models — across 30+ source systems, 3 brands and 5 websites." name="description"/>
 <style>
 :root {
-  --surface-deep: #0D2A2E;
-  --surface-darker: #08201F;
-  --surface-mid: #143638;
-  --surface-light: #F5F5F1;
+  --surface-deep: #022E34;
+  --surface-darker: #001414;
+  --surface-mid: #023F47;
+  --surface-light: #F8F8F8;
   --surface-white: #FFFFFF;
-  --mint: #9FE5BD;
-  --mint-soft: rgba(159, 229, 189, 0.12);
-  --mint-border: rgba(159, 229, 189, 0.28);
+  --mint: #64D5B3;
+  --mint-soft: rgba(100, 213, 179, 0.12);
+  --mint-border: rgba(100, 213, 179, 0.28);
   --text-on-dark: #FFFFFF;
   --text-on-dark-muted: rgba(255, 255, 255, 0.72);
   --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
-  --text-on-light: #0D2A2E;
+  --text-on-light: #022E34;
   --text-on-light-muted: #4A5560;
   --rule-on-dark: rgba(255, 255, 255, 0.12);
   --rule-on-light: #E2E5E9;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-sans: "neue-haas-unica", -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --measure: 68ch;
   --gutter: clamp(1.5rem, 4vw, 3rem);
   --radius: 12px;
@@ -39,12 +41,12 @@ a { color: inherit; text-decoration: none; }
 .utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
 .utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
 .utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
-.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #7FF0CE, #9FB8E5); border-radius: 4px; }
 .utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
 .utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
 .utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
 .utility-bar__right a { color: var(--text-on-light); }
-.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #022E34; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
 @media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
 
 .main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
@@ -57,7 +59,7 @@ a { color: inherit; text-decoration: none; }
 .primary-nav a[aria-current="true"] { color: var(--mint); }
 
 .cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
-.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill:hover { transform: translateY(-1px); background: #7FF0CE; }
 .cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
 .cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
 @media (max-width: 880px) { .primary-nav { display: none; } }
@@ -69,7 +71,7 @@ a { color: inherit; text-decoration: none; }
 .breadcrumb__current { color: var(--text-on-dark); }
 
 .hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(100, 213, 179, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(100, 213, 179, 0.05) 88%, transparent 92%); pointer-events: none; }
 .hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
 .hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
 .hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
@@ -115,10 +117,10 @@ a { color: inherit; text-decoration: none; }
 .card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.85rem; transition: border-color 0.2s ease, transform 0.2s ease; }
 .card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
 .card__icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.5rem; }
-.card__icon--check { background: linear-gradient(135deg, #B8E5C9, #9FE5BD); color: #0D4528; }
-.card__icon--data { background: linear-gradient(135deg, #C5D8E5, #B8E0C9); color: #0D4528; }
+.card__icon--check { background: linear-gradient(135deg, #B8E5C9, #64D5B3); color: #023F47; }
+.card__icon--data { background: linear-gradient(135deg, #C5D8E5, #7FF0CE); color: #023F47; }
 .card__icon--shield { background: linear-gradient(135deg, #D5C5E5, #C5B8E0); color: #3D2D5C; }
-.card__icon--chart { background: linear-gradient(135deg, #B8E0C9, #9FE5BD); color: #0D4528; }
+.card__icon--chart { background: linear-gradient(135deg, #7FF0CE, #64D5B3); color: #023F47; }
 .card__icon--cluster { background: linear-gradient(135deg, #E5C5C5, #C5C5E5); color: #3D2D5C; }
 .card__icon--spark { background: linear-gradient(135deg, #F0D5B8, #E5C9B8); color: #5C3D2D; }
 .card h4 { font-weight: 600; font-size: 1.1rem; margin: 0; line-height: 1.3; color: inherit; }
@@ -127,7 +129,7 @@ a { color: inherit; text-decoration: none; }
 .diagram-wrap { background: var(--surface-darker); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(1.5rem, 3vw, 2.5rem); }
 .diagram-wrap svg { width: 100%; height: auto; display: block; }
 
-.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(100, 213, 179, 0.10), transparent 55%), linear-gradient(135deg, #023F47 0%, #022E34 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
 .cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
 .cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
 .cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
@@ -298,12 +300,12 @@ a { color: inherit; text-decoration: none; }
 <svg aria-label="Architecture: 30+ sources flow through extraction, then into a layered data warehouse with staging, modelled, reporting and operational layers, feeding three consumer types" role="img" viewbox="0 0 920 460" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrow3" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#64D5B3"></path>
 </marker>
 <style>
             .diag-label { font: 600 12px Inter, sans-serif; fill: #FFFFFF; }
             .diag-sub { font: 400 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.6); }
-            .diag-layer-num { font: 700 13px Inter, sans-serif; fill: #9FE5BD; }
+            .diag-layer-num { font: 700 13px Inter, sans-serif; fill: #64D5B3; }
             .diag-section { font: 600 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
           </style>
 </defs>
@@ -322,13 +324,13 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-label" text-anchor="middle" x="110" y="284">SaaS (Fivetran)</text>
 <rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="310"></rect>
 <text class="diag-label" text-anchor="middle" x="110" y="334">Business knowledge</text>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="80" y2="100"></line>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="130" y2="115"></line>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="180" y2="125"></line>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="230" y2="135"></line>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="280" y2="145"></line>
-<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="330" y2="155"></line>
-<rect fill="rgba(159, 229, 189, 0.04)" height="335" rx="6" stroke="#9FE5BD" stroke-width="1.5" width="430" x="245" y="60"></rect>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="80" y2="100"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="130" y2="115"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="180" y2="125"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="230" y2="135"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="280" y2="145"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="200" x2="245" y1="330" y2="155"></line>
+<rect fill="rgba(100, 213, 179, 0.04)" height="335" rx="6" stroke="#64D5B3" stroke-width="1.5" width="430" x="245" y="60"></rect>
 <rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="390" x="265" y="80"></rect>
 <text class="diag-layer-num" x="280" y="103">L0</text>
 <text class="diag-label" x="305" y="103">Staging Layer</text>
@@ -345,24 +347,24 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-layer-num" x="480" y="223">L2</text>
 <text class="diag-label" x="505" y="223">Analytical layer</text>
 <text class="diag-sub" x="505" y="240">Wide, flat, model-ready</text>
-<rect fill="rgba(159, 229, 189, 0.05)" height="55" rx="4" stroke="rgba(159, 229, 189, 0.3)" stroke-dasharray="3,3" stroke-width="1" width="390" x="265" y="260"></rect>
+<rect fill="rgba(100, 213, 179, 0.05)" height="55" rx="4" stroke="rgba(100, 213, 179, 0.3)" stroke-dasharray="3,3" stroke-width="1" width="390" x="265" y="260"></rect>
 <text class="diag-section" x="280" y="280">Operational layer (15-min batch)</text>
 <text class="diag-label" x="280" y="302">Near-real-time warehouse &amp; logistics monitoring</text>
 <rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="rgba(255,255,255,0.2)" stroke-dasharray="3,3" stroke-width="1" width="390" x="265" y="325"></rect>
 <text class="diag-section" x="280" y="345">Cross-cutting</text>
 <text class="diag-label" x="280" y="365">Version control · Data quality · Documentation</text>
-<rect fill="#9FE5BD" height="60" rx="4" stroke="none" width="180" x="720" y="80"></rect>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="105">Automated</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="123">Dashboards</text>
+<rect fill="#64D5B3" height="60" rx="4" stroke="none" width="180" x="720" y="80"></rect>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="105">Automated</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="123">Dashboards</text>
 <rect fill="rgba(255,255,255,0.06)" height="60" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="180" x="720" y="160"></rect>
 <text class="diag-label" text-anchor="middle" x="810" y="185">Analyst SQL</text>
 <text class="diag-sub" text-anchor="middle" x="810" y="203">Direct exploration</text>
 <rect fill="rgba(255,255,255,0.06)" height="60" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="180" x="720" y="240"></rect>
 <text class="diag-label" text-anchor="middle" x="810" y="265">Operational</text>
 <text class="diag-label" text-anchor="middle" x="810" y="283">Dashboards</text>
-<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="225" y2="110"></line>
-<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="225" y2="190"></line>
-<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="285" y2="270"></line>
+<line marker-end="url(#arrow3)" stroke="#64D5B3" stroke-width="1.5" x1="675" x2="715" y1="225" y2="110"></line>
+<line marker-end="url(#arrow3)" stroke="#64D5B3" stroke-width="1.5" x1="675" x2="715" y1="225" y2="190"></line>
+<line marker-end="url(#arrow3)" stroke="#64D5B3" stroke-width="1.5" x1="675" x2="715" y1="285" y2="270"></line>
 </svg>
 </div>
 </div>

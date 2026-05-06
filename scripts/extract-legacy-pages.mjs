@@ -17,6 +17,40 @@ const assetNames = new Map([
   ['LinkedIn_Posts_Full_Campaign.md', 'linkedin-posts.html'],
 ])
 
+const typekitLink =
+  '<link rel="stylesheet" href="https://use.typekit.net/eal8wec.css"/>'
+
+const brandReplacements = [
+  [/#0D2A2E/gi, '#022E34'],
+  [/#08201F/gi, '#001414'],
+  [/#143638/gi, '#023F47'],
+  [/#F5F5F1/gi, '#F8F8F8'],
+  [/#9FE5BD/gi, '#64D5B3'],
+  [/#B8E0C9/gi, '#7FF0CE'],
+  [/#B6EFCD/gi, '#7FF0CE'],
+  [/#0D4528/gi, '#023F47'],
+  [/rgba\(159,\s*229,\s*189,/gi, 'rgba(100, 213, 179,'],
+  [/'Inter', -apple-system/gi, '"neue-haas-unica", -apple-system'],
+  [/font-family="Inter,\s*sans-serif"/gi, 'font-family="neue-haas-unica, sans-serif"'],
+]
+
+function normaliseBrand(html) {
+  let normalised = html
+
+  for (const [pattern, replacement] of brandReplacements) {
+    normalised = normalised.replace(pattern, replacement)
+  }
+
+  if (!normalised.includes('https://use.typekit.net/eal8wec.css')) {
+    normalised = normalised.replace(
+      /(<meta[^>]+viewport[^>]*>\s*)/i,
+      `$1\n${typekitLink}\n`,
+    )
+  }
+
+  return normalised
+}
+
 const source = await readFile(inputPath, 'utf8')
 const match = source.match(
   /<script id="page-data" type="application\/json">([\s\S]*?)<\/script>/,
@@ -39,7 +73,7 @@ for (const page of pages) {
   }
 
   const outputPath = path.join(outputDir, assetName)
-  await writeFile(outputPath, page.html, 'utf8')
+  await writeFile(outputPath, normaliseBrand(page.html), 'utf8')
   manifest.push({
     sourceFile: page.file,
     label: page.label,

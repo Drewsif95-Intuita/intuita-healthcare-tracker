@@ -4,26 +4,28 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+<link rel="stylesheet" href="https://use.typekit.net/eal8wec.css"/>
 <title>From gut-feel to data-driven inventory decisions — FSP</title>
 <meta content="How FSP's Data &amp; AI practice built a probabilistic forecasting and simulation engine that turned a global aviation services business from spreadsheet-driven planning to operational decision intelligence." name="description"/>
 <style>
 :root {
-  --surface-deep: #0D2A2E;
-  --surface-darker: #08201F;
-  --surface-mid: #143638;
-  --surface-light: #F5F5F1;
+  --surface-deep: #022E34;
+  --surface-darker: #001414;
+  --surface-mid: #023F47;
+  --surface-light: #F8F8F8;
   --surface-white: #FFFFFF;
-  --mint: #9FE5BD;
-  --mint-soft: rgba(159, 229, 189, 0.12);
-  --mint-border: rgba(159, 229, 189, 0.28);
+  --mint: #64D5B3;
+  --mint-soft: rgba(100, 213, 179, 0.12);
+  --mint-border: rgba(100, 213, 179, 0.28);
   --text-on-dark: #FFFFFF;
   --text-on-dark-muted: rgba(255, 255, 255, 0.72);
   --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
-  --text-on-light: #0D2A2E;
+  --text-on-light: #022E34;
   --text-on-light-muted: #4A5560;
   --rule-on-dark: rgba(255, 255, 255, 0.12);
   --rule-on-light: #E2E5E9;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-sans: "neue-haas-unica", -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --measure: 68ch;
   --gutter: clamp(1.5rem, 4vw, 3rem);
   --radius: 12px;
@@ -44,12 +46,12 @@ a { color: inherit; text-decoration: none; }
 .utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
 .utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
 .utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
-.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #7FF0CE, #9FB8E5); border-radius: 4px; }
 .utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
 .utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
 .utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
 .utility-bar__right a { color: var(--text-on-light); }
-.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #022E34; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
 @media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
 
 .main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
@@ -62,7 +64,7 @@ a { color: inherit; text-decoration: none; }
 .primary-nav a[aria-current="true"] { color: var(--mint); }
 
 .cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
-.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill:hover { transform: translateY(-1px); background: #7FF0CE; }
 .cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
 .cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
 @media (max-width: 880px) { .primary-nav { display: none; } }
@@ -74,7 +76,7 @@ a { color: inherit; text-decoration: none; }
 .breadcrumb__current { color: var(--text-on-dark); }
 
 .hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(100, 213, 179, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(100, 213, 179, 0.05) 88%, transparent 92%); pointer-events: none; }
 .hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
 .hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
 .hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
@@ -138,7 +140,7 @@ a { color: inherit; text-decoration: none; }
 .applicability-card h4 { font-weight: 600; font-size: 1.05rem; line-height: 1.35; margin: 0 0 0.6rem 0; color: white; }
 .applicability-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
 
-.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(100, 213, 179, 0.10), transparent 55%), linear-gradient(135deg, #023F47 0%, #022E34 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
 .cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
 .cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
 .cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
@@ -323,12 +325,12 @@ a { color: inherit; text-decoration: none; }
 <svg aria-label="The methodology flow: data inputs flow into part classification, then per-class ML modelling, then scenario simulation, producing decision outputs" role="img" viewbox="0 0 920 380" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrow2" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#64D5B3"></path>
 </marker>
 <style>
             .diag-label { font: 600 13px Inter, sans-serif; fill: #FFFFFF; }
             .diag-sub { font: 400 11px Inter, sans-serif; fill: rgba(255,255,255,0.65); }
-            .diag-step { font: 700 32px Inter, sans-serif; fill: #9FE5BD; }
+            .diag-step { font: 700 32px Inter, sans-serif; fill: #64D5B3; }
             .diag-section { font: 600 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
           </style>
 </defs>
@@ -345,9 +347,9 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-sub" x="35" y="263">Contract vs uncontracted</text>
 <text class="diag-label" x="35" y="300">Constraints</text>
 <text class="diag-sub" x="35" y="318">Budget, capacity</text>
-<line marker-end="url(#arrow2)" stroke="#9FE5BD" stroke-width="1.5" x1="180" x2="220" y1="190" y2="190"></line>
+<line marker-end="url(#arrow2)" stroke="#64D5B3" stroke-width="1.5" x1="180" x2="220" y1="190" y2="190"></line>
 <!-- Step 1: Classify -->
-<rect fill="rgba(159, 229, 189, 0.05)" height="220" rx="6" stroke="rgba(159, 229, 189, 0.4)" stroke-width="1.5" width="155" x="220" y="80"></rect>
+<rect fill="rgba(100, 213, 179, 0.05)" height="220" rx="6" stroke="rgba(100, 213, 179, 0.4)" stroke-width="1.5" width="155" x="220" y="80"></rect>
 <text class="diag-step" x="240" y="120">1</text>
 <text class="diag-label" x="240" y="148">Classify</text>
 <text class="diag-sub" x="240" y="170">5 demand types:</text>
@@ -356,9 +358,9 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-sub" style="fill: rgba(255,255,255,0.85);" x="240" y="226">Lumpy</text>
 <text class="diag-sub" style="fill: rgba(255,255,255,0.85);" x="240" y="244">Erratic</text>
 <text class="diag-sub" style="fill: rgba(255,255,255,0.85);" x="240" y="262">Insufficient data</text>
-<line marker-end="url(#arrow2)" stroke="#9FE5BD" stroke-width="1.5" x1="375" x2="405" y1="190" y2="190"></line>
+<line marker-end="url(#arrow2)" stroke="#64D5B3" stroke-width="1.5" x1="375" x2="405" y1="190" y2="190"></line>
 <!-- Step 2: Model -->
-<rect fill="rgba(159, 229, 189, 0.05)" height="220" rx="6" stroke="rgba(159, 229, 189, 0.4)" stroke-width="1.5" width="155" x="405" y="80"></rect>
+<rect fill="rgba(100, 213, 179, 0.05)" height="220" rx="6" stroke="rgba(100, 213, 179, 0.4)" stroke-width="1.5" width="155" x="405" y="80"></rect>
 <text class="diag-step" x="425" y="120">2</text>
 <text class="diag-label" x="425" y="148">Model</text>
 <text class="diag-sub" x="425" y="170">ML model per class</text>
@@ -367,9 +369,9 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-sub" x="425" y="233">· Data richness</text>
 <text class="diag-sub" x="425" y="251">· Probabilistic outputs</text>
 <text class="diag-sub" x="425" y="269">· Demand + lead time</text>
-<line marker-end="url(#arrow2)" stroke="#9FE5BD" stroke-width="1.5" x1="560" x2="590" y1="190" y2="190"></line>
+<line marker-end="url(#arrow2)" stroke="#64D5B3" stroke-width="1.5" x1="560" x2="590" y1="190" y2="190"></line>
 <!-- Step 3: Simulate -->
-<rect fill="rgba(159, 229, 189, 0.05)" height="220" rx="6" stroke="rgba(159, 229, 189, 0.4)" stroke-width="1.5" width="155" x="590" y="80"></rect>
+<rect fill="rgba(100, 213, 179, 0.05)" height="220" rx="6" stroke="rgba(100, 213, 179, 0.4)" stroke-width="1.5" width="155" x="590" y="80"></rect>
 <text class="diag-step" x="610" y="120">3</text>
 <text class="diag-label" x="610" y="148">Simulate</text>
 <text class="diag-sub" x="610" y="170">1,000 scenarios per part</text>
@@ -378,17 +380,17 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-sub" x="610" y="233">· Peak repair</text>
 <text class="diag-sub" x="610" y="251">· Stock reduction</text>
 <text class="diag-sub" x="610" y="269">· Baseline (do nothing)</text>
-<line marker-end="url(#arrow2)" stroke="#9FE5BD" stroke-width="1.5" x1="745" x2="775" y1="190" y2="190"></line>
+<line marker-end="url(#arrow2)" stroke="#64D5B3" stroke-width="1.5" x1="745" x2="775" y1="190" y2="190"></line>
 <!-- Step 4: Decide -->
-<rect fill="#9FE5BD" height="220" rx="6" stroke="none" width="125" x="775" y="80"></rect>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="32" font-weight="700" x="788" y="120">4</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="600" x="788" y="148">Decide</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="170">Outputs:</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="195">· ROI per part</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="213">· Revenue impact</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="231">· Demand met / unmet</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="249">· Stock cost</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" x="788" y="267">· Prioritisation list</text>
+<rect fill="#64D5B3" height="220" rx="6" stroke="none" width="125" x="775" y="80"></rect>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="32" font-weight="700" x="788" y="120">4</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="13" font-weight="600" x="788" y="148">Decide</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="170">Outputs:</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="195">· ROI per part</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="213">· Revenue impact</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="231">· Demand met / unmet</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="249">· Stock cost</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" x="788" y="267">· Prioritisation list</text>
 </svg>
 </div>
 </div>

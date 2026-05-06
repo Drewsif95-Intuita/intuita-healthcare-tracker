@@ -4,26 +4,28 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+<link rel="stylesheet" href="https://use.typekit.net/eal8wec.css"/>
 <title>A scoring model for communities — FSP</title>
 <meta content="How FSP's Data &amp; AI practice built a multi-source community scoring model to underpin a UK housing association's £100m+ investment programme." name="description"/>
 <style>
 :root {
-  --surface-deep: #0D2A2E;
-  --surface-darker: #08201F;
-  --surface-mid: #143638;
-  --surface-light: #F5F5F1;
+  --surface-deep: #022E34;
+  --surface-darker: #001414;
+  --surface-mid: #023F47;
+  --surface-light: #F8F8F8;
   --surface-white: #FFFFFF;
-  --mint: #9FE5BD;
-  --mint-soft: rgba(159, 229, 189, 0.12);
-  --mint-border: rgba(159, 229, 189, 0.28);
+  --mint: #64D5B3;
+  --mint-soft: rgba(100, 213, 179, 0.12);
+  --mint-border: rgba(100, 213, 179, 0.28);
   --text-on-dark: #FFFFFF;
   --text-on-dark-muted: rgba(255, 255, 255, 0.72);
   --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
-  --text-on-light: #0D2A2E;
+  --text-on-light: #022E34;
   --text-on-light-muted: #4A5560;
   --rule-on-dark: rgba(255, 255, 255, 0.12);
   --rule-on-light: #E2E5E9;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-sans: "neue-haas-unica", -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --measure: 68ch;
   --gutter: clamp(1.5rem, 4vw, 3rem);
   --radius: 12px;
@@ -39,12 +41,12 @@ a { color: inherit; text-decoration: none; }
 .utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
 .utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
 .utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
-.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #7FF0CE, #9FB8E5); border-radius: 4px; }
 .utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
 .utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
 .utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
 .utility-bar__right a { color: var(--text-on-light); }
-.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #022E34; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
 @media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
 
 .main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
@@ -57,7 +59,7 @@ a { color: inherit; text-decoration: none; }
 .primary-nav a[aria-current="true"] { color: var(--mint); }
 
 .cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
-.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill:hover { transform: translateY(-1px); background: #7FF0CE; }
 .cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
 .cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
 @media (max-width: 880px) { .primary-nav { display: none; } }
@@ -69,7 +71,7 @@ a { color: inherit; text-decoration: none; }
 .breadcrumb__current { color: var(--text-on-dark); }
 
 .hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(100, 213, 179, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(100, 213, 179, 0.05) 88%, transparent 92%); pointer-events: none; }
 .hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
 .hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
 .hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
@@ -130,7 +132,7 @@ a { color: inherit; text-decoration: none; }
 .applicability-card h4 { font-weight: 600; font-size: 1.05rem; line-height: 1.35; margin: 0 0 0.6rem 0; color: white; }
 .applicability-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
 
-.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(100, 213, 179, 0.10), transparent 55%), linear-gradient(135deg, #023F47 0%, #022E34 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
 .cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
 .cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
 .cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
@@ -297,7 +299,7 @@ a { color: inherit; text-decoration: none; }
 <svg aria-label="Hierarchical decomposition: a single Community Indicator at the top decomposes into five sub-component pillars, then sub-component groups, then individual indicators" role="img" viewbox="0 0 920 480" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrowS" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#64D5B3"></path>
 </marker>
 <style>
             .diag-label { font: 600 12px Inter, sans-serif; fill: #FFFFFF; }
@@ -307,36 +309,36 @@ a { color: inherit; text-decoration: none; }
 </defs>
 <!-- Level 1: Community Indicator (top) -->
 <text class="diag-section" text-anchor="middle" x="460" y="28">Level 1 — Composite</text>
-<rect fill="#9FE5BD" height="60" rx="6" stroke="none" width="280" x="320" y="50"></rect>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="15" font-weight="700" text-anchor="middle" x="460" y="78">Community Indicator</text>
-<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" text-anchor="middle" x="460" y="96">Single composite score per locality</text>
+<rect fill="#64D5B3" height="60" rx="6" stroke="none" width="280" x="320" y="50"></rect>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="15" font-weight="700" text-anchor="middle" x="460" y="78">Community Indicator</text>
+<text fill="#022E34" font-family="neue-haas-unica, sans-serif" font-size="11" text-anchor="middle" x="460" y="96">Single composite score per locality</text>
 <!-- Lines to L2 -->
-<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="100" y1="110" y2="155"></line>
-<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="265" y1="110" y2="155"></line>
-<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="430" y1="110" y2="155"></line>
-<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="595" y1="110" y2="155"></line>
-<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="760" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="460" x2="100" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="460" x2="265" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="460" x2="430" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="460" x2="595" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#64D5B3" stroke-width="1" x1="460" x2="760" y1="110" y2="155"></line>
 <!-- Level 2: Five sub-component pillars -->
 <text class="diag-section" text-anchor="middle" x="460" y="140">Level 2 — Sub-component pillars</text>
-<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="20" y="155"></rect>
+<rect fill="rgba(100, 213, 179, 0.08)" height="60" rx="4" stroke="rgba(100, 213, 179, 0.35)" stroke-width="1" width="155" x="20" y="155"></rect>
 <text class="diag-label" text-anchor="middle" x="97.5" y="180">Health</text>
 <text class="diag-sub" text-anchor="middle" x="97.5" y="198">Wellbeing, services</text>
-<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="185" y="155"></rect>
+<rect fill="rgba(100, 213, 179, 0.08)" height="60" rx="4" stroke="rgba(100, 213, 179, 0.35)" stroke-width="1" width="155" x="185" y="155"></rect>
 <text class="diag-label" text-anchor="middle" x="262.5" y="180">Crime</text>
 <text class="diag-sub" text-anchor="middle" x="262.5" y="198">Safety indicators</text>
-<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="350" y="155"></rect>
+<rect fill="rgba(100, 213, 179, 0.08)" height="60" rx="4" stroke="rgba(100, 213, 179, 0.35)" stroke-width="1" width="155" x="350" y="155"></rect>
 <text class="diag-label" text-anchor="middle" x="427.5" y="180">Education</text>
 <text class="diag-sub" text-anchor="middle" x="427.5" y="198">Attainment, access</text>
-<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="515" y="155"></rect>
+<rect fill="rgba(100, 213, 179, 0.08)" height="60" rx="4" stroke="rgba(100, 213, 179, 0.35)" stroke-width="1" width="155" x="515" y="155"></rect>
 <text class="diag-label" text-anchor="middle" x="592.5" y="180">Financial Wellbeing</text>
 <text class="diag-sub" text-anchor="middle" x="592.5" y="198">Employment, income</text>
-<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="680" y="155"></rect>
+<rect fill="rgba(100, 213, 179, 0.08)" height="60" rx="4" stroke="rgba(100, 213, 179, 0.35)" stroke-width="1" width="155" x="680" y="155"></rect>
 <text class="diag-label" text-anchor="middle" x="757.5" y="180">Amenities</text>
 <text class="diag-sub" text-anchor="middle" x="757.5" y="198">Services, infrastructure</text>
 <!-- Lines to L3 (showing decomposition pattern from one pillar) -->
-<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="540" y1="215" y2="265"></line>
-<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="592.5" y1="215" y2="265"></line>
-<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="645" y1="215" y2="265"></line>
+<line opacity="0.4" stroke="#64D5B3" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="540" y1="215" y2="265"></line>
+<line opacity="0.4" stroke="#64D5B3" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="592.5" y1="215" y2="265"></line>
+<line opacity="0.4" stroke="#64D5B3" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="645" y1="215" y2="265"></line>
 <!-- Level 3: Sub-component groups (showing for Financial Wellbeing as example) -->
 <text class="diag-section" text-anchor="middle" x="460" y="248">Level 3 — Sub-component groups</text>
 <rect fill="rgba(255,255,255,0.04)" height="48" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="490" y="265"></rect>
@@ -345,8 +347,8 @@ a { color: inherit; text-decoration: none; }
 <text class="diag-label" text-anchor="middle" x="652.5" y="285">Income</text>
 <text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="290">(Each pillar decomposes</text>
 <text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="306">into its own groups)</text>
-<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="500" y1="313" y2="345"></line>
-<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="585" y1="313" y2="345"></line>
+<line opacity="0.4" stroke="#64D5B3" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="500" y1="313" y2="345"></line>
+<line opacity="0.4" stroke="#64D5B3" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="585" y1="313" y2="345"></line>
 <!-- Level 4: Indicators -->
 <text class="diag-section" text-anchor="middle" x="460" y="335">Level 4 — Indicators (source data)</text>
 <rect fill="rgba(255,255,255,0.04)" height="40" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="450" y="345"></rect>
