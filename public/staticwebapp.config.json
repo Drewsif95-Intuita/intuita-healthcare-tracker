@@ -1,18 +1,4 @@
 {
-  "routes": [
-    {
-      "route": "/login",
-      "redirect": "/.auth/login/aad"
-    },
-    {
-      "route": "/logout",
-      "redirect": "/.auth/logout"
-    },
-    {
-      "route": "/*",
-      "allowedRoles": ["authenticated"]
-    }
-  ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/assets/*", "/legacy-pages/*"]
