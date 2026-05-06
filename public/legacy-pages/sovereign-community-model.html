@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>A scoring model for communities — FSP</title>
+<meta content="How FSP's Data &amp; AI practice built a multi-source community scoring model to underpin a UK housing association's £100m+ investment programme." name="description"/>
+<style>
+:root {
+  --surface-deep: #0D2A2E;
+  --surface-darker: #08201F;
+  --surface-mid: #143638;
+  --surface-light: #F5F5F1;
+  --surface-white: #FFFFFF;
+  --mint: #9FE5BD;
+  --mint-soft: rgba(159, 229, 189, 0.12);
+  --mint-border: rgba(159, 229, 189, 0.28);
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
+  --text-on-light: #0D2A2E;
+  --text-on-light-muted: #4A5560;
+  --rule-on-dark: rgba(255, 255, 255, 0.12);
+  --rule-on-light: #E2E5E9;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --measure: 68ch;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--text-on-dark); background: var(--surface-deep); font-feature-settings: 'kern', 'liga'; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1280px; margin: 0 auto; padding-inline: var(--gutter); }
+.prose { max-width: var(--measure); }
+
+.utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
+.utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
+.utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
+.utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
+.utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
+.utility-bar__right a { color: var(--text-on-light); }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+@media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
+
+.main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
+.main-nav__inner { display: flex; align-items: center; justify-content: space-between; padding-block: 1.25rem; gap: 2rem; }
+.brand-mark { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; color: white; display: inline-flex; align-items: baseline; }
+.brand-mark::after { content: '.'; color: var(--mint); margin-left: 1px; }
+.primary-nav { display: flex; gap: 2.25rem; }
+.primary-nav a { color: var(--text-on-dark); font-size: 0.95rem; font-weight: 500; padding-block: 0.4rem; }
+.primary-nav a:hover { color: var(--mint); }
+.primary-nav a[aria-current="true"] { color: var(--mint); }
+
+.cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
+.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+.cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
+@media (max-width: 880px) { .primary-nav { display: none; } }
+
+.breadcrumb { padding-block: 1.5rem; font-size: 0.85rem; color: var(--text-on-dark-quiet); }
+.breadcrumb a { color: var(--text-on-dark-quiet); }
+.breadcrumb a:hover { color: var(--mint); }
+.breadcrumb__sep { margin-inline: 0.6rem; opacity: 0.5; }
+.breadcrumb__current { color: var(--text-on-dark); }
+
+.hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
+.hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
+.hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
+.hero h1 { font-weight: 700; font-size: clamp(2.25rem, 5.5vw, 4rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 1.75rem 0; color: white; max-width: 22ch; }
+.hero__deck { font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.5; color: var(--text-on-dark-muted); max-width: 60ch; margin: 0 0 3rem 0; font-weight: 400; }
+.hero__ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4.5rem; }
+
+.anchor-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border-top: 1px solid var(--rule-on-dark); padding-top: 1.5rem; max-width: 720px; }
+.anchor-strip__item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem 0.75rem 0; color: white; font-size: 0.95rem; font-weight: 500; border-right: 1px solid var(--rule-on-dark); transition: color 0.18s ease; }
+.anchor-strip__item:last-child { border-right: none; }
+.anchor-strip__item:hover { color: var(--mint); }
+.anchor-strip__item::after { content: '↓'; color: var(--mint); margin-left: 1rem; }
+@media (max-width: 600px) { .anchor-strip__item { border-right: none; border-bottom: 1px solid var(--rule-on-dark); } }
+
+.meta-strip { background: var(--surface-darker); padding-block: 2.5rem; border-block: 1px solid var(--rule-on-dark); }
+.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; }
+.meta-grid__item { display: flex; flex-direction: column; gap: 0.5rem; }
+.meta-grid__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-on-dark-quiet); }
+.meta-grid__value { font-size: 0.95rem; font-weight: 500; color: white; line-height: 1.45; }
+
+.section { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.section--dark { background: var(--surface-deep); color: white; }
+.section--darker { background: var(--surface-darker); color: white; }
+.section-header { margin-bottom: clamp(2.5rem, 4vw, 4rem); max-width: var(--measure); }
+.section-eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--rule-on-dark); width: 100%; max-width: 420px; }
+.section-eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; flex: 0 0 7px; }
+.section-title { font-weight: 700; font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: 1.15; letter-spacing: -0.025em; margin: 0; color: inherit; }
+
+.capability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+.capability-card { padding: 1.5rem; border-left: 3px solid var(--mint); }
+.capability-card__from { font-size: 0.85rem; color: var(--text-on-dark-quiet); margin-bottom: 0.5rem; font-weight: 500; }
+.capability-card__from::before { content: '✗ '; color: var(--text-on-dark-quiet); margin-right: 4px; }
+.capability-card__to { font-size: 1.15rem; line-height: 1.4; color: white; font-weight: 600; }
+.capability-card__to::before { content: '→ '; color: var(--mint); margin-right: 4px; }
+
+.prose p, .prose ul, .prose ol { font-size: 1.05rem; line-height: 1.7; margin: 0 0 1.4rem 0; }
+.prose ul, .prose ol { padding-left: 1.4rem; }
+.prose li { margin-bottom: 0.7rem; }
+.prose strong { font-weight: 600; }
+.prose h3 { font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em; margin: 2.5rem 0 1rem 0; }
+
+.pullquote { margin: 3rem 0; padding: 2.5rem 0 2.5rem 2rem; border-left: 3px solid var(--mint); max-width: 60ch; }
+.pullquote p { font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.4; font-weight: 500; letter-spacing: -0.015em; margin: 0; }
+
+.diagram-wrap { background: var(--surface-darker); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(1.5rem, 3vw, 2.5rem); }
+.diagram-wrap svg { width: 100%; height: auto; display: block; }
+
+.question-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
+.question-card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; transition: border-color 0.2s ease; }
+.question-card:hover { border-color: var(--mint-border); }
+.question-card__q { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mint); margin-bottom: 0.85rem; }
+.question-card__title { font-weight: 600; font-size: 1.05rem; line-height: 1.35; margin: 0 0 0.85rem 0; color: white; }
+.question-card__answer { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
+
+.applicability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+.applicability-card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.5rem 1.75rem; }
+.applicability-card__sector { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); padding: 4px 10px; background: var(--mint-soft); border-radius: 999px; margin-bottom: 0.85rem; }
+.applicability-card h4 { font-weight: 600; font-size: 1.05rem; line-height: 1.35; margin: 0 0 0.6rem 0; color: white; }
+.applicability-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
+
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
+.cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
+.cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
+.cta-panel p { font-size: 1.1rem; line-height: 1.6; color: var(--text-on-dark-muted); max-width: 56ch; margin: 0 auto 2.5rem auto; }
+
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.related-card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; transition: border-color 0.2s ease, transform 0.2s ease; display: flex; flex-direction: column; gap: 1rem; min-height: 220px; }
+.related-card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.related-card__sector { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); }
+.related-card h4 { font-weight: 600; font-size: 1.15rem; line-height: 1.3; margin: 0; color: white; }
+.related-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; flex: 1; }
+.related-card__link { font-size: 0.9rem; color: var(--mint); font-weight: 500; }
+.related-card__link::after { content: ' →'; }
+
+.site-footer { background: var(--surface-darker); padding-block: 3rem 2rem; border-top: 1px solid var(--rule-on-dark); font-size: 0.85rem; color: var(--text-on-dark-quiet); text-align: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__eyebrow, .hero h1, .hero__deck, .hero__ctas, .anchor-strip { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+  .hero__eyebrow { animation-delay: 0.05s; }
+  .hero h1 { animation-delay: 0.15s; }
+  .hero__deck { animation-delay: 0.3s; }
+  .hero__ctas { animation-delay: 0.45s; }
+  .anchor-strip { animation-delay: 0.6s; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="utility-bar">
+<div class="container utility-bar__inner">
+<a class="utility-bar__left" href="#"><span aria-hidden="true" class="utility-bar__esg-dot"></span>See our most recent ESG report</a>
+<div class="utility-bar__search" role="search">Find your future</div>
+<div class="utility-bar__right">
+<a href="#">About FSP <span aria-hidden="true">⌄</span></a>
+<a href="#">Hub</a>
+<a href="#">Careers</a>
+<a aria-label="LinkedIn" class="utility-bar__linkedin" href="#">in</a>
+</div>
+</div>
+</div>
+<nav aria-label="Primary" class="main-nav">
+<div class="container main-nav__inner">
+<a class="brand-mark" data-fsp-page="00_Index.html" href="#" onclick='parent.FSPShareableApp.loadPage("00_Index.html"); return false;'>FSP</a>
+<div class="primary-nav">
+<a aria-current="true" href="#">Data &amp; AI</a>
+<a href="#">Cyber Security</a>
+<a href="#">Enterprise Cloud</a>
+<a href="#">Change Delivery</a>
+</div>
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+</div>
+</nav>
+<div class="container">
+<nav aria-label="Breadcrumb" class="breadcrumb">
+<a href="#">Data &amp; AI</a>
+<span class="breadcrumb__sep">/</span>
+<a href="#">Case studies</a>
+<span class="breadcrumb__sep">/</span>
+<span class="breadcrumb__current">A scoring model for communities</span>
+</nav>
+</div>
+<section class="hero">
+<div class="container hero__content">
+<p class="hero__eyebrow">Case study · Public sector &amp; Housing</p>
+<h1>A scoring model for communities</h1>
+<p class="hero__deck">
+      How FSP's Data &amp; AI practice built a multi-source community scoring framework to underpin a UK housing association's £100m+ investment programme — explainable, comparable nationally, and built to be shared.
+    </p>
+<div class="hero__ctas">
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+<a class="cta-pill cta-pill--ghost" href="#story">Read the story</a>
+</div>
+<div class="anchor-strip">
+<a class="anchor-strip__item" href="#capabilities">Capabilities</a>
+<a class="anchor-strip__item" href="#story">The story</a>
+<a class="anchor-strip__item" href="#applies">Where it applies</a>
+</div>
+</div>
+</section>
+<section class="meta-strip">
+<div class="container">
+<div class="meta-grid">
+<div class="meta-grid__item"><span class="meta-grid__label">Client</span><span class="meta-grid__value">A major UK housing association investing £100m+ across communities</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Sector</span><span class="meta-grid__value">Public sector · Housing</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Expertise</span><span class="meta-grid__value">Actionable Insights · Strong Data Foundations</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Engagement</span><span class="meta-grid__value">6-week POC + 18-week build</span></div>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="capabilities">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What this unlocked</span>
+<h2 class="section-title">A model that justifies investment, explains itself, and travels nationally</h2>
+</header>
+<div class="capability-grid">
+<div class="capability-card">
+<div class="capability-card__from">Investment decisions defended on instinct</div>
+<div class="capability-card__to">A composite community score for every Local Authority in the UK</div>
+</div>
+<div class="capability-card">
+<div class="capability-card__from">Black-box scoring with no audit trail</div>
+<div class="capability-card__to">Explainable scores with full driver decomposition</div>
+</div>
+<div class="capability-card">
+<div class="capability-card__from">Single granularity — too coarse for local decisions</div>
+<div class="capability-card__to">Three nested levels: Local Authority, MSOA, LSOA</div>
+</div>
+<div class="capability-card">
+<div class="capability-card__from">A model bespoke to one organisation</div>
+<div class="capability-card__to">A framework designed to be shared across the sector</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section section--darker" id="story">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The situation</span>
+<h2 class="section-title">£100m of community investment, and a need to defend every pound of it</h2>
+</header>
+<div class="prose">
+<p>
+        The client is a major UK housing association setting up a Community Foundation to deliver more than £100m of investment across communities over the next decade. Significant work had already been done internally to improve the underlying data and to build foundational analytical assets — including an Asset Grading model — before this engagement began.
+      </p>
+<p>
+        What the organisation now needed was a step change: a scoring model bringing together internal and external data sources to produce a defensible, explainable, comparable community indicator. One that could:
+      </p>
+<ul>
+<li><strong>Justify the investment programme.</strong> Funding decisions of this scale need objective, defensible evidence — not anecdotal need.</li>
+<li><strong>Be explainable to non-technical stakeholders.</strong> Trustees, communities, partner organisations and regulators all need to understand <em>why</em> a community received the score it did.</li>
+<li><strong>Operate at multiple granularities.</strong> National comparability at Local Authority level was the headline; MSOA and LSOA decomposition was needed for actual targeting.</li>
+<li><strong>Be portable.</strong> The model was designed from the start with the option of being shared with other housing associations across the country — turning a single organisation's analytical investment into sector infrastructure.</li>
+</ul>
+</div>
+<header class="section-header" style="margin-top: 5rem;">
+<span class="section-eyebrow">The approach</span>
+<h2 class="section-title">Build the model in stages, prove it before scaling it</h2>
+</header>
+<div class="prose">
+<p>
+        The approach was deliberately conservative for a model of this consequence: a 6-week proof of concept, followed by an 18-week full build. The POC existed not to test whether a model was possible, but to validate the <em>shape</em> of the model — what subcomponents to use, what data was reliable, what weighting scheme would produce defensible scores.
+      </p>
+<div class="pullquote">
+<p>"A composite indicator is only as defensible as its weights. We treated weighting as a research question, not a configuration option."</p>
+</div>
+<p>Four design choices shaped the build:</p>
+<ul>
+<li><strong>Five sub-component pillars.</strong> Health, Crime, Education, Financial Wellbeing, and Amenities — chosen for both data availability and demonstrable causal relevance to community wellbeing.</li>
+<li><strong>Internal and external data combined.</strong> Internal SNG data on properties and tenants, layered with national-level public data — Census, health, mobility, education, crime — to provide a view that's specific where it can be and comparable where it needs to be.</li>
+<li><strong>Hierarchical decomposition.</strong> Each pillar breaks down into sub-component groups, then individual indicators. The score at the top is always traceable back to the underlying data.</li>
+<li><strong>National scaling on three boundaries.</strong> Each component is scaled against national, county, and Local Authority averages — so a community's score reflects its position both locally and across the whole country.</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="section section--dark">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The model structure</span>
+<h2 class="section-title">Composite at the top, traceable to source at the bottom</h2>
+</header>
+<div class="diagram-wrap">
+<svg aria-label="Hierarchical decomposition: a single Community Indicator at the top decomposes into five sub-component pillars, then sub-component groups, then individual indicators" role="img" viewbox="0 0 920 480" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrowS" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+</marker>
+<style>
+            .diag-label { font: 600 12px Inter, sans-serif; fill: #FFFFFF; }
+            .diag-sub { font: 400 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.6); }
+            .diag-section { font: 600 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
+          </style>
+</defs>
+<!-- Level 1: Community Indicator (top) -->
+<text class="diag-section" text-anchor="middle" x="460" y="28">Level 1 — Composite</text>
+<rect fill="#9FE5BD" height="60" rx="6" stroke="none" width="280" x="320" y="50"></rect>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="15" font-weight="700" text-anchor="middle" x="460" y="78">Community Indicator</text>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" text-anchor="middle" x="460" y="96">Single composite score per locality</text>
+<!-- Lines to L2 -->
+<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="100" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="265" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="430" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="595" y1="110" y2="155"></line>
+<line opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="460" x2="760" y1="110" y2="155"></line>
+<!-- Level 2: Five sub-component pillars -->
+<text class="diag-section" text-anchor="middle" x="460" y="140">Level 2 — Sub-component pillars</text>
+<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="20" y="155"></rect>
+<text class="diag-label" text-anchor="middle" x="97.5" y="180">Health</text>
+<text class="diag-sub" text-anchor="middle" x="97.5" y="198">Wellbeing, services</text>
+<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="185" y="155"></rect>
+<text class="diag-label" text-anchor="middle" x="262.5" y="180">Crime</text>
+<text class="diag-sub" text-anchor="middle" x="262.5" y="198">Safety indicators</text>
+<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="350" y="155"></rect>
+<text class="diag-label" text-anchor="middle" x="427.5" y="180">Education</text>
+<text class="diag-sub" text-anchor="middle" x="427.5" y="198">Attainment, access</text>
+<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="515" y="155"></rect>
+<text class="diag-label" text-anchor="middle" x="592.5" y="180">Financial Wellbeing</text>
+<text class="diag-sub" text-anchor="middle" x="592.5" y="198">Employment, income</text>
+<rect fill="rgba(159, 229, 189, 0.08)" height="60" rx="4" stroke="rgba(159, 229, 189, 0.35)" stroke-width="1" width="155" x="680" y="155"></rect>
+<text class="diag-label" text-anchor="middle" x="757.5" y="180">Amenities</text>
+<text class="diag-sub" text-anchor="middle" x="757.5" y="198">Services, infrastructure</text>
+<!-- Lines to L3 (showing decomposition pattern from one pillar) -->
+<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="540" y1="215" y2="265"></line>
+<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="592.5" y1="215" y2="265"></line>
+<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="592.5" x2="645" y1="215" y2="265"></line>
+<!-- Level 3: Sub-component groups (showing for Financial Wellbeing as example) -->
+<text class="diag-section" text-anchor="middle" x="460" y="248">Level 3 — Sub-component groups</text>
+<rect fill="rgba(255,255,255,0.04)" height="48" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="490" y="265"></rect>
+<text class="diag-label" text-anchor="middle" x="542.5" y="285">Employment</text>
+<rect fill="rgba(255,255,255,0.04)" height="48" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="600" y="265"></rect>
+<text class="diag-label" text-anchor="middle" x="652.5" y="285">Income</text>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="290">(Each pillar decomposes</text>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="306">into its own groups)</text>
+<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="500" y1="313" y2="345"></line>
+<line opacity="0.4" stroke="#9FE5BD" stroke-dasharray="2,3" stroke-width="1" x1="542.5" x2="585" y1="313" y2="345"></line>
+<!-- Level 4: Indicators -->
+<text class="diag-section" text-anchor="middle" x="460" y="335">Level 4 — Indicators (source data)</text>
+<rect fill="rgba(255,255,255,0.04)" height="40" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="450" y="345"></rect>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.85); font-size: 11px;" text-anchor="middle" x="502.5" y="370">% Self-employed</text>
+<rect fill="rgba(255,255,255,0.04)" height="40" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="105" x="565" y="345"></rect>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.85); font-size: 11px;" text-anchor="middle" x="617.5" y="370">% Long-term out</text>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="370">(Open data, traceable</text>
+<text class="diag-sub" style="fill: rgba(255,255,255,0.45);" x="50" y="386">to source &amp; methodology)</text>
+<!-- Granularity scaling annotation -->
+<text class="diag-section" text-anchor="middle" x="460" y="425">Scaled at three granularities</text>
+<rect fill="rgba(255,255,255,0.04)" height="32" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="120" x="280" y="438"></rect>
+<text class="diag-label" text-anchor="middle" x="340" y="458">Local Authority</text>
+<rect fill="rgba(255,255,255,0.04)" height="32" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="120" x="410" y="438"></rect>
+<text class="diag-label" text-anchor="middle" x="470" y="458">MSOA</text>
+<rect fill="rgba(255,255,255,0.04)" height="32" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="120" x="540" y="438"></rect>
+<text class="diag-label" text-anchor="middle" x="600" y="458">LSOA</text>
+</svg>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Decisions answered</span>
+<h2 class="section-title">The questions a trustee, an analyst and a community partner can now actually ask</h2>
+</header>
+<div class="prose" style="max-width: 60ch; margin-bottom: 2.5rem;">
+<p style="color: var(--text-on-dark-muted);">
+        The score is not the deliverable. The deliverable is the ability to <em>ask better questions</em> about where investment goes — and to defend the answers when challenged.
+      </p>
+</div>
+<div class="question-grid">
+<article class="question-card">
+<div class="question-card__q">Question 01</div>
+<h4 class="question-card__title">Which communities most need the next phase of investment?</h4>
+<p class="question-card__answer">Ranked nationally and within county, with the score decomposable so the case for each can be made on its specific drivers.</p>
+</article>
+<article class="question-card">
+<div class="question-card__q">Question 02</div>
+<h4 class="question-card__title">Why does this community score the way it does?</h4>
+<p class="question-card__answer">Not a black-box answer. The model exposes the contribution of each pillar, each sub-group, and each indicator — to anyone who needs to see it.</p>
+</article>
+<article class="question-card">
+<div class="question-card__q">Question 03</div>
+<h4 class="question-card__title">How does this community compare nationally?</h4>
+<p class="question-card__answer">Scaled against national, county and Local Authority averages — the score answers "compared to what?" before anyone asks.</p>
+</article>
+<article class="question-card">
+<div class="question-card__q">Question 04</div>
+<h4 class="question-card__title">Where exactly should investment land within the community?</h4>
+<p class="question-card__answer">MSOA and LSOA decomposition turns Local Authority-level signals into block-level targeting decisions.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="applies">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Where else this applies</span>
+<h2 class="section-title">The pattern travels — wherever a composite score has to be defended</h2>
+</header>
+<div class="prose" style="max-width: 60ch; margin-bottom: 2.5rem;">
+<p style="color: var(--text-on-dark-muted);">
+        Composite scoring frameworks of this shape — explainable, hierarchical, scalable across geographies — are needed in many sectors where significant investment decisions need to be defensible. The pattern generalises cleanly.
+      </p>
+</div>
+<div class="applicability-grid">
+<article class="applicability-card">
+<span class="applicability-card__sector">Local government</span>
+<h4>Levelling-up and place-based investment</h4>
+<p>Defensible scoring of communities, wards and constituencies for capital allocation, regeneration funding and economic development.</p>
+</article>
+<article class="applicability-card">
+<span class="applicability-card__sector">Other housing associations</span>
+<h4>Sector-shared community scoring</h4>
+<p>The framework is portable. Other associations can adopt, extend and contribute — turning one organisation's analytical investment into sector infrastructure.</p>
+</article>
+<article class="applicability-card">
+<span class="applicability-card__sector">Insurance &amp; financial services</span>
+<h4>Geographic risk and opportunity scoring</h4>
+<p>The same hierarchical decomposition applies wherever risk, opportunity or affordability needs to be scored across many areas with explainable drivers.</p>
+</article>
+<article class="applicability-card">
+<span class="applicability-card__sector">Healthcare commissioning</span>
+<h4>Population health and service planning</h4>
+<p>Composite indicators of population need, service access and outcomes — scaled to PCN, ICB and national level, with transparent contribution from each driver.</p>
+</article>
+<article class="applicability-card">
+<span class="applicability-card__sector">Retail &amp; consumer</span>
+<h4>Catchment and store-network scoring</h4>
+<p>Site selection, store performance benchmarking, market entry decisions — defensible scoring against multi-source demographic and consumer data.</p>
+</article>
+<article class="applicability-card">
+<span class="applicability-card__sector">ESG &amp; sustainability</span>
+<h4>Composite ESG indicators</h4>
+<p>Hierarchical, explainable scoring of organisations, supply chains or geographies against multi-dimensional sustainability frameworks.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What we'd take from this</span>
+<h2 class="section-title">Three principles for composite indicator models that have to be defended</h2>
+</header>
+<div class="prose">
+<h3>1. Explainability is the deliverable, not a feature.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        For a composite score that drives investment of this consequence, the score itself is the smallest part of the value. The ability to decompose, defend and discuss the score with non-technical stakeholders is what determines whether the model gets used.
+      </p>
+<h3>2. The weights are a research question.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Composite indicators are only as defensible as their weighting scheme. Treating weighting as a configuration choice is the move that turns a model into a black box. Treating it as a research question — driven by foundational analysis and stakeholder input — is the move that earns trust.
+      </p>
+<h3>3. Build for sharing if you can.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Models built for one organisation tend to die with that organisation. Models built with sector-portability in mind, on common public datasets, become infrastructure that outlives the original engagement. The economics are different. So is the long-term impact.
+      </p>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="contact">
+<div class="container">
+<div class="cta-panel">
+<div class="cta-panel__stars">★★★★★</div>
+<p class="cta-panel__kicker">Trusted by leading enterprises</p>
+<h2>Need a composite score that holds up to scrutiny?</h2>
+<p>
+        FSP's Data &amp; AI practice has built explainable scoring frameworks for housing, public sector, financial services and ESG contexts. We know what makes a composite indicator defensible — and what makes it useful.
+      </p>
+<a class="cta-pill" href="#">Talk to an expert</a>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Related work</span>
+<h2 class="section-title">More from FSP's Data &amp; AI practice</h2>
+</header>
+<div class="related-grid">
+<a class="related-card" data-fsp-page="06_AJW_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("06_AJW_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Aviation</span>
+<h4>From gut-feel to data-driven inventory decisions</h4>
+<p>A probabilistic forecasting and simulation engine for component stock optimisation across 45,000 part numbers.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="05_HyperOptic_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("05_HyperOptic_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Telecommunications</span>
+<h4>From fragmented systems to AI-ready data</h4>
+<p>The data foundation behind a UK full-fibre provider's customer operations AI products.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="08_OhPolly_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("08_OhPolly_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Retail</span>
+<h4>From data-aware to data-driven</h4>
+<p>How a high-growth fashion retailer moved from manual reporting to automated insight across 30+ source systems.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+</div>
+</div>
+</section>
+<footer class="site-footer">
+<div class="container">
+<p>© FSP. Case study anonymised. Specific identifying details have been removed at the client's request.</p>
+</div>
+</footer>
+</body>
+</html>

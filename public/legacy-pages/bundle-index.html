@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FSP Data &amp; AI — Case Study Programme Bundle</title>
+<style>
+:root {
+  --surface-deep: #0D2A2E;
+  --surface-darker: #08201F;
+  --surface-mid: #143638;
+  --surface-light: #F5F5F1;
+  --mint: #9FE5BD;
+  --mint-soft: rgba(159, 229, 189, 0.12);
+  --mint-border: rgba(159, 229, 189, 0.28);
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
+  --text-on-light: #0D2A2E;
+  --rule-on-dark: rgba(255, 255, 255, 0.12);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body { margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--text-on-dark); background: var(--surface-deep); font-feature-settings: 'kern', 'liga'; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1280px; margin: 0 auto; padding-inline: var(--gutter); }
+
+.utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; padding-block: 0.85rem; }
+.utility-bar__inner { display: flex; align-items: center; justify-content: space-between; }
+
+.main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); padding-block: 1.25rem; }
+.main-nav__inner { display: flex; align-items: center; justify-content: space-between; }
+.brand-mark { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; color: white; display: inline-flex; align-items: baseline; }
+.brand-mark::after { content: '.'; color: var(--mint); margin-left: 1px; }
+.doc-tag { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); padding: 6px 14px; background: var(--mint-soft); border: 1px solid var(--mint-border); border-radius: 999px; }
+
+.hero { padding-block: clamp(3.5rem, 7vw, 6rem); border-bottom: 1px solid var(--rule-on-dark); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero__content { position: relative; z-index: 1; max-width: 800px; margin: 0; text-align: left; }
+.hero__eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.55rem; }
+.hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
+.hero h1 { font-weight: 700; font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 1.5rem 0; }
+.hero p { font-size: 1.2rem; line-height: 1.55; color: var(--text-on-dark-muted); max-width: 60ch; margin: 0 0 2rem 0; }
+.hero__meta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.hero__meta-item { font-size: 0.85rem; padding: 6px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--rule-on-dark); border-radius: 999px; color: var(--text-on-dark-muted); }
+
+.section { padding-block: clamp(3rem, 5vw, 5rem); }
+.section--alt { background: var(--surface-darker); }
+.section-header { margin-bottom: 2.5rem; }
+.section-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 0.85rem; display: inline-flex; align-items: center; gap: 0.55rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule-on-dark); width: 100%; max-width: 380px; }
+.section-eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; flex: 0 0 7px; }
+.section-title { font-weight: 700; font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.2; letter-spacing: -0.02em; margin: 0 0 1rem 0; }
+.section-deck { font-size: 1.05rem; line-height: 1.6; color: var(--text-on-dark-muted); max-width: 60ch; margin: 0; }
+
+/* Big artefact cards */
+.artefact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+.artefact { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 2rem; display: flex; flex-direction: column; gap: 1rem; transition: border-color 0.2s, transform 0.2s; }
+.artefact:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.artefact__type { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); padding: 4px 10px; background: var(--mint-soft); border-radius: 999px; align-self: flex-start; }
+.artefact h3 { font-weight: 700; font-size: 1.35rem; line-height: 1.25; margin: 0; color: white; }
+.artefact__desc { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; flex: 1; }
+.artefact__filename { font-size: 0.8rem; color: var(--text-on-dark-quiet); font-family: 'SF Mono', 'Monaco', 'Consolas', monospace; }
+.artefact__cta { font-size: 0.9rem; color: var(--mint); font-weight: 500; margin-top: auto; }
+.artefact__cta::after { content: ' →'; }
+
+/* Numbered steps */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; counter-reset: step; }
+.step { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; counter-increment: step; position: relative; }
+.step::before { content: counter(step, decimal-leading-zero); font-weight: 700; font-size: 1.6rem; color: var(--mint); display: block; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+.step h4 { font-weight: 600; font-size: 1.1rem; margin: 0 0 0.6rem 0; color: white; line-height: 1.3; }
+.step p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
+
+/* Approval block */
+.approval { background: linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--mint-border); border-radius: var(--radius); padding: clamp(2rem, 5vw, 3rem); }
+.approval h3 { font-weight: 700; font-size: 1.4rem; margin: 0 0 1rem 0; color: white; }
+.approval p { font-size: 1rem; line-height: 1.6; color: var(--text-on-dark-muted); margin: 0 0 1.5rem 0; max-width: 60ch; }
+.approval__list { list-style: none; padding: 0; margin: 0; }
+.approval__list li { padding: 0.6rem 0; border-top: 1px solid var(--rule-on-dark); display: flex; gap: 0.85rem; align-items: flex-start; font-size: 0.95rem; line-height: 1.5; }
+.approval__list li:first-child { border-top: none; }
+.approval__list li::before { content: '☐'; color: var(--mint); flex: 0 0 auto; font-size: 1.1rem; line-height: 1.4; }
+
+footer { background: var(--surface-darker); padding-block: 2.5rem; border-top: 1px solid var(--rule-on-dark); text-align: center; color: var(--text-on-dark-quiet); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="utility-bar">
+<div class="container utility-bar__inner">
+<span style="font-weight: 600;">FSP — Internal package</span>
+<span>Confidential — for marketing review</span>
+</div>
+</div>
+<nav class="main-nav">
+<div class="container main-nav__inner">
+<span class="brand-mark">FSP</span>
+<span class="doc-tag">Programme Bundle · Index</span>
+</div>
+</nav>
+<section class="hero">
+<div class="container hero__content">
+<p class="hero__eyebrow">Data &amp; AI · Case Study Programme</p>
+<h1>Six case studies. Three templates. One campaign.</h1>
+<p>The complete launch package for FSP's Data &amp; AI case study programme — six anonymised case study pages built across three template patterns, plus a 14-week LinkedIn campaign covering the full library. Ready for FSP marketing review.</p>
+<div class="hero__meta">
+<span class="hero__meta-item">9 HTML pages</span>
+<span class="hero__meta-item">13 LinkedIn posts</span>
+<span class="hero__meta-item">3 templates</span>
+<span class="hero__meta-item">All anonymised</span>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container">
+<header class="section-header">
+<div class="section-eyebrow">In the bundle</div>
+<h2 class="section-title">Nine artefacts, organised by use</h2>
+<p class="section-deck">All HTML pages share the same FSP design system — built from screenshots of fsp.co. Brand colours and typography live in CSS variables for easy re-skin by FSP design.</p>
+</header>
+<h3 style="font-weight: 600; font-size: 1.1rem; color: var(--mint); margin: 2rem 0 1rem 0;">Case study pages — Template A (Strategic Platform)</h3>
+<div class="artefact-grid">
+<article class="artefact">
+<span class="artefact__type">Template A · Telco</span>
+<h3>Virgin Media OneView</h3>
+<p class="artefact__desc">From fragmented data to trusted, reusable data products. The pragmatic build-vs-wait decision. Flagship piece.</p>
+<div class="artefact__filename">04_OneView_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="04_OneView_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("04_OneView_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+<article class="artefact">
+<span class="artefact__type">Template A · Telco</span>
+<h3>HyperOptic DataHub</h3>
+<p class="artefact__desc">From fragmented systems to AI-ready data. The open-source, low-cost foundation behind customer operations AI.</p>
+<div class="artefact__filename">05_HyperOptic_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="05_HyperOptic_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("05_HyperOptic_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+<article class="artefact">
+<span class="artefact__type">Template A · Retail</span>
+<h3>Oh Polly Transformation</h3>
+<p class="artefact__desc">From data-aware to data-driven. End-to-end retail data ecosystem across 30+ source systems and three brands.</p>
+<div class="artefact__filename">08_OhPolly_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="08_OhPolly_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("08_OhPolly_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+</div>
+<h3 style="font-weight: 600; font-size: 1.1rem; color: var(--mint); margin: 3rem 0 1rem 0;">Case study pages — Template B (Analytics &amp; Modelling)</h3>
+<div class="artefact-grid">
+<article class="artefact">
+<span class="artefact__type">Template B · Aviation</span>
+<h3>AJW Stock Optimisation</h3>
+<p class="artefact__desc">From gut-feel to data-driven inventory decisions. Probabilistic forecasting + scenario simulation across 45,000 parts.</p>
+<div class="artefact__filename">06_AJW_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="06_AJW_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("06_AJW_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+<article class="artefact">
+<span class="artefact__type">Template B · Public sector</span>
+<h3>Sovereign Community Model</h3>
+<p class="artefact__desc">A composite community scoring framework underpinning £100m+ of investment. Hierarchical, explainable, portable.</p>
+<div class="artefact__filename">09_Sovereign_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="09_Sovereign_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("09_Sovereign_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+</div>
+<h3 style="font-weight: 600; font-size: 1.1rem; color: var(--mint); margin: 3rem 0 1rem 0;">Case study pages — Template C (Managed Service)</h3>
+<div class="artefact-grid">
+<article class="artefact">
+<span class="artefact__type">Template C · Retail</span>
+<h3>Co-Op Managed Service</h3>
+<p class="artefact__desc">The data team behind 4,000 stores. Dual-tier service model with bolt-ons, partnership-toned trust signals.</p>
+<div class="artefact__filename">07_CoOp_FSP_CaseStudy.html</div>
+<a class="artefact__cta" data-fsp-page="07_CoOp_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("07_CoOp_FSP_CaseStudy.html"); return false;'>Open page</a>
+</article>
+</div>
+<h3 style="font-weight: 600; font-size: 1.1rem; color: var(--mint); margin: 3rem 0 1rem 0;">Campaign artefacts</h3>
+<div class="artefact-grid">
+<article class="artefact">
+<span class="artefact__type">Campaign plan · HTML</span>
+<h3>14-Week LinkedIn Campaign Overview</h3>
+<p class="artefact__desc">Visual programme overview — week-by-week timeline showing all 13 posts, posting roles, hooks and rationale. The artefact for marketing review meetings.</p>
+<div class="artefact__filename">10_Campaign_Overview.html</div>
+<a class="artefact__cta" data-fsp-page="10_Campaign_Overview.html" href="#" onclick='parent.FSPShareableApp.loadPage("10_Campaign_Overview.html"); return false;'>Open campaign plan</a>
+</article>
+<article class="artefact">
+<span class="artefact__type">Post copy · Markdown</span>
+<h3>Full LinkedIn Post Bank</h3>
+<p class="artefact__desc">All 13 posts in copy-paste-ready markdown. Use directly to schedule. Includes posting mechanics, UTM templates, measurement notes.</p>
+<div class="artefact__filename">LinkedIn_Posts_Full_Campaign.md</div>
+<a class="artefact__cta" data-fsp-page="LinkedIn_Posts_Full_Campaign.md" href="#" onclick='parent.FSPShareableApp.loadPage("LinkedIn_Posts_Full_Campaign.md"); return false;'>Open post bank</a>
+</article>
+</div>
+</div>
+</section>
+<section class="section section--alt">
+<div class="container">
+<header class="section-header">
+<div class="section-eyebrow">Three template approach</div>
+<h2 class="section-title">Why three, not one</h2>
+<p class="section-deck">Different case study types serve different buyer decision processes. Forcing all six into one template would either bloat the smaller stories or under-serve the bigger ones. The three templates share a single design system, but the structure and tone of each is calibrated to the audience.</p>
+</header>
+<div class="steps">
+<article class="step">
+<h4>Template A — Strategic Platform</h4>
+<p>For multi-quarter platform engagements. ~2,000 words. Architecture diagram, outcome stat band, platform/business products grid. Buyer: CDO, head of data, VP engineering. Reads for capability and ambition.</p>
+</article>
+<article class="step">
+<h4>Template B — Analytics &amp; Modelling</h4>
+<p>For ML, modelling and analytics engagements. ~1,400 words. Methodology diagram, capability-unlocked panel, "where else this applies" transferable IP section. Buyer: head of analytics, ops director, supply chain lead. Reads for method and rigour.</p>
+</article>
+<article class="step">
+<h4>Template C — Managed Service</h4>
+<p>For ongoing service engagements. ~900 words. No architecture diagram — instead a service-tier model. Trust signal cards, partnership-toned CTA. Buyer: data leader managing budget and team. Reads for predictability and partnership.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="container">
+<header class="section-header">
+<div class="section-eyebrow">For FSP marketing review</div>
+<h2 class="section-title">What we need from you</h2>
+</header>
+<div class="approval">
+<h3>Approval checklist</h3>
+<p>The fastest path through is one consolidated review meeting covering the full bundle. Specific decisions needed:</p>
+<ul class="approval__list">
+<li><strong>Confirm brand colours.</strong> The mint accent (#9FE5BD) and dark teal-navy (#0D2A2E) are sampled from fsp.co screenshots. Confirm Pantone / hex values from the brand guidelines.</li>
+<li><strong>Confirm typography.</strong> Pages currently use Inter as the FSP-equivalent sans-serif. Swap to FSP's licensed face if different.</li>
+<li><strong>Approve the placement strategy.</strong> Recommend a "Recent work" section on the Data &amp; AI page housing 3-6 case study cards, with detail pages nested under <code style="font-size: 0.85rem; color: var(--mint);">/data-ai-4/case-studies/</code>.</li>
+<li><strong>Approve the three templates.</strong> A (Platform), B (Analytics), C (Managed Service). Future case studies fit one of the three.</li>
+<li><strong>Approve the LinkedIn campaign plan.</strong> 14 weeks, 3 rotating posters, 13 posts. Confirm posting account ownership and company-page reshare process.</li>
+<li><strong>Identify the second and third LinkedIn posters.</strong> Two senior practitioners from the data practice to share the posting load. Names locked before campaign starts.</li>
+<li><strong>Wire UTM tracking.</strong> Confirm Google Analytics is set up to capture UTM parameters from the LinkedIn post URLs before campaign launch.</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="section section--alt">
+<div class="container">
+<header class="section-header">
+<div class="section-eyebrow">Suggested next steps</div>
+<h2 class="section-title">Six things to do this fortnight</h2>
+</header>
+<div class="steps">
+<article class="step">
+<h4>Internal walkthrough</h4>
+<p>Open the six case study pages and the campaign overview. Walk through them as a coherent set. Catch any voice or framing issues before external review.</p>
+</article>
+<article class="step">
+<h4>FSP marketing review meeting</h4>
+<p>Single consolidated session. Use the approval checklist on this page as the agenda. One review covers all six case studies and the campaign.</p>
+</article>
+<article class="step">
+<h4>Client permissions chase</h4>
+<p>In parallel: each client sponsor approves the public version. Anonymised launch first, named upgrades follow client sign-off. Track per case study.</p>
+</article>
+<article class="step">
+<h4>Lock the posting team</h4>
+<p>Confirm the second and third LinkedIn posters. Brief them on the campaign mechanics — voice, cross-amplification, posting windows.</p>
+</article>
+<article class="step">
+<h4>Set up measurement</h4>
+<p>UTM templates wired into GA. Tracking dashboard for weekly review. This is the launch-blocker: don't go live without attribution.</p>
+</article>
+<article class="step">
+<h4>Schedule week-by-week</h4>
+<p>Assign actual dates to each of the 14 weeks. Block the time on the calendar. Posts that don't have dates tend to slip indefinitely.</p>
+</article>
+</div>
+</div>
+</section>
+<footer>
+<div class="container">
+    FSP Data &amp; AI · Case Study Programme Bundle · Internal — for marketing review
+  </div>
+</footer>
+</body>
+</html>

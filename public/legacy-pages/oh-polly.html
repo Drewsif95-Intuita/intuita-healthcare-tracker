@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>From data-aware to data-driven — FSP</title>
+<meta content="How FSP's Data &amp; AI practice took a fast-growing UK fashion retailer from manual reporting and gut-feel decisions to automated insight and analytical models — across 30+ source systems, 3 brands and 5 websites." name="description"/>
+<style>
+:root {
+  --surface-deep: #0D2A2E;
+  --surface-darker: #08201F;
+  --surface-mid: #143638;
+  --surface-light: #F5F5F1;
+  --surface-white: #FFFFFF;
+  --mint: #9FE5BD;
+  --mint-soft: rgba(159, 229, 189, 0.12);
+  --mint-border: rgba(159, 229, 189, 0.28);
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
+  --text-on-light: #0D2A2E;
+  --text-on-light-muted: #4A5560;
+  --rule-on-dark: rgba(255, 255, 255, 0.12);
+  --rule-on-light: #E2E5E9;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --measure: 68ch;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--text-on-dark); background: var(--surface-deep); font-feature-settings: 'kern', 'liga'; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: 1280px; margin: 0 auto; padding-inline: var(--gutter); }
+.prose { max-width: var(--measure); }
+
+.utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
+.utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
+.utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
+.utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
+.utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
+.utility-bar__right a { color: var(--text-on-light); }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+@media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
+
+.main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
+.main-nav__inner { display: flex; align-items: center; justify-content: space-between; padding-block: 1.25rem; gap: 2rem; }
+.brand-mark { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; color: white; display: inline-flex; align-items: baseline; }
+.brand-mark::after { content: '.'; color: var(--mint); margin-left: 1px; }
+.primary-nav { display: flex; gap: 2.25rem; }
+.primary-nav a { color: var(--text-on-dark); font-size: 0.95rem; font-weight: 500; padding-block: 0.4rem; }
+.primary-nav a:hover { color: var(--mint); }
+.primary-nav a[aria-current="true"] { color: var(--mint); }
+
+.cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
+.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+.cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
+@media (max-width: 880px) { .primary-nav { display: none; } }
+
+.breadcrumb { padding-block: 1.5rem; font-size: 0.85rem; color: var(--text-on-dark-quiet); }
+.breadcrumb a { color: var(--text-on-dark-quiet); }
+.breadcrumb a:hover { color: var(--mint); }
+.breadcrumb__sep { margin-inline: 0.6rem; opacity: 0.5; }
+.breadcrumb__current { color: var(--text-on-dark); }
+
+.hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
+.hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
+.hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
+.hero h1 { font-weight: 700; font-size: clamp(2.25rem, 5.5vw, 4rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 1.75rem 0; color: white; max-width: 22ch; }
+.hero__deck { font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.5; color: var(--text-on-dark-muted); max-width: 60ch; margin: 0 0 3rem 0; font-weight: 400; }
+.hero__ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4.5rem; }
+
+.anchor-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border-top: 1px solid var(--rule-on-dark); padding-top: 1.5rem; max-width: 720px; }
+.anchor-strip__item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem 0.75rem 0; color: white; font-size: 0.95rem; font-weight: 500; border-right: 1px solid var(--rule-on-dark); transition: color 0.18s ease; }
+.anchor-strip__item:last-child { border-right: none; }
+.anchor-strip__item:hover { color: var(--mint); }
+.anchor-strip__item::after { content: '↓'; color: var(--mint); margin-left: 1rem; }
+@media (max-width: 600px) { .anchor-strip__item { border-right: none; border-bottom: 1px solid var(--rule-on-dark); } }
+
+.meta-strip { background: var(--surface-darker); padding-block: 2.5rem; border-block: 1px solid var(--rule-on-dark); }
+.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; }
+.meta-grid__item { display: flex; flex-direction: column; gap: 0.5rem; }
+.meta-grid__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-on-dark-quiet); }
+.meta-grid__value { font-size: 0.95rem; font-weight: 500; color: white; line-height: 1.45; }
+
+.section { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.section--dark { background: var(--surface-deep); color: white; }
+.section--darker { background: var(--surface-darker); color: white; }
+.section-header { margin-bottom: clamp(2.5rem, 4vw, 4rem); max-width: var(--measure); }
+.section-eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--rule-on-dark); width: 100%; max-width: 420px; }
+.section-eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; flex: 0 0 7px; }
+.section-title { font-weight: 700; font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: 1.15; letter-spacing: -0.025em; margin: 0; color: inherit; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem 2rem; margin-top: 1.5rem; }
+.stat__number { font-weight: 700; font-size: clamp(2.5rem, 5vw, 3.75rem); line-height: 1; letter-spacing: -0.03em; color: var(--mint); margin-bottom: 0.85rem; }
+.stat__label { font-size: 0.95rem; line-height: 1.5; color: var(--text-on-dark-muted); font-weight: 400; }
+
+.prose p, .prose ul, .prose ol { font-size: 1.05rem; line-height: 1.7; margin: 0 0 1.4rem 0; }
+.prose ul, .prose ol { padding-left: 1.4rem; }
+.prose li { margin-bottom: 0.7rem; }
+.prose strong { font-weight: 600; }
+.prose h3 { font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em; margin: 2.5rem 0 1rem 0; }
+
+.pullquote { margin: 3rem 0; padding: 2.5rem 0 2.5rem 2rem; border-left: 3px solid var(--mint); max-width: 60ch; }
+.pullquote p { font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.4; font-weight: 500; letter-spacing: -0.015em; margin: 0; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
+.card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.85rem; transition: border-color 0.2s ease, transform 0.2s ease; }
+.card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.card__icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.card__icon--check { background: linear-gradient(135deg, #B8E5C9, #9FE5BD); color: #0D4528; }
+.card__icon--data { background: linear-gradient(135deg, #C5D8E5, #B8E0C9); color: #0D4528; }
+.card__icon--shield { background: linear-gradient(135deg, #D5C5E5, #C5B8E0); color: #3D2D5C; }
+.card__icon--chart { background: linear-gradient(135deg, #B8E0C9, #9FE5BD); color: #0D4528; }
+.card__icon--cluster { background: linear-gradient(135deg, #E5C5C5, #C5C5E5); color: #3D2D5C; }
+.card__icon--spark { background: linear-gradient(135deg, #F0D5B8, #E5C9B8); color: #5C3D2D; }
+.card h4 { font-weight: 600; font-size: 1.1rem; margin: 0; line-height: 1.3; color: inherit; }
+.card p { font-size: 0.95rem; line-height: 1.55; margin: 0; color: var(--text-on-dark-muted); }
+
+.diagram-wrap { background: var(--surface-darker); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(1.5rem, 3vw, 2.5rem); }
+.diagram-wrap svg { width: 100%; height: auto; display: block; }
+
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
+.cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
+.cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
+.cta-panel p { font-size: 1.1rem; line-height: 1.6; color: var(--text-on-dark-muted); max-width: 56ch; margin: 0 auto 2.5rem auto; }
+
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.related-card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; transition: border-color 0.2s ease, transform 0.2s ease; display: flex; flex-direction: column; gap: 1rem; min-height: 220px; }
+.related-card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.related-card__sector { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); }
+.related-card h4 { font-weight: 600; font-size: 1.15rem; line-height: 1.3; margin: 0; color: white; }
+.related-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; flex: 1; }
+.related-card__link { font-size: 0.9rem; color: var(--mint); font-weight: 500; }
+.related-card__link::after { content: ' →'; }
+
+.site-footer { background: var(--surface-darker); padding-block: 3rem 2rem; border-top: 1px solid var(--rule-on-dark); font-size: 0.85rem; color: var(--text-on-dark-quiet); text-align: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__eyebrow, .hero h1, .hero__deck, .hero__ctas, .anchor-strip { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+  .hero__eyebrow { animation-delay: 0.05s; }
+  .hero h1 { animation-delay: 0.15s; }
+  .hero__deck { animation-delay: 0.3s; }
+  .hero__ctas { animation-delay: 0.45s; }
+  .anchor-strip { animation-delay: 0.6s; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="utility-bar">
+<div class="container utility-bar__inner">
+<a class="utility-bar__left" href="#"><span aria-hidden="true" class="utility-bar__esg-dot"></span>See our most recent ESG report</a>
+<div class="utility-bar__search" role="search">Find your future</div>
+<div class="utility-bar__right">
+<a href="#">About FSP <span aria-hidden="true">⌄</span></a>
+<a href="#">Hub</a>
+<a href="#">Careers</a>
+<a aria-label="LinkedIn" class="utility-bar__linkedin" href="#">in</a>
+</div>
+</div>
+</div>
+<nav aria-label="Primary" class="main-nav">
+<div class="container main-nav__inner">
+<a class="brand-mark" data-fsp-page="00_Index.html" href="#" onclick='parent.FSPShareableApp.loadPage("00_Index.html"); return false;'>FSP</a>
+<div class="primary-nav">
+<a aria-current="true" href="#">Data &amp; AI</a>
+<a href="#">Cyber Security</a>
+<a href="#">Enterprise Cloud</a>
+<a href="#">Change Delivery</a>
+</div>
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+</div>
+</nav>
+<div class="container">
+<nav aria-label="Breadcrumb" class="breadcrumb">
+<a href="#">Data &amp; AI</a>
+<span class="breadcrumb__sep">/</span>
+<a href="#">Case studies</a>
+<span class="breadcrumb__sep">/</span>
+<span class="breadcrumb__current">From data-aware to data-driven</span>
+</nav>
+</div>
+<section class="hero">
+<div class="container hero__content">
+<p class="hero__eyebrow">Case study · E-commerce &amp; Retail</p>
+<h1>From data-aware to data-driven</h1>
+<p class="hero__deck">
+      How FSP's Data &amp; AI practice took a fast-growing UK fashion retailer from manual reporting and gut-feel decisions to automated insight and analytical models — across 30+ source systems, three brands and five websites.
+    </p>
+<div class="hero__ctas">
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+<a class="cta-pill cta-pill--ghost" href="#story">Read the story</a>
+</div>
+<div class="anchor-strip">
+<a class="anchor-strip__item" href="#outcomes">Outcomes</a>
+<a class="anchor-strip__item" href="#story">The story</a>
+<a class="anchor-strip__item" href="#architecture">Architecture</a>
+</div>
+</div>
+</section>
+<section class="meta-strip">
+<div class="container">
+<div class="meta-grid">
+<div class="meta-grid__item"><span class="meta-grid__label">Client</span><span class="meta-grid__value">A high-growth UK women's fashion online retailer (3 brands, 5 websites)</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Sector</span><span class="meta-grid__value">E-commerce · Retail</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Expertise</span><span class="meta-grid__value">Strong Data Foundations · Actionable Insights</span></div>
+<div class="meta-grid__item"><span class="meta-grid__label">Engagement</span><span class="meta-grid__value">7-month transformation programme</span></div>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="outcomes">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Outcomes</span>
+<h2 class="section-title">Decisions made on insight, not gut feel</h2>
+</header>
+<div class="stats-grid">
+<div class="stat">
+<div class="stat__number">30+</div>
+<div class="stat__label">Source systems ingested into a single common data model</div>
+</div>
+<div class="stat">
+<div class="stat__number">15 min</div>
+<div class="stat__label">Operational data refresh cycle, enabling near-real-time warehouse measurement</div>
+</div>
+<div class="stat">
+<div class="stat__number">First time</div>
+<div class="stat__label">The business could measure customer lifetime value, product profitability and the real cost of returns</div>
+</div>
+<div class="stat">
+<div class="stat__number">7 months</div>
+<div class="stat__label">From data-aware to data-driven, end-to-end — ingestion, modelling, reporting, analytics</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section section--darker" id="story">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The situation</span>
+<h2 class="section-title">A fast-growing retailer whose data capability hadn't kept pace</h2>
+</header>
+<div class="prose">
+<p>
+        The client is one of the UK's fastest-growing women's fashion online retailers. Founded a decade ago and grown from an eBay business to a multi-million-pound global operation, the business runs three brands across five websites, employs more than 1,500 people worldwide, and ships to customers across the globe.
+      </p>
+<p>
+        The growth had outstripped the data capability underneath it. The picture across the business was classic high-growth retail data debt:
+      </p>
+<ul>
+<li><strong>No consolidated view of the business.</strong> Three brands and five websites meant five different reporting realities. Total business performance was almost impossible to assess without manual consolidation.</li>
+<li><strong>Reporting in Excel and PowerPoint.</strong> Hours of manual processing per cycle. Inconsistent quality. Limited trust in the resulting numbers — and therefore in the decisions made from them.</li>
+<li><strong>Tools without capability.</strong> Fivetran and Snowflake had been bought, but no in-house team existed to use them. The platforms were sitting idle.</li>
+<li><strong>An ambitious CEO with a data agenda.</strong> The leadership team wanted to use data for decision-making, profiling and analytics — but the organisation didn't yet have the foundations to deliver any of it.</li>
+<li><strong>Limited visualisation experience.</strong> Even when reports existed, the audience hadn't been enabled to use them. Education was as much a need as engineering.</li>
+</ul>
+</div>
+<header class="section-header" style="margin-top: 5rem;">
+<span class="section-eyebrow">The decision</span>
+<h2 class="section-title">Move the business up the data maturity pyramid, deliberately</h2>
+</header>
+<div class="prose">
+<p>
+        The temptation in a high-growth retailer is to start with the most exciting layer of capability — predictive models, customer segmentation, AI — and try to skip the unglamorous foundations. We took the opposite approach.
+      </p>
+<p>
+        Together with the client, we mapped the data capability journey as a maturity pyramid: storage and management at the base, through common data models, then data visualisation, then advanced analytics and ML at the top. The decision was to build <em>up</em> the pyramid in sequence, with each layer earning the right to the next.
+      </p>
+<div class="pullquote">
+<p>"The exciting layers don't work without the unglamorous ones underneath. Most retailers learn this the expensive way."</p>
+</div>
+<p>Four principles shaped the build:</p>
+<ul>
+<li><strong>One common data model across brands.</strong> Three brands and five websites would resolve into a single, governed view of the business — finance, merchandising, operations, marketing, all consistent.</li>
+<li><strong>Operational data in 15-minute batches.</strong> Warehouse operations needed near-real-time feedback loops; standing up a separate operational layer kept the rest of the platform unburdened.</li>
+<li><strong>Education alongside delivery.</strong> The team had bought tools they couldn't yet use. Enabling the in-house staff to operate, extend and self-serve was a deliverable, not an afterthought.</li>
+<li><strong>Build for analytics from day one.</strong> The L2 layer was designed for direct model consumption — wide, flat, ready — even though the analytics work would come later in the journey.</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="architecture">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The architecture</span>
+<h2 class="section-title">Foundations that scaled with the business, not against it</h2>
+</header>
+<div class="diagram-wrap">
+<svg aria-label="Architecture: 30+ sources flow through extraction, then into a layered data warehouse with staging, modelled, reporting and operational layers, feeding three consumer types" role="img" viewbox="0 0 920 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow3" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+</marker>
+<style>
+            .diag-label { font: 600 12px Inter, sans-serif; fill: #FFFFFF; }
+            .diag-sub { font: 400 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.6); }
+            .diag-layer-num { font: 700 13px Inter, sans-serif; fill: #9FE5BD; }
+            .diag-section { font: 600 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
+          </style>
+</defs>
+<text class="diag-section" x="55" y="28">Sources (30+)</text>
+<text class="diag-section" x="295" y="28">Data warehouse (Snowflake)</text>
+<text class="diag-section" x="780" y="28">Consumers</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="60"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="84">Spreadsheets</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="110"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="134">Cloud SaaS</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="160"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="184">APIs (custom Python)</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="210"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="234">Files &amp; FTP</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="260"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="284">SaaS (Fivetran)</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="180" x="20" y="310"></rect>
+<text class="diag-label" text-anchor="middle" x="110" y="334">Business knowledge</text>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="80" y2="100"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="130" y2="115"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="180" y2="125"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="230" y2="135"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="280" y2="145"></line>
+<line marker-end="url(#arrow3)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="200" x2="245" y1="330" y2="155"></line>
+<rect fill="rgba(159, 229, 189, 0.04)" height="335" rx="6" stroke="#9FE5BD" stroke-width="1.5" width="430" x="245" y="60"></rect>
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="390" x="265" y="80"></rect>
+<text class="diag-layer-num" x="280" y="103">L0</text>
+<text class="diag-label" x="305" y="103">Staging Layer</text>
+<text class="diag-sub" x="305" y="120">Raw transactions, highly granular</text>
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="390" x="265" y="140"></rect>
+<text class="diag-layer-num" x="280" y="163">◆</text>
+<text class="diag-label" x="305" y="163">Common data model</text>
+<text class="diag-sub" x="305" y="180">Source-agnostic facts &amp; dimensions, business-aligned</text>
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="190" x="265" y="200"></rect>
+<text class="diag-layer-num" x="280" y="223">L1</text>
+<text class="diag-label" x="305" y="223">Reporting layer</text>
+<text class="diag-sub" x="305" y="240">Aggregated, dashboard-ready</text>
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="190" x="465" y="200"></rect>
+<text class="diag-layer-num" x="480" y="223">L2</text>
+<text class="diag-label" x="505" y="223">Analytical layer</text>
+<text class="diag-sub" x="505" y="240">Wide, flat, model-ready</text>
+<rect fill="rgba(159, 229, 189, 0.05)" height="55" rx="4" stroke="rgba(159, 229, 189, 0.3)" stroke-dasharray="3,3" stroke-width="1" width="390" x="265" y="260"></rect>
+<text class="diag-section" x="280" y="280">Operational layer (15-min batch)</text>
+<text class="diag-label" x="280" y="302">Near-real-time warehouse &amp; logistics monitoring</text>
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="rgba(255,255,255,0.2)" stroke-dasharray="3,3" stroke-width="1" width="390" x="265" y="325"></rect>
+<text class="diag-section" x="280" y="345">Cross-cutting</text>
+<text class="diag-label" x="280" y="365">Version control · Data quality · Documentation</text>
+<rect fill="#9FE5BD" height="60" rx="4" stroke="none" width="180" x="720" y="80"></rect>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="105">Automated</text>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="810" y="123">Dashboards</text>
+<rect fill="rgba(255,255,255,0.06)" height="60" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="180" x="720" y="160"></rect>
+<text class="diag-label" text-anchor="middle" x="810" y="185">Analyst SQL</text>
+<text class="diag-sub" text-anchor="middle" x="810" y="203">Direct exploration</text>
+<rect fill="rgba(255,255,255,0.06)" height="60" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="180" x="720" y="240"></rect>
+<text class="diag-label" text-anchor="middle" x="810" y="265">Operational</text>
+<text class="diag-label" text-anchor="middle" x="810" y="283">Dashboards</text>
+<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="225" y2="110"></line>
+<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="225" y2="190"></line>
+<line marker-end="url(#arrow3)" stroke="#9FE5BD" stroke-width="1.5" x1="675" x2="715" y1="285" y2="270"></line>
+</svg>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What this enabled</span>
+<h2 class="section-title">The questions the business could finally answer</h2>
+</header>
+<div class="prose" style="max-width: 60ch; margin-bottom: 2.5rem;">
+<p style="color: var(--text-on-dark-muted);">
+        With the foundations in place, decisions that had been guessed at for years became measurable for the first time. Each one had been a quietly expensive blind spot for a high-growth retailer.
+      </p>
+</div>
+<div class="card-grid">
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--data">◆</div>
+<h4>Customer lifetime value</h4>
+<p>Forwards and backwards in time, by cohort, by brand. The single most important number in retention strategy — finally measurable.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--chart">📊</div>
+<h4>Product &amp; collection profitability</h4>
+<p>Real margin per product and per collection — not blended averages. Buying decisions made on actual contribution, not assumption.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--shield">↩</div>
+<h4>The real cost of returns</h4>
+<p>Returns data was previously housed across three platforms, invisible at the business level. Consolidated, the real impact on profitability became visible — and addressable.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--cluster">⊕</div>
+<h4>Customer base segmentation</h4>
+<p>Movement, repeat behaviour, retention patterns. The foundation for every targeted marketing decision the business now makes.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--spark">↗</div>
+<h4>Merchandising triangulation</h4>
+<p>Pricing, stock availability and sales — joined for the first time. The merchandising team could finally run the function on data, not heuristics.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--check">⚡</div>
+<h4>Warehouse operations measurement</h4>
+<p>From stock receipt to 24-hour dispatch, measured in 15-minute increments. Operational performance finally had a number against it.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="section section--dark">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What we'd take from this</span>
+<h2 class="section-title">Three lessons for high-growth retailers building data capability</h2>
+</header>
+<div class="prose">
+<h3>1. Skip the foundations and you'll pay for them later, with interest.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Predictive models and segmentation only work on top of common data models that you can trust. Most growth-stage retailers try to skip the foundations and find themselves rebuilding twice. Build up the pyramid in sequence; it's the cheaper path.
+      </p>
+<h3>2. Tools don't make a capability. People do.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Snowflake and Fivetran were sitting idle when we arrived. Buying the platforms is the easy bit; building the capability to operate them — and the literacy in the business to consume them — is what determines whether the investment lands.
+      </p>
+<h3>3. Operations data deserves its own layer.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Warehouse operations need feedback loops measured in minutes, not hours. Standing up a separate operational layer with its own refresh cadence kept the rest of the platform clean — and gave the operations team the real-time visibility their function actually requires.
+      </p>
+</div>
+</div>
+</section>
+<section class="section section--darker" id="contact">
+<div class="container">
+<div class="cta-panel">
+<div class="cta-panel__stars">★★★★★</div>
+<p class="cta-panel__kicker">Trusted by leading enterprises</p>
+<h2>Growth outpacing your data capability?</h2>
+<p>
+        FSP's Data &amp; AI practice has built data capability for high-growth retailers across e-commerce, fashion, food and homeware. We know what the foundations need to look like — and how to build them in sequence so the business doesn't lose pace.
+      </p>
+<a class="cta-pill" href="#">Talk to an expert</a>
+</div>
+</div>
+</section>
+<section class="section section--dark">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Related work</span>
+<h2 class="section-title">More from FSP's Data &amp; AI practice</h2>
+</header>
+<div class="related-grid">
+<a class="related-card" data-fsp-page="07_CoOp_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("07_CoOp_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Retail · Managed Service</span>
+<h4>The data team behind 4,000 stores</h4>
+<p>How a flexible managed service model delivered scalable, expert data management across 13 business entities.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="04_OneView_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("04_OneView_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Telecommunications</span>
+<h4>From fragmented data to trusted, reusable products</h4>
+<p>How we helped a UK telco move at the speed of insight, not the speed of transformation.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="06_AJW_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("06_AJW_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Aviation</span>
+<h4>From gut-feel to data-driven inventory decisions</h4>
+<p>A probabilistic forecasting and simulation engine for component stock optimisation across 45,000 part numbers.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+</div>
+</div>
+</section>
+<footer class="site-footer">
+<div class="container">
+<p>© FSP. Case study anonymised. Specific identifying details have been removed at the client's request.</p>
+</div>
+</footer>
+</body>
+</html>

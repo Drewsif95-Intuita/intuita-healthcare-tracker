@@ -1,0 +1,56 @@
+[
+  {
+    "sourceFile": "00_Index.html",
+    "label": "Bundle index",
+    "title": "FSP Data & AI — Case Study Programme Bundle",
+    "assetPath": "/legacy-pages/bundle-index.html"
+  },
+  {
+    "sourceFile": "04_OneView_FSP_CaseStudy.html",
+    "label": "OneView case study",
+    "title": "From fragmented data to trusted, reusable data products — FSP",
+    "assetPath": "/legacy-pages/oneview.html"
+  },
+  {
+    "sourceFile": "05_HyperOptic_FSP_CaseStudy.html",
+    "label": "Hyperoptic case study",
+    "title": "From fragmented systems to AI-ready data — FSP",
+    "assetPath": "/legacy-pages/hyperoptic.html"
+  },
+  {
+    "sourceFile": "08_OhPolly_FSP_CaseStudy.html",
+    "label": "Oh Polly case study",
+    "title": "From data-aware to data-driven — FSP",
+    "assetPath": "/legacy-pages/oh-polly.html"
+  },
+  {
+    "sourceFile": "06_AJW_FSP_CaseStudy.html",
+    "label": "AJW case study",
+    "title": "From gut-feel to data-driven inventory decisions — FSP",
+    "assetPath": "/legacy-pages/ajw-stock-optimisation.html"
+  },
+  {
+    "sourceFile": "09_Sovereign_FSP_CaseStudy.html",
+    "label": "Sovereign case study",
+    "title": "A scoring model for communities — FSP",
+    "assetPath": "/legacy-pages/sovereign-community-model.html"
+  },
+  {
+    "sourceFile": "07_CoOp_FSP_CaseStudy.html",
+    "label": "Co-op case study",
+    "title": "The data team behind 4,000 stores — FSP",
+    "assetPath": "/legacy-pages/coop-managed-service.html"
+  },
+  {
+    "sourceFile": "10_Campaign_Overview.html",
+    "label": "Campaign overview",
+    "title": "LinkedIn Campaign Overview — FSP Data & AI Case Study Launch",
+    "assetPath": "/legacy-pages/campaign-overview.html"
+  },
+  {
+    "sourceFile": "LinkedIn_Posts_Full_Campaign.md",
+    "label": "LinkedIn posts",
+    "title": "FSP Data & AI — LinkedIn Campaign Posts",
+    "assetPath": "/legacy-pages/linkedin-posts.html"
+  }
+]

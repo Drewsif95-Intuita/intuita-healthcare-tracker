@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>From fragmented systems to AI-ready data — FSP</title>
+<meta content="How FSP's Data &amp; AI practice built a low-cost, high-impact data foundation that became the launchpad for AI-enabled customer operations at a UK full-fibre provider." name="description"/>
+<style>
+:root {
+  --surface-deep: #0D2A2E;
+  --surface-darker: #08201F;
+  --surface-mid: #143638;
+  --surface-light: #F5F5F1;
+  --surface-white: #FFFFFF;
+  --mint: #9FE5BD;
+  --mint-soft: rgba(159, 229, 189, 0.12);
+  --mint-border: rgba(159, 229, 189, 0.28);
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --text-on-dark-quiet: rgba(255, 255, 255, 0.55);
+  --text-on-light: #0D2A2E;
+  --text-on-light-muted: #4A5560;
+  --rule-on-dark: rgba(255, 255, 255, 0.12);
+  --rule-on-light: #E2E5E9;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --measure: 68ch;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+  --radius: 12px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 1.6;
+  color: var(--text-on-dark); background: var(--surface-deep);
+  font-feature-settings: 'kern', 'liga';
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+.container { max-width: 1280px; margin: 0 auto; padding-inline: var(--gutter); }
+.prose { max-width: var(--measure); }
+
+/* HEADER */
+.utility-bar { background: var(--surface-light); color: var(--text-on-light); font-size: 0.85rem; }
+.utility-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 0.85rem; }
+.utility-bar__left { display: flex; align-items: center; gap: 0.5rem; color: var(--text-on-light-muted); }
+.utility-bar__esg-dot { width: 18px; height: 18px; background: linear-gradient(135deg, #B8E0C9, #9FB8E5); border-radius: 4px; }
+.utility-bar__search { flex: 1; max-width: 460px; background: white; border: 1px solid var(--rule-on-light); border-radius: 999px; padding: 0.55rem 1rem 0.55rem 2.5rem; position: relative; color: var(--text-on-light-muted); }
+.utility-bar__search::before { content: '🔍'; position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; opacity: 0.6; }
+.utility-bar__right { display: flex; align-items: center; gap: 1.5rem; color: var(--text-on-light); }
+.utility-bar__right a { color: var(--text-on-light); }
+.utility-bar__linkedin { width: 28px; height: 28px; background: #0D2A2E; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: Georgia, serif; font-style: italic; }
+@media (max-width: 880px) { .utility-bar__search, .utility-bar__left { display: none; } }
+
+.main-nav { background: var(--surface-deep); border-bottom: 1px solid var(--rule-on-dark); position: sticky; top: 0; z-index: 50; }
+.main-nav__inner { display: flex; align-items: center; justify-content: space-between; padding-block: 1.25rem; gap: 2rem; }
+.brand-mark { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; color: white; display: inline-flex; align-items: baseline; }
+.brand-mark::after { content: '.'; color: var(--mint); margin-left: 1px; }
+.primary-nav { display: flex; gap: 2.25rem; }
+.primary-nav a { color: var(--text-on-dark); font-size: 0.95rem; font-weight: 500; padding-block: 0.4rem; }
+.primary-nav a:hover { color: var(--mint); }
+.primary-nav a[aria-current="true"] { color: var(--mint); }
+
+.cta-pill { display: inline-block; padding: 0.7rem 1.5rem; background: var(--mint); color: var(--text-on-light); font-weight: 600; font-size: 0.9rem; border-radius: 999px; border: none; transition: transform 0.18s ease, background 0.18s ease; cursor: pointer; }
+.cta-pill:hover { transform: translateY(-1px); background: #B6EFCD; }
+.cta-pill--ghost { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+.cta-pill--ghost:hover { background: rgba(255,255,255,0.08); }
+@media (max-width: 880px) { .primary-nav { display: none; } }
+
+.breadcrumb { padding-block: 1.5rem; font-size: 0.85rem; color: var(--text-on-dark-quiet); }
+.breadcrumb a { color: var(--text-on-dark-quiet); }
+.breadcrumb a:hover { color: var(--mint); }
+.breadcrumb__sep { margin-inline: 0.6rem; opacity: 0.5; }
+.breadcrumb__current { color: var(--text-on-dark); }
+
+/* HERO */
+.hero { background: var(--surface-deep); padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 7rem); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(159, 229, 189, 0.06) 30%, transparent 35%, transparent 50%, rgba(159, 200, 229, 0.07) 60%, transparent 65%, transparent 80%, rgba(159, 229, 189, 0.05) 88%, transparent 92%); pointer-events: none; }
+.hero__content { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
+.hero__eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1.5rem; }
+.hero__eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
+.hero h1 { font-weight: 700; font-size: clamp(2.25rem, 5.5vw, 4rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 1.75rem 0; color: white; max-width: 22ch; }
+.hero__deck { font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.5; color: var(--text-on-dark-muted); max-width: 60ch; margin: 0 0 3rem 0; font-weight: 400; }
+.hero__ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4.5rem; }
+
+.anchor-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border-top: 1px solid var(--rule-on-dark); padding-top: 1.5rem; max-width: 720px; }
+.anchor-strip__item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem 0.75rem 0; color: white; font-size: 0.95rem; font-weight: 500; border-right: 1px solid var(--rule-on-dark); transition: color 0.18s ease; }
+.anchor-strip__item:last-child { border-right: none; }
+.anchor-strip__item:hover { color: var(--mint); }
+.anchor-strip__item::after { content: '↓'; color: var(--mint); margin-left: 1rem; }
+@media (max-width: 600px) { .anchor-strip__item { border-right: none; border-bottom: 1px solid var(--rule-on-dark); } }
+
+/* META */
+.meta-strip { background: var(--surface-darker); padding-block: 2.5rem; border-block: 1px solid var(--rule-on-dark); }
+.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; }
+.meta-grid__item { display: flex; flex-direction: column; gap: 0.5rem; }
+.meta-grid__label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-on-dark-quiet); }
+.meta-grid__value { font-size: 0.95rem; font-weight: 500; color: white; line-height: 1.45; }
+
+/* SECTIONS */
+.section { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.section--dark { background: var(--surface-deep); color: white; }
+.section--darker { background: var(--surface-darker); color: white; }
+.section-header { margin-bottom: clamp(2.5rem, 4vw, 4rem); max-width: var(--measure); }
+.section-eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--rule-on-dark); width: 100%; max-width: 420px; }
+.section-eyebrow::before { content: ''; width: 7px; height: 7px; background: var(--mint); border-radius: 50%; flex: 0 0 7px; }
+.section-title { font-weight: 700; font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: 1.15; letter-spacing: -0.025em; margin: 0; color: inherit; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem 2rem; margin-top: 1.5rem; }
+.stat__number { font-weight: 700; font-size: clamp(2.5rem, 5vw, 3.75rem); line-height: 1; letter-spacing: -0.03em; color: var(--mint); margin-bottom: 0.85rem; }
+.stat__label { font-size: 0.95rem; line-height: 1.5; color: var(--text-on-dark-muted); font-weight: 400; }
+
+.prose p, .prose ul, .prose ol { font-size: 1.05rem; line-height: 1.7; margin: 0 0 1.4rem 0; }
+.prose ul, .prose ol { padding-left: 1.4rem; }
+.prose li { margin-bottom: 0.7rem; }
+.prose strong { font-weight: 600; }
+.prose h3 { font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em; margin: 2.5rem 0 1rem 0; }
+
+.pullquote { margin: 3rem 0; padding: 2.5rem 0 2.5rem 2rem; border-left: 3px solid var(--mint); max-width: 60ch; }
+.pullquote p { font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.4; font-weight: 500; letter-spacing: -0.015em; margin: 0; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
+.card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.85rem; transition: border-color 0.2s ease, transform 0.2s ease; }
+.card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.card__icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.card__icon--check { background: linear-gradient(135deg, #B8E5C9, #9FE5BD); color: #0D4528; }
+.card__icon--data { background: linear-gradient(135deg, #C5D8E5, #B8E0C9); color: #0D4528; }
+.card__icon--shield { background: linear-gradient(135deg, #D5C5E5, #C5B8E0); color: #3D2D5C; }
+.card__icon--chart { background: linear-gradient(135deg, #B8E0C9, #9FE5BD); color: #0D4528; }
+.card__icon--cluster { background: linear-gradient(135deg, #E5C5C5, #C5C5E5); color: #3D2D5C; }
+.card__icon--spark { background: linear-gradient(135deg, #F0D5B8, #E5C9B8); color: #5C3D2D; }
+.card h4 { font-weight: 600; font-size: 1.1rem; margin: 0; line-height: 1.3; color: inherit; }
+.card p { font-size: 0.95rem; line-height: 1.55; margin: 0; color: var(--text-on-dark-muted); }
+
+.diagram-wrap { background: var(--surface-darker); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(1.5rem, 3vw, 2.5rem); }
+.diagram-wrap svg { width: 100%; height: auto; display: block; }
+
+.cta-panel { background: radial-gradient(ellipse at 70% 80%, rgba(180, 150, 220, 0.22), transparent 55%), radial-gradient(ellipse at 30% 20%, rgba(159, 229, 189, 0.10), transparent 55%), linear-gradient(135deg, #143638 0%, #0D2A2E 100%); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem); text-align: center; max-width: 1000px; margin: 0 auto; }
+.cta-panel__stars { font-size: 1rem; color: var(--mint); letter-spacing: 0.4rem; margin-bottom: 0.75rem; }
+.cta-panel__kicker { font-size: 0.85rem; color: var(--text-on-dark-muted); margin-bottom: 1.75rem; }
+.cta-panel h2 { font-weight: 700; font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.2; letter-spacing: -0.025em; margin: 0 0 1rem 0; color: white; }
+.cta-panel p { font-size: 1.1rem; line-height: 1.6; color: var(--text-on-dark-muted); max-width: 56ch; margin: 0 auto 2.5rem auto; }
+
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.related-card { background: var(--surface-mid); border: 1px solid var(--rule-on-dark); border-radius: var(--radius); padding: 1.75rem; transition: border-color 0.2s ease, transform 0.2s ease; display: flex; flex-direction: column; gap: 1rem; min-height: 220px; }
+.related-card:hover { border-color: var(--mint-border); transform: translateY(-2px); }
+.related-card__sector { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint); }
+.related-card h4 { font-weight: 600; font-size: 1.15rem; line-height: 1.3; margin: 0; color: white; }
+.related-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; flex: 1; }
+.related-card__link { font-size: 0.9rem; color: var(--mint); font-weight: 500; }
+.related-card__link::after { content: ' →'; }
+
+.site-footer { background: var(--surface-darker); padding-block: 3rem 2rem; border-top: 1px solid var(--rule-on-dark); font-size: 0.85rem; color: var(--text-on-dark-quiet); text-align: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__eyebrow, .hero h1, .hero__deck, .hero__ctas, .anchor-strip { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+  .hero__eyebrow { animation-delay: 0.05s; }
+  .hero h1 { animation-delay: 0.15s; }
+  .hero__deck { animation-delay: 0.3s; }
+  .hero__ctas { animation-delay: 0.45s; }
+  .anchor-strip { animation-delay: 0.6s; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="utility-bar">
+<div class="container utility-bar__inner">
+<a class="utility-bar__left" href="#">
+<span aria-hidden="true" class="utility-bar__esg-dot"></span>
+      See our most recent ESG report
+    </a>
+<div class="utility-bar__search" role="search">Find your future</div>
+<div class="utility-bar__right">
+<a href="#">About FSP <span aria-hidden="true">⌄</span></a>
+<a href="#">Hub</a>
+<a href="#">Careers</a>
+<a aria-label="LinkedIn" class="utility-bar__linkedin" href="#">in</a>
+</div>
+</div>
+</div>
+<nav aria-label="Primary" class="main-nav">
+<div class="container main-nav__inner">
+<a class="brand-mark" data-fsp-page="00_Index.html" href="#" onclick='parent.FSPShareableApp.loadPage("00_Index.html"); return false;'>FSP</a>
+<div class="primary-nav">
+<a aria-current="true" href="#">Data &amp; AI</a>
+<a href="#">Cyber Security</a>
+<a href="#">Enterprise Cloud</a>
+<a href="#">Change Delivery</a>
+</div>
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+</div>
+</nav>
+<div class="container">
+<nav aria-label="Breadcrumb" class="breadcrumb">
+<a href="#">Data &amp; AI</a>
+<span class="breadcrumb__sep">/</span>
+<a href="#">Case studies</a>
+<span class="breadcrumb__sep">/</span>
+<span class="breadcrumb__current">From fragmented systems to AI-ready data</span>
+</nav>
+</div>
+<section class="hero">
+<div class="container hero__content">
+<p class="hero__eyebrow">Case study · Telecommunications</p>
+<h1>From fragmented systems to AI-ready data</h1>
+<p class="hero__deck">
+      How FSP's Data &amp; AI practice built a low-cost, high-impact data foundation that became the launchpad for AI-enabled customer operations at a UK full-fibre provider.
+    </p>
+<div class="hero__ctas">
+<a class="cta-pill" href="#contact">Talk to an expert</a>
+<a class="cta-pill cta-pill--ghost" href="#story">Read the story</a>
+</div>
+<div class="anchor-strip">
+<a class="anchor-strip__item" href="#outcomes">Outcomes</a>
+<a class="anchor-strip__item" href="#story">The story</a>
+<a class="anchor-strip__item" href="#architecture">Architecture</a>
+</div>
+</div>
+</section>
+<section class="meta-strip">
+<div class="container">
+<div class="meta-grid">
+<div class="meta-grid__item">
+<span class="meta-grid__label">Client</span>
+<span class="meta-grid__value">A UK full-fibre broadband provider, ~£110m turnover</span>
+</div>
+<div class="meta-grid__item">
+<span class="meta-grid__label">Sector</span>
+<span class="meta-grid__value">Telecommunications</span>
+</div>
+<div class="meta-grid__item">
+<span class="meta-grid__label">Expertise</span>
+<span class="meta-grid__value">Strong Data Foundations · AI at Scale</span>
+</div>
+<div class="meta-grid__item">
+<span class="meta-grid__label">Engagement</span>
+<span class="meta-grid__value">Strategic data platform delivery</span>
+</div>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="outcomes">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Outcomes</span>
+<h2 class="section-title">A trusted data foundation. And on top of it, AI products customers actually feel.</h2>
+</header>
+<div class="stats-grid">
+<div class="stat">
+<div class="stat__number">10 min</div>
+<div class="stat__label">Source-to-platform refresh cycle, replacing weeks-long insight loops</div>
+</div>
+<div class="stat">
+<div class="stat__number">Single source</div>
+<div class="stat__label">Of truth across customer, product, network and revenue domains</div>
+</div>
+<div class="stat">
+<div class="stat__number">Two conditions</div>
+<div class="stat__label">For AI — high-quality data and historical depth — both established</div>
+</div>
+<div class="stat">
+<div class="stat__number">Open source</div>
+<div class="stat__label">Stack chosen deliberately. Maximum capability, minimum licence cost</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section section--darker" id="story">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The situation</span>
+<h2 class="section-title">A high-growth full-fibre business sitting on a data architecture that couldn't keep up</h2>
+</header>
+<div class="prose">
+<p>
+        The client is one of the UK's largest full-fibre broadband providers, serving residential and business customers in multi-dwelling units and commercial developments. The business was in a period of rapid network expansion and customer growth, with significant pressure on ARPU, retention and operating cost — and a growing strategic requirement to move toward AI-enabled customer operations.
+      </p>
+<p>
+        The data capability underneath those ambitions wasn't going to get them there. The picture across the business was familiar but acute:
+      </p>
+<ul>
+<li><strong>No single, trusted view of customer or premise.</strong> Data was fragmented across CRM, billing, OSS and ServiceNow, with no governed model joining them.</li>
+<li><strong>Logic scattered across tools.</strong> Transformations and definitions lived in the warehouse <em>and</em> in the visualisation layer, leading to duplication, inconsistency, and low confidence in the numbers.</li>
+<li><strong>UPRN fragility.</strong> The Unique Property Reference Number was being used as a join key, which caused reconciliation issues, manual rework, and historical data loss whenever a premise was reassigned.</li>
+<li><strong>Insight cycles measured in weeks.</strong> Pricing, operational and executive decisions were waiting on data that should have been near-real-time.</li>
+<li><strong>No viable foundation for AI.</strong> Neither the data trust nor the historical depth needed to train models existed.</li>
+</ul>
+<p>
+        The Head of Data and Digital sponsored the programme with a clear remit: mature the organisation's data capability, enable a joined-up customer view across acquisition, service and billing, and lay the foundations for AI-enabled products in customer operations.
+      </p>
+</div>
+<header class="section-header" style="margin-top: 5rem;">
+<span class="section-eyebrow">The decision</span>
+<h2 class="section-title">Build for capability, not for category</h2>
+</header>
+<div class="prose">
+<p>
+        The conventional path for a business at this scale is to buy into a major cloud data platform vendor and let the licensing economics define the architecture. The team chose differently.
+      </p>
+<p>
+        Together with the client, we made the call to build the <strong>Data Hub</strong> on a deliberately low-cost, high-capability stack — Iceberg tables on S3, dbt for transformation, open-source orchestration. The decision was not driven by ideology. It was driven by the math: the same capability at a fraction of the licence cost meant more budget left for the AI products that the platform was being built to enable.
+      </p>
+<div class="pullquote">
+<p>"The platform's job wasn't to be impressive. It was to make the AI products on top of it possible."</p>
+</div>
+<p>Four principles shaped the build:</p>
+<ul>
+<li><strong>Source-to-platform in 10 minutes, incrementally.</strong> Real-time enough for any operational decision the business actually needed to make. The architecture was designed around incremental builds into S3 and Iceberg, not heavy overnight batches.</li>
+<li><strong>One governed domain model.</strong> Customer, product, location, network, billing, workforce — modelled once, governed centrally, consumed everywhere. Bespoke extracts replaced with owned datasets.</li>
+<li><strong>Operating model as a deliverable.</strong> Data Product, BI &amp; Research, Engineering, Ops, Governance and AI Ops — all stood up as defined functions with patterns, standards and tooling. The platform would be operated by the client, not just used by them.</li>
+<li><strong>UPRN as a problem to solve, not work around.</strong> A dedicated UPRN base became one of the foundational data products — the joining problem turned into a governed asset.</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="architecture">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">The architecture</span>
+<h2 class="section-title">One foundation. Many products. Including the ones AI sits on.</h2>
+</header>
+<div class="diagram-wrap">
+<svg aria-label="Data Hub architecture: source systems flow into a governed domain model, which feeds reporting, operational systems, ML services and AI products" role="img" viewbox="0 0 920 460" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" markerheight="6" markerwidth="6" orient="auto" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#9FE5BD"></path>
+</marker>
+<style>
+            .diag-label { font: 600 12px Inter, sans-serif; fill: #FFFFFF; }
+            .diag-sub { font: 400 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.6); }
+            .diag-section { font: 600 10.5px Inter, sans-serif; fill: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
+          </style>
+</defs>
+<text class="diag-section" x="55" y="28">Sources</text>
+<text class="diag-section" x="295" y="28">Data Hub (governed)</text>
+<text class="diag-section" x="700" y="28">Products on the foundation</text>
+<!-- Sources -->
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="60"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="84">CRM</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="110"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="134">Billing</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="160"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="184">OSS / Network</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="210"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="234">ServiceNow</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="260"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="284">Marketing &amp; Web</text>
+<rect fill="rgba(255,255,255,0.04)" height="38" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" width="170" x="20" y="310"></rect>
+<text class="diag-label" text-anchor="middle" x="105" y="334">Reference / 3rd Party</text>
+<text class="diag-sub" text-anchor="middle" x="105" y="375">10-minute incremental refresh</text>
+<!-- arrows in -->
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="79" y2="120"></line>
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="129" y2="135"></line>
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="179" y2="155"></line>
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="229" y2="175"></line>
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="279" y2="195"></line>
+<line marker-end="url(#arrow)" opacity="0.5" stroke="#9FE5BD" stroke-width="1" x1="190" x2="245" y1="329" y2="215"></line>
+<!-- Hub container -->
+<rect fill="rgba(159, 229, 189, 0.04)" height="335" rx="6" stroke="#9FE5BD" stroke-width="1.5" width="370" x="245" y="60"></rect>
+<!-- Storage layer -->
+<rect fill="rgba(255,255,255,0.06)" height="50" rx="4" stroke="none" width="330" x="265" y="80"></rect>
+<text class="diag-label" x="280" y="103">Iceberg + S3 storage</text>
+<text class="diag-sub" x="280" y="120">Open-source, low-cost, scalable</text>
+<!-- Domain model -->
+<rect fill="rgba(255,255,255,0.06)" height="105" rx="4" stroke="none" width="330" x="265" y="140"></rect>
+<text class="diag-label" x="280" y="163">Governed domain model</text>
+<text class="diag-sub" x="280" y="180">Customer · Product · Location · Network</text>
+<text class="diag-sub" x="280" y="195">Billing · Events · Workforce · UPRN base</text>
+<text class="diag-sub" style="fill: #9FE5BD;" x="280" y="220">→ The single source of truth</text>
+<!-- Products row -->
+<rect fill="rgba(159, 229, 189, 0.05)" height="125" rx="4" stroke="rgba(159, 229, 189, 0.3)" stroke-dasharray="3,3" stroke-width="1" width="160" x="265" y="255"></rect>
+<text class="diag-section" x="278" y="275">Data Products</text>
+<text class="diag-label" x="278" y="298">Customer Base</text>
+<text class="diag-label" x="278" y="316">Premise Base</text>
+<text class="diag-label" x="278" y="334">Churn / Apathy</text>
+<text class="diag-label" x="278" y="352">Pricing Sensitivity</text>
+<text class="diag-label" x="278" y="370">Premise Segment</text>
+<rect fill="rgba(159, 229, 189, 0.05)" height="125" rx="4" stroke="rgba(159, 229, 189, 0.3)" stroke-dasharray="3,3" stroke-width="1" width="160" x="435" y="255"></rect>
+<text class="diag-section" x="448" y="275">Operating Model</text>
+<text class="diag-label" x="448" y="298">Data Product</text>
+<text class="diag-label" x="448" y="316">Engineering</text>
+<text class="diag-label" x="448" y="334">BI &amp; Research</text>
+<text class="diag-label" x="448" y="352">Governance</text>
+<text class="diag-label" x="448" y="370">AI Ops</text>
+<!-- Consumers -->
+<rect fill="rgba(255,255,255,0.06)" height="55" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="240" x="660" y="80"></rect>
+<text class="diag-label" text-anchor="middle" x="780" y="104">Reporting Hub</text>
+<text class="diag-sub" text-anchor="middle" x="780" y="121">Governed BI &amp; analytics</text>
+<rect fill="rgba(255,255,255,0.06)" height="55" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="240" x="660" y="150"></rect>
+<text class="diag-label" text-anchor="middle" x="780" y="174">Operational Hub</text>
+<text class="diag-sub" text-anchor="middle" x="780" y="191">ServiceNow · CRM · Marketing</text>
+<rect fill="rgba(255,255,255,0.06)" height="55" rx="4" stroke="rgba(255,255,255,0.2)" stroke-width="1" width="240" x="660" y="220"></rect>
+<text class="diag-label" text-anchor="middle" x="780" y="244">ML Services</text>
+<text class="diag-sub" text-anchor="middle" x="780" y="261">Propensity, scoring, segmentation</text>
+<rect fill="#9FE5BD" height="65" rx="4" stroke="none" width="240" x="660" y="290"></rect>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="13" font-weight="700" text-anchor="middle" x="780" y="316">AI Products</text>
+<text fill="#0D2A2E" font-family="Inter, sans-serif" font-size="11" text-anchor="middle" x="780" y="336">Agent Assist · Customer Ops AI</text>
+<!-- arrows out -->
+<line marker-end="url(#arrow)" stroke="#9FE5BD" stroke-width="1.5" x1="615" x2="655" y1="225" y2="105"></line>
+<line marker-end="url(#arrow)" stroke="#9FE5BD" stroke-width="1.5" x1="615" x2="655" y1="225" y2="175"></line>
+<line marker-end="url(#arrow)" stroke="#9FE5BD" stroke-width="1.5" x1="615" x2="655" y1="225" y2="245"></line>
+<line marker-end="url(#arrow)" stroke="#9FE5BD" stroke-width="2" x1="615" x2="655" y1="225" y2="320"></line>
+</svg>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Data products</span>
+<h2 class="section-title">The reusable assets the business builds on</h2>
+</header>
+<div class="prose" style="max-width: 60ch; margin-bottom: 2.5rem;">
+<p style="color: var(--text-on-dark-muted);">
+        The Data Hub doesn't ship dashboards. It ships <em>data products</em> — governed, owned, reusable datasets that any consuming team can build on. Each one solves a problem the business was previously solving repeatedly, by hand.
+      </p>
+</div>
+<div class="card-grid">
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--data">◆</div>
+<h4>Customer &amp; Premise Base</h4>
+<p>The single, reconciled, governed view of who the customer is and where they live — replacing the bespoke extracts that had grown up across teams.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--check">⊞</div>
+<h4>UPRN Base</h4>
+<p>A dedicated foundational asset that solves the join-key fragility at source. Premise reassignment is now handled cleanly, with no historical data loss.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--shield">⊕</div>
+<h4>Churn &amp; Apathy</h4>
+<p>Behavioural data products for retention modelling. Used by Optimove and consumed directly into outbound communications and operational triggers.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--chart">📊</div>
+<h4>Pricing Sensitivity</h4>
+<p>The asset behind every commercial decision on plan structure, promotion targeting and retention offers. Ground-truth, not guesswork.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--cluster">⊡</div>
+<h4>Premise Segmentation</h4>
+<p>Sub-LSOA-level segmentation feeding marketing, network rollout and field operations. Build economics meet customer economics in one model.</p>
+</article>
+<article class="card">
+<div aria-hidden="true" class="card__icon card__icon--spark">↗</div>
+<h4>Proactive Comms &amp; OTA</h4>
+<p>Event-driven products that detect issues before customers report them — closing the loop between network, service and the contact centre.</p>
+</article>
+</div>
+</div>
+</section>
+<section class="section section--dark">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What this enabled</span>
+<h2 class="section-title">From "we have data" to "we ship AI"</h2>
+</header>
+<div class="prose">
+<p>
+        The two non-negotiable preconditions for AI in a customer operations context are <strong>data quality</strong> and <strong>historical depth</strong>. Most organisations have neither when they start trying to build AI products. The Data Hub's job was to establish both.
+      </p>
+<p>
+        With those preconditions met, the AI products that came next stopped being experimental and started being operational:
+      </p>
+<ul>
+<li><strong>Agent Assist.</strong> Real-time, in-flow guidance for contact centre agents — drawing on the full customer, premise and product context that previously took agents minutes to assemble manually.</li>
+<li><strong>Customer operations AI.</strong> Models trained on years of governed, reconciled history — not the months of patchy data most platforms would have given them.</li>
+<li><strong>Propensity, scoring, retention.</strong> Run continuously, fed directly into Optimove and outbound channels. From periodic batch to always-on.</li>
+</ul>
+<p>
+        And critically: each of these AI products sits on the same Data Hub foundation. New use cases don't require new pipelines, new reconciliation, new arguments about which dataset is correct. They plug in.
+      </p>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">What we'd take from this</span>
+<h2 class="section-title">Three principles for building toward AI, not just toward dashboards</h2>
+</header>
+<div class="prose">
+<h3>1. AI doesn't fail because of the model. It fails because of the data underneath.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        The two conditions for AI in customer operations are quality and history. Most organisations don't have either when they start. Treat the foundation as the deliverable, not the prerequisite.
+      </p>
+<h3>2. The cheapest stack that meets the requirement is the right stack.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        Open-source storage and transformation tooling will, for most organisations, deliver everything a major cloud data platform does at a fraction of the licence cost. The savings fund the AI products the platform is meant to enable. That's a real trade, not an ideological one.
+      </p>
+<h3>3. Build the operating model in parallel, not afterwards.</h3>
+<p style="color: var(--text-on-dark-muted);">
+        A platform without a governance function, an AI Ops function and a data product function isn't a platform — it's just a database that happens to have a logo on it. We delivered the operating model alongside the technology, and the client now operates the platform without us in the room.
+      </p>
+</div>
+</div>
+</section>
+<section class="section section--dark" id="contact">
+<div class="container">
+<div class="cta-panel">
+<div class="cta-panel__stars">★★★★★</div>
+<p class="cta-panel__kicker">Trusted by leading enterprises</p>
+<h2>Ready to move from "we have data" to "we ship AI"?</h2>
+<p>
+        FSP's Data &amp; AI practice has built data foundations that AI products actually run on — across telecommunications, financial services, NHS and utilities. We know what the foundation needs to look like before any of the AI conversations get easier.
+      </p>
+<a class="cta-pill" href="#">Talk to an expert</a>
+</div>
+</div>
+</section>
+<section class="section section--darker">
+<div class="container">
+<header class="section-header">
+<span class="section-eyebrow">Related work</span>
+<h2 class="section-title">More from FSP's Data &amp; AI practice</h2>
+</header>
+<div class="related-grid">
+<a class="related-card" data-fsp-page="04_OneView_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("04_OneView_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Telecommunications</span>
+<h4>From fragmented data to trusted, reusable data products</h4>
+<p>How we helped a UK telco move at the speed of insight, not the speed of transformation. Churn propensity from monthly to weekly cadence.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="06_AJW_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("06_AJW_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Aviation</span>
+<h4>From gut-feel to data-driven inventory decisions</h4>
+<p>A probabilistic forecasting and simulation engine for component stock optimisation across 45,000 part numbers.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+<a class="related-card" data-fsp-page="07_CoOp_FSP_CaseStudy.html" href="#" onclick='parent.FSPShareableApp.loadPage("07_CoOp_FSP_CaseStudy.html"); return false;'>
+<span class="related-card__sector">Retail · Managed Service</span>
+<h4>The data team behind 4,000 stores</h4>
+<p>How a flexible managed service model delivered scalable, expert data management across 13 business entities.</p>
+<span class="related-card__link">Read the case study</span>
+</a>
+</div>
+</div>
+</section>
+<footer class="site-footer">
+<div class="container">
+<p>© FSP. Case study anonymised. Specific identifying details have been removed at the client's request.</p>
+</div>
+</footer>
+</body>
+</html>
