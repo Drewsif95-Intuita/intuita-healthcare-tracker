@@ -4,21 +4,44 @@ import path from 'node:path'
 const defaultInput = 'case_studies_fsp_design.html'
 const inputPath = process.argv[2] ?? defaultInput
 const outputDir = path.resolve('public', 'legacy-pages')
-
-const assetNames = new Map([
-  ['00_Index.html', 'bundle-index.html'],
-  ['04_OneView_FSP_CaseStudy.html', 'oneview.html'],
-  ['05_HyperOptic_FSP_CaseStudy.html', 'hyperoptic.html'],
-  ['08_OhPolly_FSP_CaseStudy.html', 'oh-polly.html'],
-  ['06_AJW_FSP_CaseStudy.html', 'ajw-stock-optimisation.html'],
-  ['09_Sovereign_FSP_CaseStudy.html', 'sovereign-community-model.html'],
-  ['07_CoOp_FSP_CaseStudy.html', 'coop-managed-service.html'],
-  ['10_Campaign_Overview.html', 'campaign-overview.html'],
-  ['LinkedIn_Posts_Full_Campaign.md', 'linkedin-posts.html'],
-])
+const catalogPath = path.resolve('src', 'data', 'page-catalog.json')
 
 const typekitLink =
   '<link rel="stylesheet" href="https://use.typekit.net/eal8wec.css"/>'
+
+const documentModeCss = `
+
+/* FSP Case Study Hub document mode
+   The React app owns navigation and sharing chrome, so exported pages render
+   as standalone case-study documents instead of full website pages. */
+.utility-bar,
+.main-nav,
+.breadcrumb,
+.hero__ctas,
+.anchor-strip,
+.site-footer,
+section#contact,
+section#related,
+section.related,
+.cta-panel,
+.related-grid,
+section:has(.cta-panel),
+section:has(.related-grid) {
+  display: none !important;
+}
+
+.hero {
+  padding-block: clamp(3rem, 6vw, 5rem) !important;
+}
+
+.hero__deck {
+  margin-bottom: 0 !important;
+}
+
+body {
+  min-height: 100vh;
+}
+`
 
 const brandReplacements = [
   [/#0D2A2E/gi, '#022E34'],
@@ -48,10 +71,18 @@ function normaliseBrand(html) {
     )
   }
 
+  if (!normalised.includes('FSP Case Study Hub document mode')) {
+    normalised = normalised.replace('</style>', `${documentModeCss}\n</style>`)
+  }
+
   return normalised
 }
 
 const source = await readFile(inputPath, 'utf8')
+const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
+const catalogBySourceFile = new Map(
+  catalog.map((page) => [page.sourceFile, page]),
+)
 const match = source.match(
   /<script id="page-data" type="application\/json">([\s\S]*?)<\/script>/,
 )
@@ -64,22 +95,38 @@ const pages = JSON.parse(match[1])
 await mkdir(outputDir, { recursive: true })
 
 const manifest = []
+const extractedSourceFiles = new Set()
 
 for (const page of pages) {
-  const assetName = assetNames.get(page.file)
+  const catalogItem = catalogBySourceFile.get(page.file)
 
-  if (!assetName) {
-    throw new Error(`No output filename mapped for ${page.file}`)
+  if (!catalogItem) {
+    throw new Error(
+      `No catalogue entry found for ${page.file}. Add it to ${catalogPath} before extracting.`,
+    )
   }
 
-  const outputPath = path.join(outputDir, assetName)
+  extractedSourceFiles.add(page.file)
+
+  const outputPath = path.join(outputDir, catalogItem.assetFile)
   await writeFile(outputPath, normaliseBrand(page.html), 'utf8')
   manifest.push({
-    sourceFile: page.file,
-    label: page.label,
-    title: page.title,
-    assetPath: `/legacy-pages/${assetName}`,
+    ...catalogItem,
+    extractedTitle: page.title,
+    assetPath: `/legacy-pages/${catalogItem.assetFile}`,
   })
+}
+
+const missingFromBundle = catalog.filter(
+  (page) => !extractedSourceFiles.has(page.sourceFile),
+)
+
+if (missingFromBundle.length > 0) {
+  console.warn(
+    `Catalogue entries not found in source bundle: ${missingFromBundle
+      .map((page) => page.sourceFile)
+      .join(', ')}`,
+  )
 }
 
 await writeFile(

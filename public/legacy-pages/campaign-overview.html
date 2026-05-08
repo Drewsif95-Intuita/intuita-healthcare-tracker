@@ -126,6 +126,39 @@ body { margin: 0; font-family: var(--font-sans); font-size: 17px; line-height: 1
 .strategy-card__icon { width: 36px; height: 36px; border-radius: 50%; background: var(--mint-soft); color: var(--mint); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 1rem; }
 .strategy-card h4 { font-weight: 600; font-size: 1.05rem; margin: 0 0 0.6rem 0; color: white; line-height: 1.3; }
 .strategy-card p { font-size: 0.95rem; line-height: 1.55; color: var(--text-on-dark-muted); margin: 0; }
+
+
+/* FSP Case Study Hub document mode
+   The React app owns navigation and sharing chrome, so exported pages render
+   as standalone case-study documents instead of full website pages. */
+.utility-bar,
+.main-nav,
+.breadcrumb,
+.hero__ctas,
+.anchor-strip,
+.site-footer,
+section#contact,
+section#related,
+section.related,
+.cta-panel,
+.related-grid,
+section:has(.cta-panel),
+section:has(.related-grid) {
+  display: none !important;
+}
+
+.hero {
+  padding-block: clamp(3rem, 6vw, 5rem) !important;
+}
+
+.hero__deck {
+  margin-bottom: 0 !important;
+}
+
+body {
+  min-height: 100vh;
+}
+
 </style>
 </head>
 <body>

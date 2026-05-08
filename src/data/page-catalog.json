@@ -13,11 +13,7 @@
     "sector": "Programme",
     "description": "The original review bundle with the complete case study programme and launch checklist.",
     "summary": "The full launch package for FSP's Data and AI case study programme, including the case-study library, template set, campaign plan, and review checklist.",
-    "tags": [
-      "Review library",
-      "Campaign pack",
-      "Templates"
-    ],
+    "tags": ["Review library", "Campaign pack", "Templates"],
     "readMinutes": 12,
     "updated": "May 02",
     "audience": "Internal",
@@ -25,9 +21,7 @@
       "name": "Drew Butchart",
       "initials": "DB"
     },
-    "order": 0,
-    "extractedTitle": "FSP Data & AI — Case Study Programme Bundle",
-    "assetPath": "/legacy-pages/bundle-index.html"
+    "order": 0
   },
   {
     "sourceFile": "04_OneView_FSP_CaseStudy.html",
@@ -43,10 +37,7 @@
     "sector": "Telco",
     "description": "A flagship platform case study about reusable data products and pragmatic delivery decisions.",
     "summary": "A flagship platform case study covering reusable data products, pragmatic build-versus-wait decisions, and the operating model behind a multi-quarter platform engagement.",
-    "tags": [
-      "Strategic Platform",
-      "Telco"
-    ],
+    "tags": ["Strategic Platform", "Telco"],
     "readMinutes": 8,
     "updated": "Apr 24",
     "audience": "Anonymised",
@@ -54,9 +45,7 @@
       "name": "Practitioner 2",
       "initials": "P2"
     },
-    "order": 1,
-    "extractedTitle": "From fragmented data to trusted, reusable data products — FSP",
-    "assetPath": "/legacy-pages/oneview.html"
+    "order": 1
   },
   {
     "sourceFile": "05_HyperOptic_FSP_CaseStudy.html",
@@ -72,11 +61,7 @@
     "sector": "Telco",
     "description": "A low-cost data hub foundation for customer operations AI and governed downstream products.",
     "summary": "How FSP's Data and AI practice built a low-cost, high-impact data foundation that became the launchpad for AI-enabled customer operations at a UK full-fibre provider.",
-    "tags": [
-      "Strategic Platform",
-      "Telco",
-      "AI-ready data"
-    ],
+    "tags": ["Strategic Platform", "Telco", "AI-ready data"],
     "readMinutes": 9,
     "updated": "Apr 30",
     "audience": "Anonymised",
@@ -84,9 +69,7 @@
       "name": "Practitioner 3",
       "initials": "P3"
     },
-    "order": 2,
-    "extractedTitle": "From fragmented systems to AI-ready data — FSP",
-    "assetPath": "/legacy-pages/hyperoptic.html"
+    "order": 2
   },
   {
     "sourceFile": "08_OhPolly_FSP_CaseStudy.html",
@@ -102,10 +85,7 @@
     "sector": "Retail",
     "description": "A retail data ecosystem across multiple brands, websites, and operational source systems.",
     "summary": "A retail data ecosystem across multiple brands and websites, showing what changes when source systems are messy and the merchandising signal is split across channels.",
-    "tags": [
-      "Strategic Platform",
-      "Retail"
-    ],
+    "tags": ["Strategic Platform", "Retail"],
     "readMinutes": 7,
     "updated": "Apr 22",
     "audience": "Anonymised",
@@ -113,9 +93,7 @@
       "name": "Practitioner 1",
       "initials": "P1"
     },
-    "order": 3,
-    "extractedTitle": "From data-aware to data-driven — FSP",
-    "assetPath": "/legacy-pages/oh-polly.html"
+    "order": 3
   },
   {
     "sourceFile": "06_AJW_FSP_CaseStudy.html",
@@ -131,11 +109,7 @@
     "sector": "Aviation",
     "description": "Probabilistic forecasting and scenario simulation for complex inventory decisions.",
     "summary": "Probabilistic forecasting and scenario simulation for complex inventory decisions, moving planning from gut feel to data-driven choices across a large parts estate.",
-    "tags": [
-      "Analytics and Modelling",
-      "Aviation",
-      "Forecasting"
-    ],
+    "tags": ["Analytics and Modelling", "Aviation", "Forecasting"],
     "readMinutes": 6,
     "updated": "Apr 18",
     "audience": "Anonymised",
@@ -143,9 +117,7 @@
       "name": "Practitioner 2",
       "initials": "P2"
     },
-    "order": 4,
-    "extractedTitle": "From gut-feel to data-driven inventory decisions — FSP",
-    "assetPath": "/legacy-pages/ajw-stock-optimisation.html"
+    "order": 4
   },
   {
     "sourceFile": "09_Sovereign_FSP_CaseStudy.html",
@@ -161,10 +133,7 @@
     "sector": "Public sector",
     "description": "An explainable composite scoring model to support community investment decisions.",
     "summary": "A composite community scoring framework designed to support large investment decisions with a model that is hierarchical, explainable, and portable across local authority areas.",
-    "tags": [
-      "Analytics and Modelling",
-      "Public sector"
-    ],
+    "tags": ["Analytics and Modelling", "Public sector"],
     "readMinutes": 7,
     "updated": "Apr 14",
     "audience": "Anonymised",
@@ -172,9 +141,7 @@
       "name": "Practitioner 3",
       "initials": "P3"
     },
-    "order": 5,
-    "extractedTitle": "A scoring model for communities — FSP",
-    "assetPath": "/legacy-pages/sovereign-community-model.html"
+    "order": 5
   },
   {
     "sourceFile": "07_CoOp_FSP_CaseStudy.html",
@@ -190,10 +157,7 @@
     "sector": "Retail",
     "description": "A dual-tier managed service model for continuous data operations and specialist capacity.",
     "summary": "A dual-tier managed service model for continuous data operations, covering partnership-toned trust signals, bolt-on capacity, and the team shape behind delivery.",
-    "tags": [
-      "Managed Service",
-      "Retail"
-    ],
+    "tags": ["Managed Service", "Retail"],
     "readMinutes": 5,
     "updated": "Apr 12",
     "audience": "Anonymised",
@@ -201,9 +165,7 @@
       "name": "Practitioner 1",
       "initials": "P1"
     },
-    "order": 6,
-    "extractedTitle": "The data team behind 4,000 stores — FSP",
-    "assetPath": "/legacy-pages/coop-managed-service.html"
+    "order": 6
   },
   {
     "sourceFile": "10_Campaign_Overview.html",
@@ -219,11 +181,7 @@
     "sector": "Campaign",
     "description": "The week-by-week launch plan, posting roles, hooks, and campaign rationale.",
     "summary": "A 14-week, 13-post LinkedIn programme that takes the case-study library from newly published to consistently driving inbound through practitioner posting and structured cross-amplification.",
-    "tags": [
-      "Campaign",
-      "LinkedIn",
-      "Launch plan"
-    ],
+    "tags": ["Campaign", "LinkedIn", "Launch plan"],
     "readMinutes": 11,
     "updated": "May 02",
     "audience": "Internal",
@@ -231,9 +189,7 @@
       "name": "Drew Butchart",
       "initials": "DB"
     },
-    "order": 7,
-    "extractedTitle": "LinkedIn Campaign Overview — FSP Data & AI Case Study Launch",
-    "assetPath": "/legacy-pages/campaign-overview.html"
+    "order": 7
   },
   {
     "sourceFile": "LinkedIn_Posts_Full_Campaign.md",
@@ -249,11 +205,7 @@
     "sector": "Campaign",
     "description": "The full copy bank for the 13-post LinkedIn campaign and posting mechanics.",
     "summary": "The complete LinkedIn copy bank for the launch campaign, including post sequencing, reusable copy, and posting mechanics.",
-    "tags": [
-      "Campaign",
-      "LinkedIn",
-      "Post bank"
-    ],
+    "tags": ["Campaign", "LinkedIn", "Post bank"],
     "readMinutes": 14,
     "updated": "May 02",
     "audience": "Internal",
@@ -261,8 +213,6 @@
       "name": "Drew Butchart",
       "initials": "DB"
     },
-    "order": 8,
-    "extractedTitle": "FSP Data & AI — LinkedIn Campaign Posts",
-    "assetPath": "/legacy-pages/linkedin-posts.html"
+    "order": 8
   }
 ]

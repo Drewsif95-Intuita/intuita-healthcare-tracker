@@ -41,6 +41,39 @@ blockquote p { margin: 0.55rem 0; color: var(--text-on-dark); }
 hr { border: 0; border-top: 1px solid var(--rule-on-dark); margin: 2.25rem 0; }
 code, pre { background: rgba(255,255,255,0.08); border-radius: 8px; }
 pre { padding: 1rem; overflow: auto; }
+
+
+/* FSP Case Study Hub document mode
+   The React app owns navigation and sharing chrome, so exported pages render
+   as standalone case-study documents instead of full website pages. */
+.utility-bar,
+.main-nav,
+.breadcrumb,
+.hero__ctas,
+.anchor-strip,
+.site-footer,
+section#contact,
+section#related,
+section.related,
+.cta-panel,
+.related-grid,
+section:has(.cta-panel),
+section:has(.related-grid) {
+  display: none !important;
+}
+
+.hero {
+  padding-block: clamp(3rem, 6vw, 5rem) !important;
+}
+
+.hero__deck {
+  margin-bottom: 0 !important;
+}
+
+body {
+  min-height: 100vh;
+}
+
 </style>
 </head>
 <body>
