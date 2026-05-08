@@ -1,154 +1,130 @@
-export type PageCategory = 'overview' | 'case-study' | 'campaign'
+import pageCatalog from './page-catalog.json'
 
-export type LegacyPage = {
+export type PageCategory = 'overview' | 'case-study' | 'campaign'
+export type LibraryFilter = 'all' | PageCategory
+export type Audience = 'Anonymised' | 'Internal'
+
+export type PageOwner = {
+  name: string
+  initials: string
+}
+
+export type PageCatalogItem = {
   sourceFile: string
   slug: string
   routePath: string
-  assetPath: string
+  assetFile: string
   label: string
   title: string
+  fullTitle?: string
   shortTitle: string
   category: PageCategory
   template?: string
   sector?: string
   description: string
+  summary?: string
+  tags?: string[]
+  readMinutes?: number
+  updated?: string
+  audience?: Audience
+  owner?: PageOwner
   order: number
 }
 
-export const pages = [
-  {
-    sourceFile: '00_Index.html',
-    slug: 'bundle',
-    routePath: '/bundle',
-    assetPath: '/legacy-pages/bundle-index.html',
-    label: 'Bundle index',
-    title: 'FSP Data and AI Case Study Programme Bundle',
-    shortTitle: 'Bundle',
-    category: 'overview',
-    description:
-      'The original review bundle with the complete case study programme and launch checklist.',
-    order: 0,
-  },
-  {
-    sourceFile: '04_OneView_FSP_CaseStudy.html',
-    slug: 'oneview',
-    routePath: '/case-studies/oneview',
-    assetPath: '/legacy-pages/oneview.html',
-    label: 'OneView case study',
-    title: 'From fragmented data to trusted, reusable data products',
-    shortTitle: 'OneView',
-    category: 'case-study',
-    template: 'Strategic Platform',
-    sector: 'Telco',
-    description:
-      'A flagship platform case study about reusable data products and pragmatic delivery decisions.',
-    order: 1,
-  },
-  {
-    sourceFile: '05_HyperOptic_FSP_CaseStudy.html',
-    slug: 'hyperoptic',
-    routePath: '/case-studies/hyperoptic',
-    assetPath: '/legacy-pages/hyperoptic.html',
-    label: 'Hyperoptic case study',
-    title: 'From fragmented systems to AI-ready data',
-    shortTitle: 'Hyperoptic',
-    category: 'case-study',
-    template: 'Strategic Platform',
-    sector: 'Telco',
-    description:
-      'A low-cost data hub foundation for customer operations AI and governed downstream products.',
-    order: 2,
-  },
-  {
-    sourceFile: '08_OhPolly_FSP_CaseStudy.html',
-    slug: 'oh-polly',
-    routePath: '/case-studies/oh-polly',
-    assetPath: '/legacy-pages/oh-polly.html',
-    label: 'Oh Polly case study',
-    title: 'From data-aware to data-driven',
-    shortTitle: 'Oh Polly',
-    category: 'case-study',
-    template: 'Strategic Platform',
-    sector: 'Retail',
-    description:
-      'A retail data ecosystem across multiple brands, websites, and operational source systems.',
-    order: 3,
-  },
-  {
-    sourceFile: '06_AJW_FSP_CaseStudy.html',
-    slug: 'ajw-stock-optimisation',
-    routePath: '/case-studies/ajw-stock-optimisation',
-    assetPath: '/legacy-pages/ajw-stock-optimisation.html',
-    label: 'AJW case study',
-    title: 'From gut-feel to data-driven inventory decisions',
-    shortTitle: 'AJW',
-    category: 'case-study',
-    template: 'Analytics and Modelling',
-    sector: 'Aviation',
-    description:
-      'Probabilistic forecasting and scenario simulation for complex inventory decisions.',
-    order: 4,
-  },
-  {
-    sourceFile: '09_Sovereign_FSP_CaseStudy.html',
-    slug: 'sovereign-community-model',
-    routePath: '/case-studies/sovereign-community-model',
-    assetPath: '/legacy-pages/sovereign-community-model.html',
-    label: 'Sovereign case study',
-    title: 'A scoring model for communities',
-    shortTitle: 'Sovereign',
-    category: 'case-study',
-    template: 'Analytics and Modelling',
-    sector: 'Public sector',
-    description:
-      'An explainable composite scoring model to support community investment decisions.',
-    order: 5,
-  },
-  {
-    sourceFile: '07_CoOp_FSP_CaseStudy.html',
-    slug: 'coop-managed-service',
-    routePath: '/case-studies/coop-managed-service',
-    assetPath: '/legacy-pages/coop-managed-service.html',
-    label: 'Co-op case study',
-    title: 'The data team behind 4,000 stores',
-    shortTitle: 'Co-op',
-    category: 'case-study',
-    template: 'Managed Service',
-    sector: 'Retail',
-    description:
-      'A dual-tier managed service model for continuous data operations and specialist capacity.',
-    order: 6,
-  },
-  {
-    sourceFile: '10_Campaign_Overview.html',
-    slug: 'overview',
-    routePath: '/campaign/overview',
-    assetPath: '/legacy-pages/campaign-overview.html',
-    label: 'Campaign overview',
-    title: 'LinkedIn Campaign Overview',
-    shortTitle: 'Campaign overview',
-    category: 'campaign',
-    description:
-      'The week-by-week launch plan, posting roles, hooks, and campaign rationale.',
-    order: 7,
-  },
-  {
-    sourceFile: 'LinkedIn_Posts_Full_Campaign.md',
-    slug: 'linkedin-posts',
-    routePath: '/campaign/linkedin-posts',
-    assetPath: '/legacy-pages/linkedin-posts.html',
-    label: 'LinkedIn posts',
-    title: 'LinkedIn Campaign Posts',
-    shortTitle: 'LinkedIn posts',
-    category: 'campaign',
-    description:
-      'The full copy bank for the 13-post LinkedIn campaign and posting mechanics.',
-    order: 8,
-  },
-] satisfies LegacyPage[]
+export type LegacyPage = Omit<
+  PageCatalogItem,
+  'fullTitle' | 'summary' | 'tags' | 'readMinutes' | 'updated' | 'audience' | 'owner'
+> & {
+  assetPath: string
+  fullTitle: string
+  summary: string
+  tags: string[]
+  readMinutes: number
+  updated: string
+  audience: Audience
+  owner: PageOwner
+  sectorLabel: string
+  sectorKey: string
+}
+
+export const categoryLabels = {
+  overview: 'Overview',
+  'case-study': 'Case studies',
+  campaign: 'Campaign assets',
+} satisfies Record<PageCategory, string>
+
+const defaultOwner: PageOwner = {
+  name: 'FSP Data and AI',
+  initials: 'FSP',
+}
+
+const catalog = pageCatalog as PageCatalogItem[]
+
+function toKey(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+function defaultAudience(category: PageCategory): Audience {
+  return category === 'case-study' ? 'Anonymised' : 'Internal'
+}
+
+function defaultReadMinutes(category: PageCategory) {
+  if (category === 'overview') return 12
+  if (category === 'campaign') return 11
+  return 8
+}
+
+function buildTags(page: PageCatalogItem, sectorLabel: string) {
+  const tags = page.tags ?? [page.template, sectorLabel]
+  return tags.filter((tag): tag is string => Boolean(tag))
+}
+
+export const pages: LegacyPage[] = catalog
+  .map((page) => {
+    const sectorLabel = page.sector ?? categoryLabels[page.category]
+
+    return {
+      ...page,
+      assetPath: `/legacy-pages/${page.assetFile}`,
+      fullTitle: page.fullTitle ?? page.title,
+      summary: page.summary ?? page.description,
+      tags: buildTags(page, sectorLabel),
+      readMinutes: page.readMinutes ?? defaultReadMinutes(page.category),
+      updated: page.updated ?? 'May 2026',
+      audience: page.audience ?? defaultAudience(page.category),
+      owner: page.owner ?? defaultOwner,
+      sectorLabel,
+      sectorKey: toKey(sectorLabel),
+    }
+  })
+  .sort((left, right) => left.order - right.order)
 
 export const caseStudies = pages.filter((page) => page.category === 'case-study')
 export const campaignPages = pages.filter((page) => page.category === 'campaign')
+
+export const templateNames = Array.from(
+  new Set(caseStudies.map((page) => page.template).filter(Boolean)),
+)
+
+export const sectorFilters = [
+  { label: 'All sectors', value: 'all' },
+  ...Array.from(new Set(pages.map((page) => page.sectorLabel))).map((sector) => ({
+    label: sector,
+    value: toKey(sector),
+  })),
+]
+
+export const libraryFilters = [
+  { label: 'All', value: 'all' },
+  ...Object.entries(categoryLabels).map(([value, label]) => ({
+    label,
+    value: value as PageCategory,
+  })),
+] satisfies Array<{ label: string; value: LibraryFilter }>
 
 export function findPageBySlug(slug: string | undefined) {
   return pages.find((page) => page.slug === slug)
