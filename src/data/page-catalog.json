@@ -72,6 +72,30 @@
     "order": 2
   },
   {
+    "sourceFile": "CityFibre_CaseStudy.html",
+    "slug": "cityfibre",
+    "routePath": "/case-studies/cityfibre",
+    "assetFile": "cityfibre.html",
+    "label": "CityFibre case study",
+    "title": "From zero to the stack the business runs on",
+    "fullTitle": "From zero to the stack the business runs on",
+    "shortTitle": "CityFibre",
+    "category": "case-study",
+    "template": "Strategic Platform",
+    "sector": "Telco",
+    "description": "A governed S3, Snowflake, and Tableau platform for standardised KPIs, historical tracking, and business-wide adoption.",
+    "summary": "How FSP's Data and AI practice took a UK wholesale full-fibre infrastructure provider from no data platform at all to a governed S3, Snowflake, and Tableau stack adopted from the board to the analyst.",
+    "tags": ["Strategic Platform", "Telco", "Infrastructure"],
+    "readMinutes": 8,
+    "updated": "May 13",
+    "audience": "Anonymised",
+    "owner": {
+      "name": "Practitioner 2",
+      "initials": "P2"
+    },
+    "order": 3
+  },
+  {
     "sourceFile": "08_OhPolly_FSP_CaseStudy.html",
     "slug": "oh-polly",
     "routePath": "/case-studies/oh-polly",
@@ -93,7 +117,7 @@
       "name": "Practitioner 1",
       "initials": "P1"
     },
-    "order": 3
+    "order": 4
   },
   {
     "sourceFile": "06_AJW_FSP_CaseStudy.html",
@@ -117,7 +141,7 @@
       "name": "Practitioner 2",
       "initials": "P2"
     },
-    "order": 4
+    "order": 5
   },
   {
     "sourceFile": "09_Sovereign_FSP_CaseStudy.html",
@@ -141,7 +165,7 @@
       "name": "Practitioner 3",
       "initials": "P3"
     },
-    "order": 5
+    "order": 6
   },
   {
     "sourceFile": "07_CoOp_FSP_CaseStudy.html",
@@ -165,7 +189,31 @@
       "name": "Practitioner 1",
       "initials": "P1"
     },
-    "order": 6
+    "order": 7
+  },
+  {
+    "sourceFile": "11_Pensions_FSP_CaseStudy.html",
+    "slug": "pensions-finance-platform",
+    "routePath": "/case-studies/pensions-finance-platform",
+    "assetFile": "pensions-finance-platform.html",
+    "label": "Pensions case study",
+    "title": "From legacy Oracle to a finance team in control",
+    "fullTitle": "From legacy Oracle to a finance team in control",
+    "shortTitle": "Pensions",
+    "category": "case-study",
+    "template": "Platform Modernisation",
+    "sector": "Financial services",
+    "description": "A 20+ year Oracle EBS estate retired and rebuilt as a componentised, cloud-native finance platform.",
+    "summary": "How FSP's Data and AI practice retired a 20+ year Oracle EBS estate and rebuilt it as a componentised, cloud-native finance platform with audit-ready data, automated GL posting, and finance-owned operations.",
+    "tags": ["Platform Modernisation", "Financial services", "Finance data"],
+    "readMinutes": 8,
+    "updated": "May 13",
+    "audience": "Anonymised",
+    "owner": {
+      "name": "Practitioner 3",
+      "initials": "P3"
+    },
+    "order": 8
   },
   {
     "sourceFile": "10_Campaign_Overview.html",
@@ -189,7 +237,7 @@
       "name": "Drew Butchart",
       "initials": "DB"
     },
-    "order": 7
+    "order": 9
   },
   {
     "sourceFile": "LinkedIn_Posts_Full_Campaign.md",
@@ -213,6 +261,6 @@
       "name": "Drew Butchart",
       "initials": "DB"
     },
-    "order": 8
+    "order": 10
   }
 ]

@@ -2,7 +2,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const defaultInput = 'case_studies_fsp_design.html'
-const inputPath = process.argv[2] ?? defaultInput
+const inputPaths = process.argv.slice(2)
+const inputPath = inputPaths[0] ?? defaultInput
+const standaloneInputPaths = inputPaths.slice(1)
 const outputDir = path.resolve('public', 'legacy-pages')
 const catalogPath = path.resolve('src', 'data', 'page-catalog.json')
 
@@ -78,6 +80,11 @@ function normaliseBrand(html) {
   return normalised
 }
 
+function titleFromHtml(html, fallback) {
+  const match = html.match(/<title>([\s\S]*?)<\/title>/i)
+  return match?.[1]?.replace(/\s+/g, ' ').trim() ?? fallback
+}
+
 const source = await readFile(inputPath, 'utf8')
 const catalog = JSON.parse(await readFile(catalogPath, 'utf8'))
 const catalogBySourceFile = new Map(
@@ -97,6 +104,18 @@ await mkdir(outputDir, { recursive: true })
 const manifest = []
 const extractedSourceFiles = new Set()
 
+async function writeCatalogPage(catalogItem, html, extractedTitle) {
+  extractedSourceFiles.add(catalogItem.sourceFile)
+
+  const outputPath = path.join(outputDir, catalogItem.assetFile)
+  await writeFile(outputPath, normaliseBrand(html), 'utf8')
+  manifest.push({
+    ...catalogItem,
+    extractedTitle,
+    assetPath: `/legacy-pages/${catalogItem.assetFile}`,
+  })
+}
+
 for (const page of pages) {
   const catalogItem = catalogBySourceFile.get(page.file)
 
@@ -106,24 +125,34 @@ for (const page of pages) {
     )
   }
 
-  extractedSourceFiles.add(page.file)
-
-  const outputPath = path.join(outputDir, catalogItem.assetFile)
-  await writeFile(outputPath, normaliseBrand(page.html), 'utf8')
-  manifest.push({
-    ...catalogItem,
-    extractedTitle: page.title,
-    assetPath: `/legacy-pages/${catalogItem.assetFile}`,
-  })
+  await writeCatalogPage(catalogItem, page.html, page.title)
 }
 
-const missingFromBundle = catalog.filter(
+for (const standaloneInputPath of standaloneInputPaths) {
+  const standaloneSourceFile = path.basename(standaloneInputPath)
+  const catalogItem = catalogBySourceFile.get(standaloneSourceFile)
+
+  if (!catalogItem) {
+    throw new Error(
+      `No catalogue entry found for ${standaloneSourceFile}. Add it to ${catalogPath} before extracting.`,
+    )
+  }
+
+  const standaloneHtml = await readFile(standaloneInputPath, 'utf8')
+  await writeCatalogPage(
+    catalogItem,
+    standaloneHtml,
+    titleFromHtml(standaloneHtml, catalogItem.title),
+  )
+}
+
+const missingFromInputs = catalog.filter(
   (page) => !extractedSourceFiles.has(page.sourceFile),
 )
 
-if (missingFromBundle.length > 0) {
+if (missingFromInputs.length > 0) {
   console.warn(
-    `Catalogue entries not found in source bundle: ${missingFromBundle
+    `Catalogue entries not found in input files: ${missingFromInputs
       .map((page) => page.sourceFile)
       .join(', ')}`,
   )

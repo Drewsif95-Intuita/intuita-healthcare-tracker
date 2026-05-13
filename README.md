@@ -6,9 +6,9 @@ The current case-study bundle has been split into individual static HTML pages
 under `public/legacy-pages`. React owns the app shell, routing, navigation,
 search, filters, and document viewer.
 
-The current local design is a standalone app shell: searchable sidebar, library
-dashboard, share popover, reader metadata, TL;DR summaries, and embedded legacy
-pages.
+The current local design is a standalone app shell: searchable sidebar,
+collapsible navigation, library dashboard, and focused embedded case-study
+documents.
 
 ## Local development
 
@@ -52,29 +52,32 @@ For small edits to existing case studies, edit the relevant file in
 
 To add a new case study:
 
-1. Add the HTML asset to `public/legacy-pages`, or add the page to the source
-   bundle and run the extraction script.
+1. Add the page to the source bundle, or keep it as a standalone exported HTML
+   file and pass it to the extraction script.
 2. Add one entry to `src/data/page-catalog.json`.
 3. Use a stable route such as `/case-studies/example-client`.
 4. Set `category` to `case-study`, `campaign`, or `overview`.
 5. Add `summary`, `tags`, `readMinutes`, `updated`, `audience`, and `owner`
-   metadata so the library card, sidebar, share view, and reader chrome update
-   automatically.
+   metadata so the library card and sidebar update automatically.
 6. Run `npm run build` and `npm run lint`.
 
 The shell components live under `src/components`:
 
 - `Sidebar.tsx` for searchable grouped navigation
 - `LibraryDashboard.tsx` for dashboard, filters, activity rail, and cards
-- `Reader.tsx` for metadata, pager, TL;DR, and embedded HTML page
-- `SharePopover.tsx` for copy-link and client-safe sharing controls
-- `TopChrome.tsx` for breadcrumbs and page-level sharing
+- `Reader.tsx` for the focused embedded HTML page
 
 When replacing the whole exported bundle, first add any new page mappings to
 `src/data/page-catalog.json`, then run:
 
 ```bash
 npm run extract:legacy -- "C:\path\to\case_studies_fsp_design.html"
+```
+
+Standalone HTML exports can be added after the bundle path:
+
+```bash
+npm run extract:legacy -- "C:\path\to\case_studies_fsp_design.html" "C:\path\to\new_case_study.html"
 ```
 
 ## Azure Static Web Apps
