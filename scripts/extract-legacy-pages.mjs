@@ -59,10 +59,29 @@ const brandReplacements = [
   [/font-family="Inter,\s*sans-serif"/gi, 'font-family="neue-haas-unica, sans-serif"'],
 ]
 
-function normaliseBrand(html) {
+const contentReplacementsBySourceFile = {
+  'CityFibre_CaseStudy.html': [
+    [
+      /<div class="stat__number"><span class="placeholder">\[X\]<\/span>\+<\/div>(\s*<div class="stat__label">Tableau dashboards delivered,)/,
+      '<div class="stat__number">10+</div>$1',
+    ],
+    [
+      /<div class="stat__number"><span class="placeholder">\[X\]<\/span> users<\/div>/,
+      '<div class="stat__number">200+ users</div>',
+    ],
+  ],
+}
+
+function normaliseBrand(html, sourceFile) {
   let normalised = html
 
   for (const [pattern, replacement] of brandReplacements) {
+    normalised = normalised.replace(pattern, replacement)
+  }
+
+  for (const [pattern, replacement] of contentReplacementsBySourceFile[
+    sourceFile
+  ] ?? []) {
     normalised = normalised.replace(pattern, replacement)
   }
 
@@ -108,7 +127,11 @@ async function writeCatalogPage(catalogItem, html, extractedTitle) {
   extractedSourceFiles.add(catalogItem.sourceFile)
 
   const outputPath = path.join(outputDir, catalogItem.assetFile)
-  await writeFile(outputPath, normaliseBrand(html), 'utf8')
+  await writeFile(
+    outputPath,
+    normaliseBrand(html, catalogItem.sourceFile),
+    'utf8',
+  )
   manifest.push({
     ...catalogItem,
     extractedTitle,

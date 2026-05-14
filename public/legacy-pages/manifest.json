@@ -277,8 +277,8 @@
     "category": "case-study",
     "template": "Strategic Platform",
     "sector": "Telco",
-    "description": "A governed S3, Snowflake, and Tableau platform for standardised KPIs, historical tracking, and business-wide adoption.",
-    "summary": "How FSP's Data and AI practice took a UK wholesale full-fibre infrastructure provider from no data platform at all to a governed S3, Snowflake, and Tableau stack adopted from the board to the analyst.",
+    "description": "A governed S3, Snowflake, and Tableau platform with 10+ dashboards, 200+ users, standardised KPIs, and historical tracking.",
+    "summary": "How FSP's Data and AI practice took a UK wholesale full-fibre infrastructure provider from no data platform at all to a governed S3, Snowflake, and Tableau stack with 10+ dashboards and 200+ users.",
     "tags": [
       "Strategic Platform",
       "Telco",
