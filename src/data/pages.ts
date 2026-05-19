@@ -59,6 +59,7 @@ const defaultOwner: PageOwner = {
 }
 
 const catalog = pageCatalog as PageCatalogItem[]
+const assetBasePath = import.meta.env.BASE_URL
 
 function toKey(value: string) {
   return value
@@ -89,7 +90,7 @@ export const pages: LegacyPage[] = catalog
 
     return {
       ...page,
-      assetPath: `/legacy-pages/${page.assetFile}`,
+      assetPath: `${assetBasePath}legacy-pages/${page.assetFile}`,
       fullTitle: page.fullTitle ?? page.title,
       summary: page.summary ?? page.description,
       tags: buildTags(page, sectorLabel),

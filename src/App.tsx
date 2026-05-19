@@ -27,8 +27,13 @@ declare global {
 }
 
 function App() {
+  const basename =
+    import.meta.env.BASE_URL === '/'
+      ? undefined
+      : import.meta.env.BASE_URL.replace(/\/$/, '')
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <AppRoutes />
     </BrowserRouter>
   )
