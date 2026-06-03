@@ -1,6 +1,6 @@
-# FSP case studies
+# Intuita Healthcare Tracker
 
-React and Vite app for the FSP Data and AI case study programme.
+React and Vite app for the Intuita NHS trust targeting prototype.
 
 The current case-study bundle has been split into individual static HTML pages
 under `public/legacy-pages`. React owns the app shell, routing, navigation,
@@ -9,6 +9,18 @@ search, filters, product pages, and document viewer.
 The current local design is a standalone app shell: searchable sidebar,
 collapsible navigation, library dashboard, and focused embedded case-study
 documents.
+
+## NHS targeting prototype
+
+The NHS Trust Targeting prototype is available as a standalone route:
+
+```text
+/nhs-targeting
+```
+
+The GitHub Pages workflow builds the Vite app with the correct base path for the
+repository name and copies `dist/index.html` to `dist/404.html` so direct links
+to `/nhs-targeting` work after deployment.
 
 ## Local development
 

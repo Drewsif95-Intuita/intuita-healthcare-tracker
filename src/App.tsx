@@ -9,6 +9,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import { LibraryDashboard } from './components/LibraryDashboard'
+import NhsTargetingPrototype from './components/NhsTargetingPrototype.jsx'
 import { ProductPage } from './components/ProductPage'
 import { Reader } from './components/Reader'
 import { Sidebar } from './components/Sidebar'
@@ -42,6 +43,24 @@ function App() {
 }
 
 function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<NhsTargetingPage />} />
+      <Route path="/nhs-targeting/*" element={<NhsTargetingPage />} />
+      <Route path="/*" element={<HubShell />} />
+    </Routes>
+  )
+}
+
+function NhsTargetingPage() {
+  useEffect(() => {
+    document.title = 'NHS Trust Targeting'
+  }, [])
+
+  return <NhsTargetingPrototype />
+}
+
+function HubShell() {
   const navigate = useNavigate()
   const location = useLocation()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(

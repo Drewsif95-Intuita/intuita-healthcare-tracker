@@ -38,7 +38,14 @@ jobs:
         run: npm ci
 
       - name: Build app
-        run: npm run build -- --base=/fsp-case-studies/
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          if [ "$REPO_NAME" = "${GITHUB_REPOSITORY_OWNER}.github.io" ]; then
+            BASE="/"
+          else
+            BASE="/$REPO_NAME/"
+          fi
+          npm run build -- --base="$BASE"
 
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
