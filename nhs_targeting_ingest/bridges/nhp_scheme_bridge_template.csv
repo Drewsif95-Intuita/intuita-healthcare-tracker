@@ -1,0 +1,3 @@
+scheme_name,trust_name,ods_code,scheme_type,wave,status,evidence_url,as_at
+"Example New Hospital scheme","Pennine Vale NHS Trust",RPV,NHP,"Wave 1",In delivery,https://www.gov.uk/government/publications/new-hospital-programme-review-outcome,2026-01-31
+"Example RAAC remediation","Calderfield Acute NHS Trust",RCF,RAAC,,Remediation,https://www.gov.uk/government/publications/new-hospital-programme-review-outcome,2026-01-31

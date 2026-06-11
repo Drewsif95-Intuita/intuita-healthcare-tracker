@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "extract:legacy": "node scripts/extract-legacy-pages.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,7 +13,6 @@
     "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.15.0",
     "recharts": "^2.15.4"
   },
   "devDependencies": {

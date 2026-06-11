@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Pipeline working dirs (raw + intermediate data is not committed)
+/bronze/
+/gold/
+/extra/
+
+# Raw source data files (public, but not committed - size + licensing; see README)
+*.xlsx
+*.ods
+NSPL_*.zip
+*_extracts.zip
+
+# Packaged snapshots of this repo
+nhs_targeting_review_bundle*.zip

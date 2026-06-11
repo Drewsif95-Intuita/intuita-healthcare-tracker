@@ -1,0 +1,3 @@
+buyer_name,ods_code,trust_name,match_confidence,source,notes
+"NORTHGATE UNIVERSITY HOSPITALS NHS TRUST",RNG,"Northgate University Hospitals NHS Trust",Exact,find_a_tender,"exact legal-name match"
+"Northgate Univ Hosp",RNG,"Northgate University Hospitals NHS Trust",Fuzzy,contracts_finder,"abbreviation; confirm before use"
