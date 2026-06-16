@@ -181,6 +181,7 @@ point `--input` at your own copy of the extracts.
 | [`TARGET_EXAMPLES.md`](TARGET_EXAMPLES.md) | three example targets with data-driven rationale |
 | [`EXTENSION_ROADMAP.md`](EXTENSION_ROADMAP.md) | where to take it next, in value-for-effort order |
 | [`REVIEW_RESPONSE_v2.md`](REVIEW_RESPONSE_v2.md) | response to external review; status of every source |
+| [`INTERACTION_MODEL.md`](INTERACTION_MODEL.md) | build spec for in-app methodology tooltips + cross-filter/drilldown |
 
 In-app, the **Glossary** page and the hover info-tooltips on each metric document terms for
 non-specialist readers.

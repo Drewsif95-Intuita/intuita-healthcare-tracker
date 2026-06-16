@@ -113,6 +113,36 @@ funding-adjusted score, after the segment-4 distress penalty). `pursuit_rank` or
 sales: all non-distressed trusts first (by score), then segment-4 "qualify funding" trusts as a
 block below them — so a high-pain distressed trust cannot sit near the top of the pursuit list.
 
+## 5b. Derived sales outputs (play, trigger, next action)
+
+Beyond the score, the build derives the "so what do I do" layer for each trust:
+
+- **`top_pain`** — the single worst-ranked operational-pain feature for the trust (the headline
+  problem to lead a conversation with).
+- **`sales_play`** — mapped from the *domain* of that worst feature:
+
+  | Worst-pain domain | Sales play |
+  |---|---|
+  | UEC (A&E 4hr/12hr) | UEC / A&E flow |
+  | RTT (52/18-week) | Elective recovery / RTT |
+  | Cancer (62-day / FDS) | Cancer / diagnostics pathway |
+  | Diagnostics (>6-week) | Cancer / diagnostics pathway |
+  | *(none / other)* | Operational improvement |
+
+- **`trigger`** (the "why now") — `Segment 4 (intensive support) — qualify funding route` if
+  distressed; otherwise `"{top_pain} worsening"` if the trend is Worsening, else
+  `"{top_pain} under pressure"`.
+- **`next_action`** — mapped from band and distress: distressed → **Qualify funding**; otherwise
+  A → **Call**, B → **Enrich**, C → **Monitor**, D → **No action**.
+
+### Illustrative sales-enablement fields
+Trust 360 also shows a sales-enablement block (recommended first conversation, likely buyer
+persona, relevant service offer, route to market, known contacts, last touched). The
+conversation / persona / offer are **heuristics mapped from the sales play**; route to market,
+CRM contacts and "last touched" are **placeholders pending the procurement/CRM integration**
+(the buyer-openness pillar) and are labelled "not loaded" in the app. They are presentation
+scaffolding, not scored inputs or sourced data.
+
 ## 6. Evidence layer (shown, not scored)
 
 The following are wired into the prototype as **evidence on the relevant pages but are not
@@ -149,19 +179,27 @@ eye) are understated because their real catchment is referral-based and national
 
 ## 8. Data sources summary
 
-Scored: NOF, Acute Provider Table, TAC finance (operating income + actual margin), Capital
-allocations, DMA. Beds (KH03) is a scale fallback. Evidence: DQMI, SHMI, FDP (with benefits),
-catchment (NSPL + ODS sites + Census 2021). Join key: ODS trusts. Represented via the Acute
-Provider Table: raw A&E, RTT, Cancer, Diagnostics. Available but not wired: Financial
-Performance Q3 PDF (provider names need alias review). Dropped (with reasons): Discharge
-(region/ICB grain), ERIC (no clean backlog column), Staff survey / WLMDS (low marginal value).
-Blocked: CQC (needs provider->ODS bridge), IMD 2025 (not supplied). Buyer-openness still needs
-a procurement/CRM source.
+**Scored** (drive the target): NOF (universe, planned finance, productivity, segment-4 distress),
+Acute Provider Table (operational pain + trend), TAC finance (operating income + actual margin),
+Capital allocations (capital trigger), DMA (digital maturity). Beds (KH03) is the scale fallback.
+
+**Evidence** (shown, not scored): DQMI, SHMI, CQC (Overall + Well-led), FDP (live + benefits),
+Q3 in-year finance (variance / forecast deficit / DSF), and the modelled catchment (NSPL + ODS
+sites + Census 2021 + IMD 2025).
+
+**Join key:** ODS trusts (`nhs_trusts.csv`, name → 3-letter code).
+
+**Reviewed but not used:** Discharge (trust-level data too patchy), ERIC (no backlog column in the
+extract), NHP/RAAC (the PDF is a policy-narrative paper, not a scheme→trust register), Staff
+survey / WLMDS (low marginal value). **Still open:** buyer-openness needs a procurement/CRM source.
+
+The exact files, loaders, columns and field mappings are in **Appendix A**.
 
 ## 9. Outputs
 
 `sales_scorecard.csv` (gold), `feature_table.csv` (audit), `catchment_bridge.csv` and
-`catchment_summary.csv`, `fdp_live_trusts.csv`, the `nhs_targeting_transform` pipeline, the
+`catchment_summary.csv` (incl. IMD decile), `cqc_ratings_extracted.csv`,
+`fdp_live_organisations_extracted.csv`, the `nhs_targeting_transform` pipeline, the
 `nhs_targeting_ingest` package, and the interactive prototype.
 
 ## 10. Calibration plan (the key open item)
@@ -170,3 +208,93 @@ Before the bands drive real sales effort: backtest against CRM win/loss outcomes
 cut-offs and, if warranted, pillar weights to maximise precision@top-20–30; then optionally
 fold the evidence-layer signals (DQMI/SHMI/FDP) and TAC operating income into the scored
 pillars, and add a procurement feed to populate the buyer-openness pillar.
+
+---
+
+## Appendix A — Inputs: files, loaders and field mappings
+
+This appendix is the reproducibility contract: it tells another tool exactly which file each
+step expects, how it is found, which columns/codes are read, and what it feeds. Loaders locate
+files by **glob pattern** inside a single input directory, and return an empty frame if a file
+is absent (graceful degradation), so exact filenames don't matter — only that the pattern
+matches. All joins are on the **3-letter ODS trust code**.
+
+### A.1 Directory layout
+
+```
+<input_dir>/        # all source extracts live here (any filenames matching the patterns below)
+<out_dir>/          # pipeline writes sales_scorecard.csv + feature_table.csv here
+```
+
+The catchment and CQC steps are **one-off precomputes**: they read large raw files (NSPL,
+Census, IMD, the CQC ODS) and write small CSVs (`catchment_*`, `cqc_ratings_extracted.csv`)
+back into `<input_dir>`, which the main `build` step then consumes like any other source.
+
+### A.2 Run order
+
+```bash
+pip install pandas openpyxl scipy odfpy
+
+# one-off precomputes (write CSVs into <input_dir>)
+python -m nhs_targeting_transform.cqc_extract --ods cqc_ratings.ods --out <input_dir>
+python -m nhs_targeting_transform.catchment  --nspl NSPL_*.zip --sites nhs-trust_sites.csv \
+        --census <input_dir> --input <input_dir> --out <input_dir>
+
+# main scoring build (reads everything, writes the gold scorecard)
+python -m nhs_targeting_transform.build --input <input_dir> --out <out_dir>
+```
+
+### A.3 Scored sources
+
+| Source | Expected file (glob) | Loader (`nhs_targeting_transform…`) | Key columns / codes | Feeds |
+|---|---|---|---|---|
+| NHS Oversight Framework (acute) | `*oversight-framework-acute*.csv` | `loaders.load_nof` | metric codes **OF0079** planned surplus/deficit %, **OF0085** implied productivity, **OF5000** adjusted segment (4 = distressed), **OF5007** RSP flag (empty in extract) | universe + budget(planned) + digital(productivity) + distress |
+| Acute Provider Table | `*acute-provider-timeseries*.csv` | `loaders.load_apt` | the 7 pain metrics (see A.6), monthly time series | pain pillar + trend |
+| Beds (KH03) | `*Beds-Open-Overnight*.xlsx` | `loaders.load_beds` | total available beds | **scale fallback** only |
+| Digital Maturity (DMA) | `*Digital*Maturity*Results*Data*File*.xlsx` | `loaders.load_dma` (needs name→code map) | mean of maturity columns → `dma_overall` | digital pillar |
+| TAC finance (cleaned) | `tac_key_financial_metrics_summary.csv` | `loaders.load_tac_finance` | `nhs_code`, `patient_care_income_cy_k`, `other_operating_income_cy_k`, `operating_surplus_deficit_cy_k` | budget pillar (income = scale, margin = health) |
+| Capital allocations (cleaned) | `capital_provider_operational_allocations_matched_providers_only.csv` | `loaders.load_capital_alloc` | `matched_nhs_code`, `allocation_total_2026_30_k` | digital pillar (capital trigger) |
+
+### A.4 Evidence sources (shown, not scored)
+
+| Source | Expected file (glob) | Loader | Key columns | Feeds |
+|---|---|---|---|---|
+| DQMI | `DQMI_*.csv` or `*DQMI*CSV*v*.csv` | `loaders.load_dqmi` | `DQMI`, `Dataset` (weak if <60) | Data Quality page |
+| SHMI | `*trust_level_SHMI*.csv` or `*SHMI_data_at_trust_level*.csv` | `loaders.load_shmi` | `SHMI_VALUE`, `SHMI_BANDING` | Trust 360 |
+| CQC (extracted) | `cqc_ratings_extracted.csv` ← produced by `cqc_extract.py` from `cqc_ratings.ods` | `loaders.load_cqc` | `trust_code`, `cqc_overall`, `cqc_well_led` | Trust 360 + Data Quality |
+| FDP (cleaned) | `fdp_live_organisations_extracted.csv` | `loaders.load_fdp_clean` | `matched_nhs_code`, `fdp_live`, `fdp_reporting_benefits` | Digital page |
+| Q3 in-year finance (cleaned) | `financial_performance_q3*positions.csv` | `loaders.load_q3_finance` | `matched_nhs_code`, `var_pct_of_turnover_num`, `forecast_outturn_exc_dsf_m_num`, `forecasting_receipt_of_dsf` | Finance + Trust 360 |
+
+### A.5 Join key & catchment inputs
+
+| Source | Expected file | Loader / step | Key columns | Feeds |
+|---|---|---|---|---|
+| ODS trusts | `nhs_trusts.csv` | `loaders.load_ods_name_map` | trust name → 3-letter ODS code | the join key for all name-keyed sources |
+| ODS sites | `nhs-trust_sites.csv` | `catchment.build_catchment` | col 9 = site postcode, col 14 = parent trust code | site geocoding |
+| ONS Postcode Directory | `NSPL_*.zip` (inner `NSPL_*_UK.csv`) | `catchment._stream_nspl` | `pcds`, `lsoa21`, `oseast1m`, `osnrth1m`, `ctry`, `doterm` | LSOA centroids → nearest-site catchment |
+| Census 2021 — age | `census2021-ts007a-lsoa.csv` | `catchment.build_catchment` | `geography code`, `Age: Total`, 65+ age bands | catchment population, 65+ share |
+| Census 2021 — ethnicity | `census2021-ts021-lsoa.csv` | `catchment.build_catchment` | `geography code`, ethnic-group total + White | catchment minority-ethnic % |
+| IMD 2025 | `File_5_IoD2025_Scores*.xlsx` (sheet `IoD2025 Scores`) | catchment IMD step | `LSOA code (2021)`, `Index of Multiple Deprivation (IMD) Score` | population-weighted deprivation decile |
+
+### A.6 Operational-pain metrics (from the Acute Provider Table)
+
+Each is percentile-ranked within peers and oriented so higher = more pain:
+
+| Metric (column) | Orientation | Domain |
+|---|---|---|
+| A&E 4 hour performance | good (inverted) | UEC |
+| A&E 12 hour performance | bad | UEC |
+| Cancer 62 Day Combined Performance | good (inverted) | Cancer |
+| Cancer Faster Diagnostic Standard | good (inverted) | Cancer |
+| Diagnostics proportion waiting over 6 weeks | bad | Diagnostics |
+| Percentage waiting more than 52 weeks for elective treatment | bad | RTT |
+| Percentage waiting within 18 weeks for elective treatment | good (inverted) | RTT |
+
+### A.7 Output columns (`sales_scorecard.csv`)
+
+`code`, `name`, `region`, `icb`, pillar scores `pain` / `budget` / `digital`,
+`raw_opportunity_score`, `target`, `band`, `pursuit_rank`, `distress`, `segment`, `trend`,
+`top_pain`, `sales_play`, `trigger`, `next_action`, `confidence` (+ reason), finance
+`op_income_k` / `op_margin_pct` / `capital_k`, evidence `dqmi` / `shmi` / `cqc_overall` /
+`cqc_well_led` / `cqc_below_good` / `fdp_live` / `fdp_benefits` / `q3_var_pct` /
+`q3_forecast_deficit` / `q3_dsf`. `feature_table.csv` holds the raw inputs behind every score.

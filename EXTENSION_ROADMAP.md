@@ -15,6 +15,16 @@ target and an actionable one. A `procurement_watchlist.csv` template is already 
 the loader hook is the only build step. This single addition takes the model from three live
 pillars to the full four-pillar V1.
 
+**Supplier spend (£25k transparency) as a complementary buyer signal.** Every NHS body
+publishes monthly "spend over £25k" data (supplier, amount, expense type/area). Collected
+across the acute trusts and classified by supplier category, it reveals who a trust already
+buys from — existing analytics/BI/consultancy/managed-service relationships (route-to-market
+warmth and competitor presence), IT/digital spend (a digital trigger), and agency/consultancy
+spend (operational pressure + appetite to buy external help). It complements tender data
+(which shows *future* intent) with *actual* purchasing behaviour. Caveats: published
+per-organisation in inconsistent formats/encodings, so it needs an ingestion + supplier-name
+normalisation + categorisation layer; the signal is the supplier *category mix*, not raw totals.
+
 ### 2. Band calibration against CRM win/loss history
 **What:** backtest scores against real outcomes; tune band thresholds (and possibly weights)
 to maximise precision in the top 20–30; consider rank-based bands.
@@ -39,6 +49,19 @@ friction) from transformation **trigger** (FDP live/benefits, capital envelope, 
 procurement). Score a trust highly only when it has **both**.
 **Why it matters:** low maturity alone is a weak "why now"; a trust with both an unmet need
 *and* a funded reason to act is a far stronger prospect. The current pillar blends the two.
+
+**EPR (Electronic Patient Record) status is the strongest single digital signal to add here.**
+An EPR is the core clinical system that replaces paper records; whether a trust has a mature
+EPR, an ageing one, none at all, or a live procurement is a major differentiator. It splits
+cleanly across the need/trigger divide: *no EPR / ageing EPR* = high digital **need**; *live
+EPR procurement or deployment* = transformation **trigger**. Sources, in order of accessibility:
+NHS England's Frontline Digitisation / EPR programme status (published target lists and
+statements); **Find a Tender / Contracts Finder** for live EPR procurements; the **spend over
+£25k** data above for payments to EPR vendors (Epic, Oracle Health/Cerner, System C, Dedalus,
+Altera) as a proxy for an active programme; and, if budget allows, a subscription database such
+as **Digital Health Intelligence** or **KLAS/CDMI** for an authoritative per-trust EPR
+supplier/version list. Note (per the FDP caveat) that EPR status is distinct from FDP-live and
+from DMA — it deserves its own feature.
 
 ### 5. Domain-weight operational pain
 **What:** average pain *within* domain (UEC, cancer, RTT, diagnostics) before combining, so

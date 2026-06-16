@@ -12654,7 +12654,7 @@ const FRESH_META = {
 const COVERAGE_V1 = [
   { pillar: "Budget likelihood", items: [["TAC annual accounts", "public"], ["Capital allocations", "public"], ["ERIC estates", "public"], ["NOF deficit flag", "public"], ["In-year finance (Q3)", "public"]] },
   { pillar: "Operational pain", items: [["Acute Provider Table", "public"], ["A&E", "public"], ["RTT", "public"], ["Cancer", "public"], ["Diagnostics (DM01)", "public"], ["DQMI", "public"], ["Beds (KH03) / cancelled ops", "deferred"]] },
-  { pillar: "Digital / capital", items: [["DMA results", "public"], ["FDP uptake", "public"], ["ERIC", "public"], ["NHP / RAAC bridge", "curated"], ["EPR status", "curated"]] },
+  { pillar: "Digital / capital", items: [["DMA results", "public"], ["FDP uptake", "public"], ["Capital allocations", "public"], ["NHP / RAAC bridge", "planned"], ["EPR status", "planned"]] },
   { pillar: "Buyer openness (NOT in V0 score)", items: [["Find a Tender", "planned"], ["Contracts Finder", "planned"], ["Board-paper signals", "planned"], ["Route to market", "planned"], ["CRM contacts", "planned"]] },
   { pillar: "Population (context only)", items: [["Census 2021 population", "public"], ["Catchment bridge (NSPL)", "curated"], ["Ethnicity (Census)", "public"], ["IMD 2025 deprivation", "public"], ["Rurality (RUC)", "deferred"]] },
 ];
@@ -12718,22 +12718,28 @@ const Pill = ({ b, small }) => (
 );
 
 const Bars = ({ t, h = 7 }) => {
+  const fin = t.finance || {};
+  const f = (x) => (x === null || x === undefined ? "\u2014" : x);
   const rows = [
-    { k: "Budget", v: t.budget, w: "30%", c: C.purple },
-    { k: "Pain", v: t.pain, w: "35%", c: C.bright },
-    { k: "Digital", v: t.digital, w: "20%", c: C.mid },
-    { k: "Buyer", v: t.buyer, w: "15%", c: "#9B6FD0" },
+    { k: "Pain", v: t.pain, w: "41%", c: C.bright,
+      info: "Pain " + t.pain + " = mean of 7 peer-ranked pain metrics (each a percentile within the 134 acute trusts, 0\u2013100). Worst driver: " + f(t.topPain) + "." },
+    { k: "Budget", v: t.budget, w: "35%", c: C.purple,
+      info: "Budget " + t.budget + " = mean of two peer percentiles \u2014 operating income (\u00a3" + f(fin.income) + "m) and operating margin (" + f(fin.margin) + "%)." },
+    { k: "Digital", v: t.digital, w: "24%", c: C.mid,
+      info: "Digital " + t.digital + " = mean of three peer percentiles \u2014 digital-maturity gap (DMA " + f(t.dmaRaw) + "/5), productivity gap and capital envelope (\u00a3" + f(fin.capital) + "m)." },
+    { k: "Buyer", v: t.buyer, w: "\u2014", c: "#9B6FD0",
+      info: "Buyer openness is NOT in the V0 score \u2014 no procurement source is loaded yet (planned fourth pillar for V1)." },
   ];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
       {rows.map((r) => (
         <div key={r.k} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ width: 52, fontSize: 11, color: C.muted }}>{r.k}</span>
+          <span style={{ width: 64, fontSize: 11, color: C.muted, display: "flex", alignItems: "center" }}>{r.k}<InfoDot info={r.info} /></span>
           <span style={{ width: 30, fontSize: 11, color: C.muted, opacity: .7 }}>{r.w}</span>
           <div style={{ flex: 1, height: h, background: C.line, borderRadius: 999, overflow: "hidden" }}>
-            <div style={{ width: `${r.v}%`, height: "100%", background: r.c, borderRadius: 999 }} />
+            <div style={{ width: `${r.v || 0}%`, height: "100%", background: r.c, borderRadius: 999 }} />
           </div>
-          <span style={{ width: 26, fontSize: 11, fontWeight: 600, color: C.ink, textAlign: "right" }}>{r.v}</span>
+          <span style={{ width: 26, fontSize: 11, fontWeight: 600, color: C.ink, textAlign: "right" }}>{r.v === null || r.v === undefined ? "\u2014" : r.v}</span>
         </div>
       ))}
     </div>
@@ -12754,13 +12760,13 @@ const Spark = ({ data, colour }) => {
 /* ============================================================================
    PAGE 1 — TARGET OVERVIEW
 ============================================================================ */
-function Overview({ data, onPick }) {
+function Overview({ data, onPick, bandFilter, setBandFilter }) {
   const kpis = [
-    { label: "Trusts in scope", value: data.length, sub: "acute · England" },
-    { label: "A-band priority", value: data.filter((d) => d.bandValue === "A").length, sub: "ready for outreach", colour: C.bandA },
-    { label: "Avg target score", value: (data.reduce((a, d) => a + d.target, 0) / data.length).toFixed(1), sub: "weighted index" },
-    { label: "Worsening trend", value: data.filter((d) => d.trend === "Worsening").length, sub: "pain accelerating", colour: C.bad },
-    { label: "Active procurement", value: data.filter((d) => d.procurement.length).length, sub: "live buying signal", colour: C.good },
+    { label: "Trusts in scope", value: data.length, sub: "acute · England", info: "All 134 acute trusts in England — the scored universe." },
+    { label: "A-band priority", value: data.filter((d) => d.bandValue === "A").length, sub: "click to filter \u2192", colour: C.bandA, band: "A", info: "Trusts in the top commercial band. Click to filter the report to them." },
+    { label: "Avg target score", value: (data.reduce((a, d) => a + d.target, 0) / data.length).toFixed(1), sub: "weighted index", info: "Mean target score. Pillars are percentile ranks within peers, so this centres near ~48 by design — compare the ranking, not the absolute value." },
+    { label: "Worsening trend", value: data.filter((d) => d.trend === "Worsening").length, sub: "pain accelerating", colour: C.bad, info: "Real signal from the Acute Provider Table: trusts whose composite operational-pain index has risen over recent months (a positive slope)." },
+    { label: "Active procurement", value: "\u2014", sub: "not loaded · planned (V1)", colour: C.muted, gap: true, info: "DATA GAP \u2014 this is not a real zero. No procurement / CRM feed is loaded yet, so buyer openness (the planned V1 pillar) cannot be counted. See the Procurement page." },
   ];
   const scatter = data.map((d) => ({ ...d, x: d.budget, y: d.pain, z: (d.scale || 600) }));
   const topCodes = new Set([...data].filter((d) => !d.distress).sort((a, b) => b.target - a.target).slice(0, 5).map((d) => d.code));
@@ -12773,13 +12779,17 @@ function Overview({ data, onPick }) {
         blurb="Where does pain meet buyability? Top-right is the sweet spot — a clear problem to solve and a credible route to fund it. Bubble size is operating income; colour is commercial band."
       />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 14, marginBottom: 18 }}>
-        {kpis.map((k) => (
-          <div key={k.label} style={card()}>
-            <div style={{ fontSize: 12, color: C.muted, marginBottom: 6 }}>{k.label}</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: k.colour || C.ink, fontFamily: "Poppins", lineHeight: 1 }}>{k.value}</div>
-            <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>{k.sub}</div>
-          </div>
-        ))}
+        {kpis.map((k) => {
+          const sel = k.band && bandFilter === k.band;
+          return (
+            <div key={k.label} onClick={() => k.band && setBandFilter(sel ? null : k.band)}
+              style={{ ...card(), cursor: k.band ? "pointer" : "default", outline: sel ? `2px solid ${C.purple}` : "none", outlineOffset: -1 }}>
+              <div style={{ fontSize: 12, color: C.muted, marginBottom: 6, display: "flex", alignItems: "center" }}>{k.label}{k.info && <InfoDot info={k.info} />}</div>
+              <div style={{ fontSize: 30, fontWeight: 700, color: k.colour || C.ink, fontFamily: "Poppins", lineHeight: 1 }}>{k.value}</div>
+              <div style={{ fontSize: 11, color: k.gap ? C.warn : C.muted, marginTop: 6, fontWeight: k.gap ? 600 : 400 }}>{k.sub}</div>
+            </div>
+          );
+        })}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.7fr) minmax(0, 1fr)", gap: 16 }}>
@@ -12807,6 +12817,7 @@ function Overview({ data, onPick }) {
                 <Scatter data={scatter} onClick={(e) => e && onPick(e.code)} cursor="pointer">
                   {scatter.map((d) => (
                     <Cell key={d.code} fill={BAND_META[d.bandValue].colour}
+                      fillOpacity={!bandFilter || d.bandValue === bandFilter ? 1 : 0.12}
                       stroke={d.distress ? C.bad : "#fff"} strokeWidth={d.distress ? 2.5 : 1} />
                   ))}
                   <LabelList dataKey="code" content={(p) => {
@@ -12835,11 +12846,13 @@ function Overview({ data, onPick }) {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={card()}>
-            <SectionTitle>Band distribution</SectionTitle>
+            <SectionTitle info="Click a band to filter the scatter, the shortlist and the rest of the report. Click it again (or the chip in the top bar) to clear.">Band distribution</SectionTitle>
             {["A", "B", "C", "D"].map((b) => {
               const n = data.filter((d) => d.bandValue === b).length;
+              const sel = bandFilter === b;
               return (
-                <div key={b} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 9 }}>
+                <div key={b} onClick={() => setBandFilter(sel ? null : b)}
+                  style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", borderRadius: 8, padding: "4px 5px", margin: "0 -5px 5px", background: sel ? C.bg : "transparent", opacity: bandFilter && !sel ? 0.45 : 1 }}>
                   <Pill b={b} small />
                   <div style={{ flex: 1, height: 9, background: C.line, borderRadius: 999, overflow: "hidden" }}>
                     <div style={{ width: `${(n / data.length) * 100}%`, height: "100%", background: BAND_META[b].colour, borderRadius: 999 }} />
@@ -12848,10 +12861,11 @@ function Overview({ data, onPick }) {
                 </div>
               );
             })}
+            <div style={{ fontSize: 10.5, color: C.muted, marginTop: 4 }}>Click a band to filter the report.</div>
           </div>
           <div style={card()}>
-            <SectionTitle>Where to start</SectionTitle>
-            {data.filter((d) => d.bandValue === "A").sort((a, b) => b.target - a.target).map((d) => (
+            <SectionTitle>{bandFilter ? "Band " + bandFilter + " trusts" : "Where to start"}</SectionTitle>
+            {data.filter((d) => d.bandValue === (bandFilter || "A")).sort((a, b) => b.target - a.target).slice(0, 12).map((d) => (
               <button key={d.code} onClick={() => onPick(d.code)} style={rowBtn()}>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: C.ink }}>{d.name}</div>
@@ -13004,7 +13018,7 @@ function Trust360({ t, onBack }) {
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: .4 }}>Target score</div>
+          <div style={{ fontSize: 11, color: C.muted, textTransform: "uppercase", letterSpacing: .4, display: "flex", alignItems: "center", justifyContent: "flex-end" }}>Target score<InfoDot info={"0.41\u00d7" + t.pain + " (pain) + 0.35\u00d7" + t.budget + " (budget) + 0.24\u00d7" + t.digital + " (digital) = " + t.rawOpp + (t.distress ? "  \u2212 8 distress penalty = " + t.target : "") + ". Each pillar is ranked within the 134 acute peers."} /></div>
           <div style={{ fontFamily: "Poppins", fontSize: 48, fontWeight: 700, color: C.purple, lineHeight: 1 }}>{t.target}</div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "flex-end", marginTop: 6 }}>
             <span style={{ fontSize: 11, color: C.muted }}>Confidence</span><Confidence c={t.conf} />
@@ -14005,6 +14019,8 @@ const NAV = [
 export default function App() {
   const [page, setPage] = useState("overview");
   const [active, setActive] = useState(TRUSTS[0].code);
+  const [bandFilter, setBandFilter] = useState(null);
+  const filtered = useMemo(() => bandFilter ? TRUSTS.filter((t) => t.bandValue === bandFilter) : TRUSTS, [bandFilter]);
   const trust = useMemo(() => TRUSTS.find((t) => t.code === active), [active]);
   const goTrust = (code) => { setActive(code); setPage("trust"); };
 
@@ -14060,19 +14076,19 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <FilterChip label="Acute" active /><FilterChip label="England" active />
-            <FilterChip label="All bands" /><FilterChip label="Q1 2026/27" />
+            <FilterChip label={bandFilter ? ("Band " + bandFilter + "  \u2715") : "All bands"} active={!!bandFilter} onClick={() => bandFilter && setBandFilter(null)} /><FilterChip label="Q1 2026/27" />
           </div>
         </div>
 
         <div style={{ padding: "26px 28px 60px" }}>
-          {page === "overview" && <Overview data={TRUSTS} onPick={goTrust} />}
-          {page === "shortlist" && <Shortlist data={TRUSTS} onPick={goTrust} />}
-          {page === "finance" && <Finance data={TRUSTS} onPick={goTrust} />}
-          {page === "pain" && <OperationalPain data={TRUSTS} onPick={goTrust} />}
-          {page === "digital" && <DigitalCapital data={TRUSTS} onPick={goTrust} />}
-          {page === "dq" && <DataQuality data={TRUSTS} onPick={goTrust} />}
+          {page === "overview" && <Overview data={TRUSTS} onPick={goTrust} bandFilter={bandFilter} setBandFilter={setBandFilter} />}
+          {page === "shortlist" && <Shortlist data={filtered} onPick={goTrust} />}
+          {page === "finance" && <Finance data={filtered} onPick={goTrust} />}
+          {page === "pain" && <OperationalPain data={filtered} onPick={goTrust} />}
+          {page === "digital" && <DigitalCapital data={filtered} onPick={goTrust} />}
+          {page === "dq" && <DataQuality data={filtered} onPick={goTrust} />}
           {page === "procurement" && <Procurement data={TRUSTS} onPick={goTrust} />}
-          {page === "geography" && <Geography data={TRUSTS} onPick={goTrust} />}
+          {page === "geography" && <Geography data={filtered} onPick={goTrust} />}
           {page === "method" && <Methodology />}
           {page === "glossary" && <Glossary />}
           {page === "trust" && <Trust360 t={trust} onBack={() => setPage("shortlist")} />}
@@ -14082,9 +14098,9 @@ export default function App() {
   );
 }
 
-const FilterChip = ({ label, active }) => (
-  <span style={{
-    fontSize: 12, fontWeight: 500, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
+const FilterChip = ({ label, active, onClick }) => (
+  <span onClick={onClick} style={{
+    fontSize: 12, fontWeight: 500, padding: "6px 12px", borderRadius: 999, cursor: onClick ? "pointer" : "default",
     background: active ? C.purple : "#fff", color: active ? "#fff" : C.muted,
     border: `1px solid ${active ? C.purple : C.line}`,
   }}>{label}</span>
