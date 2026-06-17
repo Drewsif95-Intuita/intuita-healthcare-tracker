@@ -82,10 +82,24 @@ is used as the distress signal.)
 
 ### 3.5 Bands
 
-`A >= 72`, `B >= 62`, `C >= 52`, `D < 52`. **These thresholds are uncalibrated.** Because the
-pillars are percentile ranks, the target distribution centres around ~48, so the top band is
-deliberately tight. For the MVP the **ranking** is the dependable output; band cut-offs (and
-ideally the weights) should be calibrated against commercial win/loss history.
+Bands are a **capacity-based prioritisation grouping**, not a win-probability. Trusts are ranked
+by target score and grouped into the number of accounts the team can realistically work at each
+intensity:
+
+| Band | Definition | Action |
+|---|---|---|
+| A | top 12 (non-distressed) | pursue now |
+| B | next 18 | develop |
+| C | next 30 | nurture / monitor |
+| D | the remainder | deprioritise |
+
+The counts live in `config.py` (`BAND_CAPACITY`) and reflect **team capacity**, not a statistical
+cut-off — so bands self-adjust on each refresh because they are defined by rank position. Trusts
+in NHS Oversight Framework **segment 4 (distress)** are capped at C regardless of score ("qualify
+funding first"), so band C also contains distressed high-scorers (shown with a "Qualify funding"
+action). Because there is no win/loss outcome data, the bands express the **business's
+prioritisation policy** applied to a sound ranking; the ranking itself remains the most dependable
+output.
 
 ## 4. Trend
 

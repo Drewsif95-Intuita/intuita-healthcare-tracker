@@ -78,7 +78,7 @@ def build(input_dir: str) -> tuple[pd.DataFrame, pd.DataFrame]:
         if pd.isna(raw_opp):
             continue
         tgt = round(raw_opp - config.DISTRESS_PENALTY, 1) if distressed else raw_opp  # funding-adjusted (pursuit)
-        band = S.band_for(tgt, distressed)
+        band = "D"  # placeholder; capacity-based band assigned after ranking (below)
 
         # worst pain feature -> top pain + play
         prow = pain.loc[code].dropna()
@@ -151,6 +151,9 @@ def build(input_dir: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     # pursuit order: non-distressed first (by score), then distressed (qualify-funding) below
     scorecard = scorecard.sort_values(["distress", "target"], ascending=[True, False]).reset_index(drop=True)
     scorecard["pursuit_rank"] = range(1, len(scorecard) + 1)
+    # capacity-based bands (needs the full ranking) + matching next action
+    scorecard["band"] = S.assign_capacity_bands(scorecard)
+    scorecard["next_action"] = [S.next_action(b, d) for b, d in zip(scorecard["band"], scorecard["distress"])]
     scorecard.attrs["nof_quarter"] = quarter
     return scorecard, feat
 

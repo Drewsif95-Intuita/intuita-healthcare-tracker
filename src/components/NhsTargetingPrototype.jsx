@@ -350,7 +350,7 @@ const TRUSTS_RAW = [
   "target": 69.6,
   "rawOpp": 69.6,
   "pursuitRank": 3,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -443,7 +443,7 @@ const TRUSTS_RAW = [
   "target": 67.3,
   "rawOpp": 67.3,
   "pursuitRank": 4,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -536,7 +536,7 @@ const TRUSTS_RAW = [
   "target": 66.7,
   "rawOpp": 66.7,
   "pursuitRank": 5,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -815,7 +815,7 @@ const TRUSTS_RAW = [
   "target": 64.0,
   "rawOpp": 64.0,
   "pursuitRank": 6,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -908,7 +908,7 @@ const TRUSTS_RAW = [
   "target": 63.6,
   "rawOpp": 63.6,
   "pursuitRank": 7,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1001,7 +1001,7 @@ const TRUSTS_RAW = [
   "target": 63.3,
   "rawOpp": 63.3,
   "pursuitRank": 8,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1094,7 +1094,7 @@ const TRUSTS_RAW = [
   "target": 63.0,
   "rawOpp": 63.0,
   "pursuitRank": 9,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1187,7 +1187,7 @@ const TRUSTS_RAW = [
   "target": 62.8,
   "rawOpp": 62.8,
   "pursuitRank": 10,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1280,7 +1280,7 @@ const TRUSTS_RAW = [
   "target": 62.0,
   "rawOpp": 62.0,
   "pursuitRank": 11,
-  "band": "B",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1466,7 +1466,7 @@ const TRUSTS_RAW = [
   "target": 61.8,
   "rawOpp": 61.8,
   "pursuitRank": 12,
-  "band": "C",
+  "band": "A",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1559,7 +1559,7 @@ const TRUSTS_RAW = [
   "target": 61.2,
   "rawOpp": 61.2,
   "pursuitRank": 13,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -1652,7 +1652,7 @@ const TRUSTS_RAW = [
   "target": 61.1,
   "rawOpp": 61.1,
   "pursuitRank": 14,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -1745,7 +1745,7 @@ const TRUSTS_RAW = [
   "target": 61.1,
   "rawOpp": 61.1,
   "pursuitRank": 15,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -1838,7 +1838,7 @@ const TRUSTS_RAW = [
   "target": 61.0,
   "rawOpp": 61.0,
   "pursuitRank": 16,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2024,7 +2024,7 @@ const TRUSTS_RAW = [
   "target": 60.5,
   "rawOpp": 60.5,
   "pursuitRank": 17,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2117,7 +2117,7 @@ const TRUSTS_RAW = [
   "target": 60.4,
   "rawOpp": 60.4,
   "pursuitRank": 18,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -2210,7 +2210,7 @@ const TRUSTS_RAW = [
   "target": 60.0,
   "rawOpp": 60.0,
   "pursuitRank": 19,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -2303,7 +2303,7 @@ const TRUSTS_RAW = [
   "target": 59.9,
   "rawOpp": 59.9,
   "pursuitRank": 20,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -2396,7 +2396,7 @@ const TRUSTS_RAW = [
   "target": 59.7,
   "rawOpp": 59.7,
   "pursuitRank": 21,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -2582,7 +2582,7 @@ const TRUSTS_RAW = [
   "target": 59.3,
   "rawOpp": 59.3,
   "pursuitRank": 22,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2675,7 +2675,7 @@ const TRUSTS_RAW = [
   "target": 58.7,
   "rawOpp": 58.7,
   "pursuitRank": 23,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2768,7 +2768,7 @@ const TRUSTS_RAW = [
   "target": 58.0,
   "rawOpp": 58.0,
   "pursuitRank": 24,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2861,7 +2861,7 @@ const TRUSTS_RAW = [
   "target": 57.8,
   "rawOpp": 57.8,
   "pursuitRank": 25,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -2954,7 +2954,7 @@ const TRUSTS_RAW = [
   "target": 57.3,
   "rawOpp": 57.3,
   "pursuitRank": 26,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -3140,7 +3140,7 @@ const TRUSTS_RAW = [
   "target": 56.9,
   "rawOpp": 56.9,
   "pursuitRank": 27,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -3233,7 +3233,7 @@ const TRUSTS_RAW = [
   "target": 56.6,
   "rawOpp": 56.6,
   "pursuitRank": 28,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -3326,7 +3326,7 @@ const TRUSTS_RAW = [
   "target": 55.8,
   "rawOpp": 55.8,
   "pursuitRank": 29,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -3605,7 +3605,7 @@ const TRUSTS_RAW = [
   "target": 54.8,
   "rawOpp": 54.8,
   "pursuitRank": 30,
-  "band": "C",
+  "band": "B",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -4256,7 +4256,7 @@ const TRUSTS_RAW = [
   "target": 51.7,
   "rawOpp": 51.7,
   "pursuitRank": 35,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -4349,7 +4349,7 @@ const TRUSTS_RAW = [
   "target": 51.6,
   "rawOpp": 51.6,
   "pursuitRank": 36,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -4442,7 +4442,7 @@ const TRUSTS_RAW = [
   "target": 51.2,
   "rawOpp": 51.2,
   "pursuitRank": 37,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -4535,7 +4535,7 @@ const TRUSTS_RAW = [
   "target": 50.9,
   "rawOpp": 58.9,
   "pursuitRank": 110,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -4628,7 +4628,7 @@ const TRUSTS_RAW = [
   "target": 50.8,
   "rawOpp": 50.8,
   "pursuitRank": 38,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Flat",
   "topPain": [
@@ -4721,7 +4721,7 @@ const TRUSTS_RAW = [
   "target": 50.7,
   "rawOpp": 58.7,
   "pursuitRank": 111,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -4814,7 +4814,7 @@ const TRUSTS_RAW = [
   "target": 50.7,
   "rawOpp": 50.7,
   "pursuitRank": 39,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -4907,7 +4907,7 @@ const TRUSTS_RAW = [
   "target": 50.5,
   "rawOpp": 58.5,
   "pursuitRank": 112,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Flat",
   "topPain": [
@@ -5000,7 +5000,7 @@ const TRUSTS_RAW = [
   "target": 49.9,
   "rawOpp": 49.9,
   "pursuitRank": 40,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -5093,7 +5093,7 @@ const TRUSTS_RAW = [
   "target": 49.6,
   "rawOpp": 49.6,
   "pursuitRank": 41,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -5186,7 +5186,7 @@ const TRUSTS_RAW = [
   "target": 49.6,
   "rawOpp": 49.6,
   "pursuitRank": 42,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -5279,7 +5279,7 @@ const TRUSTS_RAW = [
   "target": 49.0,
   "rawOpp": 57.0,
   "pursuitRank": 113,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Flat",
   "topPain": [
@@ -5372,7 +5372,7 @@ const TRUSTS_RAW = [
   "target": 48.8,
   "rawOpp": 48.8,
   "pursuitRank": 43,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Flat",
   "topPain": [
@@ -5465,7 +5465,7 @@ const TRUSTS_RAW = [
   "target": 48.4,
   "rawOpp": 56.4,
   "pursuitRank": 114,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -5558,7 +5558,7 @@ const TRUSTS_RAW = [
   "target": 48.4,
   "rawOpp": 56.4,
   "pursuitRank": 115,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -5651,7 +5651,7 @@ const TRUSTS_RAW = [
   "target": 48.2,
   "rawOpp": 56.2,
   "pursuitRank": 116,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -5744,7 +5744,7 @@ const TRUSTS_RAW = [
   "target": 48.1,
   "rawOpp": 48.1,
   "pursuitRank": 44,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -5837,7 +5837,7 @@ const TRUSTS_RAW = [
   "target": 47.8,
   "rawOpp": 47.8,
   "pursuitRank": 45,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -5930,7 +5930,7 @@ const TRUSTS_RAW = [
   "target": 47.7,
   "rawOpp": 47.7,
   "pursuitRank": 46,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -6023,7 +6023,7 @@ const TRUSTS_RAW = [
   "target": 47.6,
   "rawOpp": 55.6,
   "pursuitRank": 117,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -6116,7 +6116,7 @@ const TRUSTS_RAW = [
   "target": 47.5,
   "rawOpp": 47.5,
   "pursuitRank": 47,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -6209,7 +6209,7 @@ const TRUSTS_RAW = [
   "target": 47.0,
   "rawOpp": 47.0,
   "pursuitRank": 48,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -6302,7 +6302,7 @@ const TRUSTS_RAW = [
   "target": 46.9,
   "rawOpp": 46.9,
   "pursuitRank": 49,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -6395,7 +6395,7 @@ const TRUSTS_RAW = [
   "target": 46.7,
   "rawOpp": 54.7,
   "pursuitRank": 118,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -6488,7 +6488,7 @@ const TRUSTS_RAW = [
   "target": 46.6,
   "rawOpp": 54.6,
   "pursuitRank": 119,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -6581,7 +6581,7 @@ const TRUSTS_RAW = [
   "target": 46.2,
   "rawOpp": 46.2,
   "pursuitRank": 50,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -6674,7 +6674,7 @@ const TRUSTS_RAW = [
   "target": 46.1,
   "rawOpp": 46.1,
   "pursuitRank": 51,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -6767,7 +6767,7 @@ const TRUSTS_RAW = [
   "target": 45.9,
   "rawOpp": 53.9,
   "pursuitRank": 120,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Volatile",
   "topPain": [
@@ -6860,7 +6860,7 @@ const TRUSTS_RAW = [
   "target": 45.9,
   "rawOpp": 53.9,
   "pursuitRank": 121,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -6953,7 +6953,7 @@ const TRUSTS_RAW = [
   "target": 45.9,
   "rawOpp": 45.9,
   "pursuitRank": 52,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -7046,7 +7046,7 @@ const TRUSTS_RAW = [
   "target": 45.6,
   "rawOpp": 45.6,
   "pursuitRank": 53,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -7139,7 +7139,7 @@ const TRUSTS_RAW = [
   "target": 45.6,
   "rawOpp": 45.6,
   "pursuitRank": 54,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -7232,7 +7232,7 @@ const TRUSTS_RAW = [
   "target": 45.2,
   "rawOpp": 45.2,
   "pursuitRank": 55,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -7325,7 +7325,7 @@ const TRUSTS_RAW = [
   "target": 45.2,
   "rawOpp": 45.2,
   "pursuitRank": 56,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Flat",
   "topPain": [
@@ -7418,7 +7418,7 @@ const TRUSTS_RAW = [
   "target": 45.2,
   "rawOpp": 45.2,
   "pursuitRank": 57,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Worsening",
   "topPain": [
@@ -7511,7 +7511,7 @@ const TRUSTS_RAW = [
   "target": 45.2,
   "rawOpp": 53.2,
   "pursuitRank": 122,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -7604,7 +7604,7 @@ const TRUSTS_RAW = [
   "target": 45.0,
   "rawOpp": 45.0,
   "pursuitRank": 58,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Volatile",
   "topPain": [
@@ -7697,7 +7697,7 @@ const TRUSTS_RAW = [
   "target": 44.9,
   "rawOpp": 52.9,
   "pursuitRank": 123,
-  "band": "D",
+  "band": "C",
   "distress": true,
   "trend": "Improving",
   "topPain": [
@@ -7790,7 +7790,7 @@ const TRUSTS_RAW = [
   "target": 44.8,
   "rawOpp": 44.8,
   "pursuitRank": 59,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -7883,7 +7883,7 @@ const TRUSTS_RAW = [
   "target": 44.5,
   "rawOpp": 44.5,
   "pursuitRank": 60,
-  "band": "D",
+  "band": "C",
   "distress": false,
   "trend": "Improving",
   "topPain": [
@@ -12577,10 +12577,10 @@ const PILLARS = [
 ];
 
 const BANDS_RULE = [
-  ["A · Priority target", "≥ 72", C.bandA, "High pain plus credible budget and a clear digital reason to act"],
-  ["B · Develop", "62 – 71.9", C.bandB, "Clear pain and fit, but one part of the case is weaker"],
-  ["C · Nurture", "52 – 61.9", C.bandC, "Interesting but not yet urgent or not clearly fundable"],
-  ["D · Deprioritise", "< 52", C.bandD, "Low fit, no clear pain or fundable reason, or severe-distress risk"],
+  ["A · Pursue now", "Top 12", C.bandA, "The highest-ranked opportunities — give these senior attention now"],
+  ["B · Develop", "Next 18", C.bandB, "Strong fit — build the case and the relationship"],
+  ["C · Nurture", "Next 30", C.bandC, "Worth monitoring; revisit as data refreshes. Distressed trusts are capped here ('qualify funding first')"],
+  ["D · Deprioritise", "Remainder", C.bandD, "Low current priority — no clear pain, fit or fundable reason"],
 ];
 
 /* Source register — drawn from the blueprint Source Register sheet.
@@ -13124,8 +13124,8 @@ const GLOSSARY = {
   "Operational pain": { cat: "Score & pillars", d: "Composite of A&E, cancer, RTT and diagnostics performance, each ranked against the 134 acute peers.", w: "A trust with high pain has a clear, board-level problem to solve — the natural opening for a sales conversation.", s: "NHS England Acute Provider Table" },
   "Budget likelihood": { cat: "Score & pillars", d: "Operating income (scale) plus actual operating margin (financial health), ranked against peers.", w: "Shows whether a trust can actually fund a solution. A problem without budget is not a near-term opportunity.", s: "TAC annual accounts" },
   "Digital / capital": { cat: "Score & pillars", d: "Digital-maturity gap + productivity gap + capital-investment envelope.", w: "Signals both a need for digital/data help and a funded reason to act now.", s: "DMA + capital allocations" },
-  "Target score": { cat: "Score & pillars", d: "Weighted blend of the three live pillars (0.41 pain / 0.35 budget / 0.24 digital), with a distress adjustment.", w: "The overall commercial-attractiveness ranking. Trust the ranking more than the band letters until calibrated.", s: "Derived" },
-  "Commercial band": { cat: "Score & pillars", d: "A–D tier from the target score (A = priority target).", w: "A quick tier for triage. Thresholds are uncalibrated, so use the ranking as the primary guide.", s: "Derived" },
+  "Target score": { cat: "Score & pillars", d: "Weighted blend of the three live pillars (0.41 pain / 0.35 budget / 0.24 digital), with a distress adjustment.", w: "The overall commercial-attractiveness ranking. The ranking is the dependable part; the A–D bands are a capacity-based prioritisation grouping layered on top of it.", s: "Derived" },
+  "Commercial band": { cat: "Score & pillars", d: "A–D priority tier set by capacity: A = top 12 by score, B = next 18, C = next 30 (plus distressed trusts, capped here), D = the rest.", w: "A prioritisation grouping that maps to an action (pursue / develop / nurture / deprioritise), set by the team's capacity — not a probability of winning. The underlying ranking is the dependable part.", s: "Derived" },
   "Pursuit rank": { cat: "Sales mechanics", d: "Sales-priority order: non-distressed trusts first, then segment-4 'qualify funding' trusts below.", w: "The order in which to work the list — keeps distressed trusts from cluttering the top.", s: "Derived" },
   "Confidence": { cat: "Sales mechanics", d: "Completeness of the active scored data sources for this trust (pain, TAC, capital, DMA, segment).", w: "A high score built on thin data warrants a manual check before committing BD effort.", s: "Derived" },
   "Operating income": { cat: "Finance", d: "Total operating income from the trust's annual accounts.", w: "A proxy for trust scale and the potential size of a deal.", s: "TAC annual accounts" },

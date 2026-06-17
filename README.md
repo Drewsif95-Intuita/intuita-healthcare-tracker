@@ -211,9 +211,11 @@ non-specialist readers.
 
 ## Known limitations
 
-1. **Bands are uncalibrated.** Percentile pillars centre the target near ~48, so the A/B/C/D
-   cut-offs are deliberately tight. **Trust the ranking, not the band letters**, until
-   calibrated against CRM win/loss history.
+1. **Bands are a capacity-based prioritisation policy, not a win-probability.** A = top 12, B =
+   next 18, C = next 30 (plus distressed trusts, capped there), D = the rest — counts set in
+   `config.py` to match team capacity. They map to an action (pursue / develop / nurture /
+   deprioritise); the underlying **ranking** is the dependable part, and bands self-adjust on
+   each refresh because they follow rank position.
 2. **Opportunity, not live intent.** The score answers "is this an interesting opportunity?"
    (a clear problem + budget + a digital reason), not "are they buying right now?" — there is
    no procurement/CRM data in the model, by design.

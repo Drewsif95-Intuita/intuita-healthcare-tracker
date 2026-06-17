@@ -23,7 +23,9 @@ _active_total = sum(RAW_WEIGHTS[p] for p in ACTIVE_PILLARS)        # 0.85
 WEIGHTS = {p: RAW_WEIGHTS[p] / _active_total for p in ACTIVE_PILLARS}  # 0.353 / 0.412 / 0.235
 
 # --- band thresholds (same as the prototype; calibration is a later step) ---
-BANDS = [("A", 72), ("B", 62), ("C", 52), ("D", 0)]
+BAND_CAPACITY = {"A": 12, "B": 18, "C": 30}   # accounts per tier (team capacity); D = the remainder
+# Bands are a capacity-based prioritisation grouping, not a win-probability. A/B/C are the top N
+# non-distressed trusts by score; edit these counts to match how many accounts the team can work.
 DISTRESS_PENALTY = 8.0       # subtracted from target for distressed trusts
 DISTRESS_BAND_CAP = "C"      # distressed trusts cannot be better than this band
 

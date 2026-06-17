@@ -70,18 +70,27 @@ def classify_trend(apt: pd.DataFrame, code: str) -> str:
     return "Flat"
 
 
-def band_for(score: float, distress: bool) -> str:
-    for b, thr in config.BANDS:
-        if score >= thr:
-            band = b
-            break
-    else:
-        band = "D"
-    if distress:
-        order = ["A", "B", "C", "D"]
-        if order.index(band) < order.index(config.DISTRESS_BAND_CAP):
-            band = config.DISTRESS_BAND_CAP
-    return band
+def assign_capacity_bands(df):
+    """Capacity-based bands from the ranking. A/B/C are the top-N non-distressed trusts by
+    target (counts in config.BAND_CAPACITY); D is the remainder. Distressed (segment-4) trusts
+    are capped at C ('qualify funding first') regardless of score. Bands therefore self-adjust
+    on each refresh because they are defined by rank position, not a fixed score threshold."""
+    caps = config.BAND_CAPACITY
+    nd = df[~df["distress"].astype(bool)].sort_values("target", ascending=False)
+    tgt = nd["target"].reset_index(drop=True)
+    cut = lambda k: tgt.iloc[k - 1] if k <= len(tgt) else float("-inf")
+    a_cut = cut(caps["A"])
+    b_cut = cut(caps["A"] + caps["B"])
+    c_cut = cut(caps["A"] + caps["B"] + caps["C"])
+    def band_of(row):
+        t, d = row["target"], bool(row["distress"])
+        if d:
+            return "C" if t >= c_cut else "D"     # distressed capped at C
+        if t >= a_cut: return "A"
+        if t >= b_cut: return "B"
+        if t >= c_cut: return "C"
+        return "D"
+    return df.apply(band_of, axis=1)
 
 
 def next_action(band: str, distress: bool) -> str:
