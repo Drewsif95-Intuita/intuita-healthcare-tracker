@@ -12760,7 +12760,7 @@ function Overview({ data, onPick, bandFilter, setBandFilter }) {
         <div style={{ ...card(), minWidth: 0 }}>
           <SectionTitle>Budget likelihood × Operational pain</SectionTitle>
           <div style={{ height: 500, position: "relative", minWidth: 0 }}>
-            <QuadLabel top="14px" right="30px" text="Pursue now" tone={C.purple} />
+            <QuadLabel top="14px" right="30px" text="Problem + budget" tone={C.purple} />
             <QuadLabel top="14px" left="56px" text="Pain — qualify funding" tone={C.bad} />
             <QuadLabel bottom="52px" right="30px" text="Budget — no trigger" tone={C.muted} />
             <QuadLabel bottom="52px" left="56px" text="Low priority" tone={C.muted} />
@@ -12780,9 +12780,9 @@ function Overview({ data, onPick, bandFilter, setBandFilter }) {
                 <Tooltip cursor={{ strokeDasharray: "3 3" }} content={<ScatterTip />} />
                 <Scatter data={scatter} onClick={(e) => e && onPick(e.code)} cursor="pointer">
                   {scatter.map((d) => (
-                    <Cell key={d.code} fill={BAND_META[d.bandValue].colour}
-                      fillOpacity={!bandFilter || d.bandValue === bandFilter ? 1 : 0.12}
-                      stroke={d.distress ? C.bad : "#fff"} strokeWidth={d.distress ? 2.5 : 1} />
+                    <Cell key={d.code} fill={d.distress ? C.paper : BAND_META[d.bandValue].colour}
+                      fillOpacity={d.distress ? 1 : (!bandFilter || d.bandValue === bandFilter ? 1 : 0.12)}
+                      stroke={d.distress ? C.bad : "#fff"} strokeWidth={d.distress ? 2.5 : 1.5} />
                   ))}
                   <LabelList dataKey="code" content={(p) => {
                     const d = scatter[p.index]; if (!d || !topCodes.has(d.code)) return null;
@@ -12800,11 +12800,11 @@ function Overview({ data, onPick, bandFilter, setBandFilter }) {
               </span>
             ))}
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 10, height: 10, borderRadius: 3, border: `2px solid ${C.bad}`, display: "inline-block" }} />severe-distress flag
+              <span style={{ width: 10, height: 10, borderRadius: 3, border: `2px solid ${C.bad}`, background: C.paper, display: "inline-block" }} />severe distress — capped at Band C (qualify funding first)
             </span>
           </div>
           <div style={{ fontSize: 11, color: C.muted, marginTop: 8, paddingTop: 8, borderTop: `1px dashed ${C.line}` }}>
-            Only the five top-ranked targets are labelled to keep the view clear — hover any bubble for its name and score. Bubble size = operating income; colour = commercial band; red ring = severe-distress flag.
+            Only the five top-ranked targets are labelled to keep the view clear — hover any bubble for its name and score. Bubble size = operating income; colour = commercial band. Hollow red-ringed bubbles are trusts in severe distress (NOF segment 4): they can sit top-right on problem + budget, but are capped at Band C — qualify the funding route before pursuing, which is why they are not Band A.
           </div>
         </div>
 
