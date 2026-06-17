@@ -28,33 +28,16 @@ const C = {
 const FONT_LINK = `@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');`;
 
 /* ============================================================================
-   SYNTHETIC DATA  — illustrative only, fictional trusts, embedded stories
-   Each trust scored on the four pillars (0–100). Stories baked in:
-   - Northgate: textbook A-band (high pain + funded + active EPR trigger)
-   - Calderfield: high pain BUT severe distress → held out of A despite pain
-   - St Aldwyn's: well-funded, low pain → C/D (buyable but no reason to buy)
-   - Pennine Vale: NHP/RAAC capital trigger drives digital score
-   - Wessex Bay: data-quality lead, DQMI weak
+   REAL DATA — England's 134 acute NHS trusts, scored by the pipeline in
+   nhs_targeting_transform/ from public NHS England, NHS England Digital, ONS,
+   CQC and MHCLG sources. Each record below is generated from the gold output
+   (outputs/sales_scorecard.csv) — see AGENTS.md and docs/METHODOLOGY.md.
+   Scores (target, band, the three pillars) are PRECOMPUTED by the pipeline and
+   read directly here; the app does not re-score. Fields not yet sourced
+   (for example EPR) are null and clearly marked "not loaded".
 ============================================================================ */
-const WEIGHTS = { budget: 0.30, pain: 0.35, digital: 0.20, buyer: 0.15 };
 
-function score(t) {
-  const raw =
-    WEIGHTS.budget * t.budget + WEIGHTS.pain * t.pain +
-    WEIGHTS.digital * t.digital + WEIGHTS.buyer * t.buyer;
-  return Math.round((raw - (t.distress ? 8 : 0)) * 10) / 10;
-}
-function band(s, distress) {
-  if (distress && s < 70) return "C";
-  if (s >= 72) return "A";
-  if (s >= 62) return "B";
-  if (s >= 52) return "C";
-  return "D";
-}
-
-/* Extended per-trust detail for the deeper pages — derived to stay consistent
-   with each trust's story (digital, capital, governance, buyer, catchment). */
-/* Per-trust detail now comes from the real scored data (see TRUSTS_RAW). */
+/* Per-trust detail comes from the real scored data (see TRUSTS_RAW). */
 
 function nextActionOf(t) {
   if (t.distress) return "Qualify funding";
@@ -65,7 +48,6 @@ function nextActionOf(t) {
 }
 function fundingRoutesOf(t) {
   const r = [];
-  if (t.procurement.some((p) => p.d === "live")) r.push("Existing procurement");
   if (t.nhp !== "—" || t.eric >= 70 || t.capAlloc >= 75) r.push("Capital-backed");
   if (t.finance.agency >= 7 || /productivity|elective|discharge|flow/i.test(t.play)) r.push("ROI-led");
   if (t.epr.startsWith("Optimising") || t.epr.startsWith("Procuring") || t.fdp === "Live" || t.dma < 55) r.push("Digital programme");
@@ -150,7 +132,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    27.1,
@@ -243,7 +225,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.3,
@@ -336,7 +318,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.9,
@@ -429,7 +411,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.2,
@@ -522,7 +504,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.2,
@@ -615,7 +597,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.3,
@@ -708,7 +690,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    30.1,
@@ -801,7 +783,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    31.9,
@@ -894,7 +876,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.1,
@@ -987,7 +969,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.1,
@@ -1080,7 +1062,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.1,
@@ -1173,7 +1155,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.1,
@@ -1266,7 +1248,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.9,
@@ -1359,7 +1341,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.0,
@@ -1452,7 +1434,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.1,
@@ -1545,7 +1527,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.2,
@@ -1638,7 +1620,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.1,
@@ -1731,7 +1713,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.6,
@@ -1824,7 +1806,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.4,
@@ -1917,7 +1899,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.2,
@@ -2010,7 +1992,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.4,
@@ -2103,7 +2085,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.0,
@@ -2196,7 +2178,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.2,
@@ -2289,7 +2271,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.9,
@@ -2382,7 +2364,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.1,
@@ -2475,7 +2457,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.8,
@@ -2568,7 +2550,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.9,
@@ -2661,7 +2643,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.4,
@@ -2754,7 +2736,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.6,
@@ -2847,7 +2829,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.7,
@@ -2940,7 +2922,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.0,
@@ -3033,7 +3015,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.3,
@@ -3126,7 +3108,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    21.5,
@@ -3219,7 +3201,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.8,
@@ -3312,7 +3294,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    15.5,
@@ -3405,7 +3387,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.9,
@@ -3498,7 +3480,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: DMA; buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: DMA"
   },
   "spark": [
    24.6,
@@ -3591,7 +3573,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    16.0,
@@ -3684,7 +3666,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: DMA; buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: DMA"
   },
   "spark": [
    23.3,
@@ -3777,7 +3759,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.4,
@@ -3870,7 +3852,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.1,
@@ -3963,7 +3945,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.2,
@@ -4056,7 +4038,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.3,
@@ -4149,7 +4131,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.1,
@@ -4242,7 +4224,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.6,
@@ -4335,7 +4317,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: DMA; buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: DMA"
   },
   "spark": [
    23.6,
@@ -4428,7 +4410,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.1,
@@ -4521,7 +4503,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.7,
@@ -4614,7 +4596,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.1,
@@ -4707,7 +4689,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.6,
@@ -4800,7 +4782,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    30.4,
@@ -4893,7 +4875,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.3,
@@ -4986,7 +4968,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.1,
@@ -5079,7 +5061,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    16.4,
@@ -5172,7 +5154,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.9,
@@ -5265,7 +5247,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.5,
@@ -5358,7 +5340,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    16.9,
@@ -5451,7 +5433,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    14.4,
@@ -5544,7 +5526,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.6,
@@ -5637,7 +5619,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.9,
@@ -5730,7 +5712,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.5,
@@ -5823,7 +5805,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.9,
@@ -5916,7 +5898,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    22.1,
@@ -6009,7 +5991,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    30.0,
@@ -6102,7 +6084,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.1,
@@ -6195,7 +6177,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.6,
@@ -6288,7 +6270,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.5,
@@ -6381,7 +6363,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.9,
@@ -6474,7 +6456,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.3,
@@ -6567,7 +6549,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.7,
@@ -6660,7 +6642,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    29.3,
@@ -6753,7 +6735,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.2,
@@ -6846,7 +6828,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    32.3,
@@ -6939,7 +6921,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    21.4,
@@ -7032,7 +7014,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.8,
@@ -7125,7 +7107,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.4,
@@ -7218,7 +7200,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.4,
@@ -7311,7 +7293,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.6,
@@ -7404,7 +7386,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    21.4,
@@ -7497,7 +7479,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.6,
@@ -7590,7 +7572,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    27.0,
@@ -7683,7 +7665,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    11.3,
@@ -7776,7 +7758,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    24.9,
@@ -7869,7 +7851,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.6,
@@ -7962,7 +7944,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.6,
@@ -8055,7 +8037,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.9,
@@ -8148,7 +8130,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.4,
@@ -8241,7 +8223,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.2,
@@ -8334,7 +8316,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.1,
@@ -8427,7 +8409,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.3,
@@ -8520,7 +8502,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.3,
@@ -8613,7 +8595,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    16.6,
@@ -8706,7 +8688,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.1,
@@ -8799,7 +8781,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    30.0,
@@ -8892,7 +8874,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.0,
@@ -8985,7 +8967,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    28.0,
@@ -9078,7 +9060,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    15.6,
@@ -9171,7 +9153,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    15.7,
@@ -9264,7 +9246,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    25.2,
@@ -9357,7 +9339,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.0,
@@ -9450,7 +9432,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.3,
@@ -9543,7 +9525,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.4,
@@ -9636,7 +9618,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.5,
@@ -9729,7 +9711,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "4/6 features present; missing: TAC income, TAC margin; buyer-openness deferred (no procurement source in MVP)"
+   "why": "4/6 features present; missing: TAC income, TAC margin"
   },
   "spark": [
    18.5,
@@ -9822,7 +9804,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    20.2,
@@ -9915,7 +9897,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "4/6 features present; missing: TAC income, TAC margin; buyer-openness deferred (no procurement source in MVP)"
+   "why": "4/6 features present; missing: TAC income, TAC margin"
   },
   "spark": [
    29.9,
@@ -10008,7 +9990,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    7.8,
@@ -10101,7 +10083,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.4,
@@ -10194,7 +10176,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    19.5,
@@ -10287,7 +10269,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    26.4,
@@ -10380,7 +10362,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    28.0,
@@ -10473,7 +10455,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.1,
@@ -10566,7 +10548,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    15.6,
@@ -10659,7 +10641,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    2.9,
@@ -10752,7 +10734,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    9.4,
@@ -10845,7 +10827,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    22.3,
@@ -10938,7 +10920,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    16.7,
@@ -11031,7 +11013,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    15.9,
@@ -11124,7 +11106,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    18.3,
@@ -11217,7 +11199,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    27.7,
@@ -11310,7 +11292,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    16.1,
@@ -11403,7 +11385,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    27.4,
@@ -11496,7 +11478,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    9.2,
@@ -11589,7 +11571,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    14.6,
@@ -11682,7 +11664,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    14.3,
@@ -11775,7 +11757,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    8.0,
@@ -11868,7 +11850,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "4/6 features present; missing: TAC income, TAC margin; buyer-openness deferred (no procurement source in MVP)"
+   "why": "4/6 features present; missing: TAC income, TAC margin"
   },
   "spark": [
    22.6,
@@ -11961,7 +11943,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "Medium",
-   "why": "5/6 features present; missing: pain (>=6/7); buyer-openness deferred (no procurement source in MVP)"
+   "why": "5/6 features present; missing: pain (>=6/7)"
   },
   "spark": [
    8.0,
@@ -12054,7 +12036,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    21.5,
@@ -12147,7 +12129,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    13.6,
@@ -12240,7 +12222,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    8.3,
@@ -12333,7 +12315,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    17.1,
@@ -12426,7 +12408,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    14.7,
@@ -12519,7 +12501,7 @@ const TRUSTS_RAW = [
   "crm": "\u2014",
   "conf": {
    "lvl": "High",
-   "why": "6/6 features present; buyer-openness deferred (no procurement source in MVP)"
+   "why": "All 6 scored features present"
   },
   "spark": [
    23.3,
@@ -12549,7 +12531,7 @@ const TRUSTS = TRUSTS_RAW.map((t) => {
 const BAND_META = {
   A: { label: "A · Priority target", colour: C.bandA, action: "Assign owner · build account plan · contact this campaign" },
   B: { label: "B · Develop", colour: C.bandB, action: "Monitor · enrich CRM/contact intel · prepare targeted outreach" },
-  C: { label: "C · Nurture", colour: C.bandC, action: "Watchlist · revisit after next NOF / finance / procurement refresh" },
+  C: { label: "C · Nurture", colour: C.bandC, action: "Watchlist · revisit after next NOF / finance refresh" },
   D: { label: "D · Deprioritise", colour: C.bandD, action: "No BD effort unless a known relationship or live tender exists" },
 };
 
@@ -12565,7 +12547,7 @@ const TREND_ICON = {
    (mirrors the blueprint Scoring Model sheet)
 ============================================================================ */
 const PILLARS = [
-  { key: "budget", label: "Budget likelihood", weight: 0.30, colour: C.purple,
+  { key: "budget", label: "Budget likelihood", weight: 0.35, colour: C.purple,
     q: "Can this organisation realistically fund or justify external support?",
     sub: [
       ["Scale", 0.25, "Operating income percentile within trust type"],
@@ -12573,10 +12555,9 @@ const PILLARS = [
       ["Capital momentum", 0.20, "Capital additions trend + NHP/RAAC/major scheme flag"],
       ["Liquidity proxy", 0.15, "Cash & equivalents vs expenditure; receivables/payables"],
       ["ICB / system context", 0.10, "ICB allocation growth, system deficit/overspend"],
-      ["Procurement activity", 0.10, "Digital/data/BI/PMO notices or awards in last 24 months"],
       ["Severe-distress penalty", -0.15, "Persistent large deficit, low cash, segment 4, adverse well-led"],
     ] },
-  { key: "pain", label: "Operational pain", weight: 0.35, colour: C.bright,
+  { key: "pain", label: "Operational pain", weight: 0.41, colour: C.bright,
     q: "Is there a clear problem we can help solve?",
     sub: [
       ["UEC / A&E", null, "4-hour performance, 12-hour waits, admissions, occupancy"],
@@ -12586,29 +12567,20 @@ const PILLARS = [
       ["Quality & safety", null, "CQC, SHMI, HCAI, LFPSE patient safety"],
       ["Data quality", null, "DQMI provider/dataset score and trend"],
     ] },
-  { key: "digital", label: "Digital / capital opportunity", weight: 0.20, colour: C.mid,
+  { key: "digital", label: "Digital / capital opportunity", weight: 0.24, colour: C.mid,
     q: "Is there a transformation event or data/digital reason to engage now?",
     sub: [
       ["Capital programme trigger", 0.35, "NHP / RAAC / major rebuild / Hospital 2.0 relevance"],
       ["Digital maturity / EPR gap", 0.25, "EPR status, DMA, GDE/exemplar context, usability"],
       ["Workflow / data friction", 0.20, "Poor UEC/RTT/beds/diagnostics/DQMI or staff-survey signals"],
-      ["Market trigger", 0.20, "Active data-platform, BI, analytics or EPR-optimisation procurement"],
-    ] },
-  { key: "buyer", label: "Buyer openness", weight: 0.15, colour: "#9B6FD0",
-    q: "Is there evidence the organisation goes to market or has an access route?",
-    sub: [
-      ["Procurement activity", null, "Find a Tender + Contracts Finder notices, value, recency"],
-      ["Board-paper signals", null, "Digital strategy, EPR programme, improvement plans"],
-      ["Framework route", null, "Known route to market / framework presence"],
-      ["CRM engagement", null, "Known contacts and relationship strength (manual)"],
     ] },
 ];
 
 const BANDS_RULE = [
-  ["A · Priority target", "≥ 72", C.bandA, "High pain plus credible budget, timing and buyer signals"],
+  ["A · Priority target", "≥ 72", C.bandA, "High pain plus credible budget and a clear digital reason to act"],
   ["B · Develop", "62 – 71.9", C.bandB, "Clear pain and fit, but one part of the case is weaker"],
   ["C · Nurture", "52 – 61.9", C.bandC, "Interesting but not yet urgent or not clearly fundable"],
-  ["D · Deprioritise", "< 52", C.bandD, "Low fit, no clear pain or buyer signal, or severe-distress risk"],
+  ["D · Deprioritise", "< 52", C.bandD, "Low fit, no clear pain or fundable reason, or severe-distress risk"],
 ];
 
 /* Source register — drawn from the blueprint Source Register sheet.
@@ -12629,14 +12601,12 @@ const SOURCES = [
   { ds: "CQC ratings (API & data downloads)", pub: "Care Quality Commission", grp: "Quality / regulatory", pri: "High", grain: "Provider / location snapshot", refresh: "Daily / API", dest: "FactCQCSnapshot", asat: "29 May 2026", fresh: "fresh", url: "https://www.cqc.org.uk/about-us/transparency/using-cqc-data", note: "Regulatory trigger; discount stale ratings by age." },
   { ds: "Data Quality Maturity Index (DQMI)", pub: "NHS England Digital", grp: "Data quality", pri: "High", grain: "Provider/dataset-month", refresh: "Monthly", dest: "FactDQMIMonthly", asat: "Mar 2026", fresh: "lag", url: "https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/data-quality", note: "Data-quality, submissions assurance and source-system offers." },
   { ds: "NHS Staff Survey local results", pub: "NHS Staff Survey", grp: "Workforce / change", pri: "High", grain: "Organisation-year", refresh: "Annual", dest: "FactStaffSurveyAnnual", asat: "2025", fresh: "annual", url: "https://www.nhsstaffsurveys.com/results/local-results/", note: "Workforce/culture and change-readiness signal." },
-  { ds: "LFPSE patient safety data", pub: "NHS England", grp: "Quality / safety", pri: "High", grain: "Trust-quarter", refresh: "Quarterly", dest: "FactPatientSafetyQuarterly", asat: "Q3 2025/26", fresh: "lag", url: "https://www.england.nhs.uk/statistics/statistical-work-areas/patient-safety-data/", note: "Safety reporting maturity and governance story." },
+  { ds: "LFPSE patient safety data", pub: "NHS England", grp: "Quality / safety", pri: "High", grain: "Trust-quarter", refresh: "Quarterly", dest: "FactPatientSafetyQuarterly", asat: "Q3 2025/26", fresh: "lag", url: "https://www.england.nhs.uk/statistics/statistical-work-areas/patient-safety-data/", note: "Safety reporting maturity and governance signal." },
   { ds: "SHMI (mortality indicator)", pub: "NHS England Digital", grp: "Quality / safety", pri: "High", grain: "Trust rolling 12-month", refresh: "Monthly", dest: "FactSHMIMonthly", asat: "Feb 2026", fresh: "lag", url: "https://digital.nhs.uk/data-and-information/publications/statistical/shmi", note: "Quality improvement and clinical analytics context." },
   { ds: "HCAI monthly datasets", pub: "UKHSA / GOV.UK", grp: "Quality / safety", pri: "High", grain: "Trust-month", refresh: "Monthly", dest: "FactHCAIMonthly", asat: "Apr 2026", fresh: "fresh", url: "https://www.gov.uk/government/statistics/mrsa-mssa-gram-negative-bacteraemia-and-cdi-monthly-data-2025-to-2026", note: "Infection-control and safety analytics context." },
   { ds: "ERIC estates returns", pub: "NHS England / GOV.UK", grp: "Capital / complexity", pri: "High", grain: "Trust/site-year", refresh: "Annual", dest: "FactERICAnnual", asat: "FY 2024/25", fresh: "annual", url: "https://www.gov.uk/government/statistics/estates-returns-information-collection-summary-page-and-dataset-for-eric-202425", note: "Estate pressure, capital need and transformation trigger." },
   { ds: "Digitising the Frontline / DMA / EPR context", pub: "NHS England", grp: "Digital trigger", pri: "High", grain: "Programme / trust", refresh: "Programme updates", dest: "FactDigitalProgramme", asat: "May 2026", fresh: "review", url: "https://www.england.nhs.uk/digitaltechnology/digitising-the-frontline/", note: "EPR optimisation, reporting redesign, adoption analytics." },
   { ds: "New Hospital Programme", pub: "DHSC / GOV.UK", grp: "Capital trigger", pri: "High", grain: "Scheme / trust / site", refresh: "Ad-hoc policy update", dest: "FactCapitalProgramme", asat: "Jan 2026", fresh: "review", url: "https://www.gov.uk/government/publications/new-hospital-programme-review-outcome/new-hospital-programme-plan-for-implementation", note: "Major transformation trigger; curated scheme-to-trust bridge required." },
-  { ds: "Find a Tender", pub: "Cabinet Office / GOV.UK", grp: "Buyer openness", pri: "High", grain: "Notice", refresh: "Near-real-time", dest: "FactProcurementNotice", asat: "31 May 2026", fresh: "fresh", url: "https://www.find-tender.service.gov.uk/Developer/Documentation", note: "Digital/data/analytics tender signals and route-to-market." },
-  { ds: "Contracts Finder", pub: "Cabinet Office / GOV.UK", grp: "Buyer openness", pri: "High", grain: "Notice", refresh: "Near-real-time", dest: "FactProcurementNotice", asat: "31 May 2026", fresh: "fresh", url: "https://www.contractsfinder.service.gov.uk/apidocumentation/V2", note: "Complements Find a Tender for smaller/lower-value notices." },
   { ds: "English Indices of Deprivation 2025", pub: "MHCLG / GOV.UK", grp: "Context / complexity", pri: "Medium", grain: "LSOA", refresh: "Periodic", dest: "FactSocioeconomicAnnual", asat: "2025", fresh: "annual", url: "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025", note: "Structural context; map to trusts via site/ICB bridge with caution." },
   { ds: "ONS population estimates / projections", pub: "ONS", grp: "Context / complexity", pri: "Medium", grain: "LSOA / LA / health geog.", refresh: "Annual / periodic", dest: "FactSocioeconomicAnnual", asat: "2024", fresh: "annual", url: "https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates", note: "Demand context, age burden and market size." },
   { ds: "Fingertips public health profiles", pub: "OHID", grp: "Context / complexity", pri: "Medium", grain: "Local authority / profile", refresh: "Regular", dest: "FactSocioeconomicAnnual", asat: "2025", fresh: "review", url: "https://fingertips.phe.org.uk/", note: "Demand, inequality and prevention-pressure narrative." },
@@ -12655,7 +12625,6 @@ const COVERAGE_V1 = [
   { pillar: "Budget likelihood", items: [["TAC annual accounts", "public"], ["Capital allocations", "public"], ["ERIC estates", "public"], ["NOF deficit flag", "public"], ["In-year finance (Q3)", "public"]] },
   { pillar: "Operational pain", items: [["Acute Provider Table", "public"], ["A&E", "public"], ["RTT", "public"], ["Cancer", "public"], ["Diagnostics (DM01)", "public"], ["DQMI", "public"], ["Beds (KH03) / cancelled ops", "deferred"]] },
   { pillar: "Digital / capital", items: [["DMA results", "public"], ["FDP uptake", "public"], ["Capital allocations", "public"], ["NHP / RAAC bridge", "planned"], ["EPR status", "planned"]] },
-  { pillar: "Buyer openness (NOT in V0 score)", items: [["Find a Tender", "planned"], ["Contracts Finder", "planned"], ["Board-paper signals", "planned"], ["Route to market", "planned"], ["CRM contacts", "planned"]] },
   { pillar: "Population (context only)", items: [["Census 2021 population", "public"], ["Catchment bridge (NSPL)", "curated"], ["Ethnicity (Census)", "public"], ["IMD 2025 deprivation", "public"], ["Rurality (RUC)", "deferred"]] },
 ];
 
@@ -12688,10 +12657,9 @@ const LIMITATIONS = [
   ["Publication cadence mismatch", "High", "Monthly, quarterly and annual data won't align to one as-at date.", "Store AsAtDate, PeriodType, PublicationDate and latest-source-family logic."],
   ["Data revisions", "High", "NHS statistics are revised and definitions change.", "Track source file, retrieval timestamp, checksum and transformation notes."],
   ["CQC recency", "High", "Ratings may be old; API/download refresh methods differ.", "Show rating age and discount stale ratings."],
-  ["Procurement matching", "High", "Buyer names in tender APIs are inconsistent.", "Maintain buyer alias table with match confidence and manual overrides."],
   ["TAC interpretation", "Medium", "Accounting-standard changes can affect trends.", "Use TAC for comparison and document major accounting changes."],
   ["IMD use", "Medium", "IMD 2025 is structural context, not current-year demand.", "Use as narrative modifier, not a direct performance penalty."],
-  ["Digital-maturity data gaps", "Medium", "A stable public trust-level DMA download may not always exist.", "Triangulate via EPR/DMA, GDE context, NHP, ERIC, procurement and annual reports."],
+  ["Digital-maturity data gaps", "Medium", "A stable public trust-level DMA download may not always exist.", "Triangulate via EPR/DMA, GDE context, NHP, ERIC and annual reports."],
 ];
 
 const SEVERITY_COLOUR = { Critical: C.bad, High: C.warn, Medium: C.mid };
@@ -12699,7 +12667,6 @@ const SEVERITY_COLOUR = { Critical: C.bad, High: C.warn, Medium: C.mid };
 /* Maps Trust 360 sections to their source families, for inline provenance tags */
 const SECTION_SOURCE = {
   finance: "TAC · annual + finance reports · quarterly",
-  procurement: "Find a Tender + Contracts Finder · near-real-time",
   pain: "Acute provider table, A&E, RTT, cancer, DM01 · monthly",
   cqc: "CQC · daily/API",
   trend: "NOF + operational facts · composite",
@@ -12727,8 +12694,6 @@ const Bars = ({ t, h = 7 }) => {
       info: "Budget " + t.budget + " = mean of two peer percentiles \u2014 operating income (\u00a3" + f(fin.income) + "m) and operating margin (" + f(fin.margin) + "%)." },
     { k: "Digital", v: t.digital, w: "24%", c: C.mid,
       info: "Digital " + t.digital + " = mean of three peer percentiles \u2014 digital-maturity gap (DMA " + f(t.dmaRaw) + "/5), productivity gap and capital envelope (\u00a3" + f(fin.capital) + "m)." },
-    { k: "Buyer", v: t.buyer, w: "\u2014", c: "#9B6FD0",
-      info: "Buyer openness is NOT in the V0 score \u2014 no procurement source is loaded yet (planned fourth pillar for V1)." },
   ];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -12766,7 +12731,6 @@ function Overview({ data, onPick, bandFilter, setBandFilter }) {
     { label: "A-band priority", value: data.filter((d) => d.bandValue === "A").length, sub: "click to filter \u2192", colour: C.bandA, band: "A", info: "Trusts in the top commercial band. Click to filter the report to them." },
     { label: "Avg target score", value: (data.reduce((a, d) => a + d.target, 0) / data.length).toFixed(1), sub: "weighted index", info: "Mean target score. Pillars are percentile ranks within peers, so this centres near ~48 by design — compare the ranking, not the absolute value." },
     { label: "Worsening trend", value: data.filter((d) => d.trend === "Worsening").length, sub: "pain accelerating", colour: C.bad, info: "Real signal from the Acute Provider Table: trusts whose composite operational-pain index has risen over recent months (a positive slope)." },
-    { label: "Active procurement", value: "\u2014", sub: "not loaded · planned (V1)", colour: C.muted, gap: true, info: "DATA GAP \u2014 this is not a real zero. No procurement / CRM feed is loaded yet, so buyer openness (the planned V1 pillar) cannot be counted. See the Procurement page." },
   ];
   const scatter = data.map((d) => ({ ...d, x: d.budget, y: d.pain, z: (d.scale || 600) }));
   const topCodes = new Set([...data].filter((d) => !d.distress).sort((a, b) => b.target - a.target).slice(0, 5).map((d) => d.code));
@@ -12973,7 +12937,7 @@ function Shortlist({ data, onPick }) {
 }
 
 const MiniPillars = ({ t }) => {
-  const segs = [{ v: t.budget, c: C.purple }, { v: t.pain, c: C.bright }, { v: t.digital, c: C.mid }, { v: t.buyer, c: "#9B6FD0" }];
+  const segs = [{ v: t.budget, c: C.purple }, { v: t.pain, c: C.bright }, { v: t.digital, c: C.mid }];
   return (
     <div style={{ display: "flex", gap: 3 }}>
       {segs.map((s, i) => (
@@ -13036,10 +13000,10 @@ function Trust360({ t, onBack }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
         {/* pillars */}
         <div style={card()}>
-          <SectionTitle info="The three live scoring pillars (0–100, ranked within the 134 acute peers). The V0 target blends them 0.41 pain / 0.35 budget / 0.24 digital; buyer openness is not yet loaded.">Component scores</SectionTitle>
+          <SectionTitle info="The three scoring pillars (0–100, each ranked within the 134 acute peers). They are blended 0.41 pain / 0.35 budget / 0.24 digital.">Component scores</SectionTitle>
           <Bars t={t} h={9} />
           <div style={{ marginTop: 10, fontSize: 11, color: C.muted, borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
-            V0 target = 0.41·Pain + 0.35·Budget + 0.24·Digital{t.distress ? " − distress penalty" : ""} · buyer openness not yet loaded
+            Target = 0.41·Pain + 0.35·Budget + 0.24·Digital{t.distress ? " − distress penalty" : ""}
           </div>
           <Src>{SECTION_SOURCE.pillars}</Src>
         </div>
@@ -13077,26 +13041,17 @@ function Trust360({ t, onBack }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         {/* finance */}
         <div style={card()}>
-          <SectionTitle><Wallet size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />Finance & buying signals</SectionTitle>
+          <SectionTitle><Wallet size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />Finance & funding signals</SectionTitle>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Metric label="Surplus / deficit" value={t.finance.margin == null ? "—" : `${t.finance.margin > 0 ? "+" : ""}${t.finance.margin.toFixed(1)}%`} tone={t.finance.surplus < -5 ? "bad" : t.finance.surplus < 0 ? "warn" : "good"} />
             <Metric label="Operating income" value={t.finance.income != null ? "£" + t.finance.income.toLocaleString() + "m" : "—"} sub="TAC 2024/25 · scale" />
             <Metric label="Digital maturity (DMA)" value={t.dmaRaw != null ? t.dmaRaw + " / 5" : "—"} sub="lower = more opportunity" />
             <Metric label="NOF segment" value={t.segment != null ? "Segment " + t.segment : "—"} sub={t.distress ? "intensive support" : "oversight tier"} tone={t.distress ? "bad" : "neutral"} />
           </div>
-          <div style={{ marginTop: 14, borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
-            <div style={{ fontSize: 11, color: C.muted, marginBottom: 6, textTransform: "uppercase", letterSpacing: .4 }}>Procurement signals</div>
-            {t.procurement.length ? t.procurement.map((p, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0" }}>
-                <span style={{ color: C.ink }}>{p.k}</span>
-                <span style={{ color: C.mid, fontWeight: 600 }}>{p.v} · {p.d}</span>
-              </div>
-            )) : <div style={{ fontSize: 12, color: C.muted, fontStyle: "italic" }}>No relevant notices in last 24 months</div>}
-          </div>
           <div style={{ marginTop: 10, fontSize: 11, color: C.muted, display: "flex", alignItems: "center", gap: 6 }}>
             <SrcDot k="public" />TAC annual accounts. In-year (Q3 2025/26): {t.q3Var != null ? <b style={{ color: t.q3Var < -1 ? C.bad : t.q3Var < 0 ? C.warn : C.good }}>{t.q3Var > 0 ? "+" : ""}{t.q3Var}% var</b> : <span style={{ color: C.muted }}>—</span>}{t.q3ForecastDeficit ? " · forecast deficit" : ""}{t.q3Dsf ? " · DSF" : ""}
           </div>
-          <Src detail="Trust Accounts Consolidation (annual) + NOF deficit flag · Find a Tender + Contracts Finder for procurement · in-year quarterly financial performance reports are planned post-v1">{SECTION_SOURCE.finance} · {SECTION_SOURCE.procurement}</Src>
+          <Src detail="Trust Accounts Consolidation (annual) + NOF deficit flag · in-year quarterly financial performance (Q3) reports">{SECTION_SOURCE.finance}</Src>
         </div>
         {/* 12-mo trend */}
         <div style={card()}>
@@ -13141,7 +13096,7 @@ function Trust360({ t, onBack }) {
 
       {/* sales enablement */}
       <div style={{ ...card(), marginTop: 16 }}>
-        <SectionTitle><Target size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />Sales enablement</SectionTitle>
+        <SectionTitle info="These cards are illustrative scaffolding, NOT sourced data. Persona, service offer and first conversation are mapped from the sales play; route to market, contacts and touch history stay blank until a CRM feed is connected."><Target size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />Sales enablement<span style={{ marginLeft: 8, fontSize: 9.5, fontWeight: 700, letterSpacing: ".4px", textTransform: "uppercase", color: C.warn, border: `1px solid ${C.warn}`, borderRadius: 6, padding: "2px 6px" }}>Illustrative</span></SectionTitle>
         {(() => {
           const k = PLAY_KIT[t.play] || { persona: "Executive sponsor", offer: t.play, proof: "Relevant Intuita case study", convo: t.topPain[0] };
           return (
@@ -13158,7 +13113,7 @@ function Trust360({ t, onBack }) {
             </div>
           );
         })()}
-        <Src detail="Personas, offers and proof points are mapped from the sales play; funding route is derived from public finance/procurement signals; contacts, CRM status and touch history come from CRM (manual) and are blank until CRM is connected">Play-mapped persona/offer/proof · funding route derived · contacts &amp; touch history from CRM (manual)</Src>
+        <Src detail="Personas, offers and proof points are mapped from the sales play; funding route is derived from public finance signals; contacts, CRM status and touch history come from CRM (manual) and are blank until CRM is connected">Play-mapped persona/offer/proof · funding route derived · contacts &amp; touch history from CRM (manual)</Src>
       </div>
     </div>
   );
@@ -13328,7 +13283,6 @@ function Finance({ data, onPick }) {
           </thead>
           <tbody>
             {sorted.map((d, i) => {
-              const liveProc = d.procurement.filter((p) => p.d === "live");
               return (
                 <tr key={d.code} onClick={() => onPick(d.code)} style={{ borderBottom: `1px solid ${C.line}`, cursor: "pointer", background: i % 2 ? "#FCFBFE" : "#fff" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#F4F0FA")} onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 ? "#FCFBFE" : "#fff")}>
@@ -13352,7 +13306,7 @@ function Finance({ data, onPick }) {
           </tbody>
         </table>
       </div>
-      <div style={{ marginTop: 10 }}><Src>{SECTION_SOURCE.finance} · provider/ICB capital allocations · {SECTION_SOURCE.procurement}</Src></div>
+      <div style={{ marginTop: 10 }}><Src>{SECTION_SOURCE.finance} · provider/ICB capital allocations</Src></div>
     </div>
   );
 }
@@ -13438,7 +13392,7 @@ function DigitalCapital({ data, onPick }) {
         ))}
         <span style={{ fontStyle: "italic" }}>No single national EPR-status file exists — EPR is triangulated/curated, not a confirmed feed.</span>
       </div>
-      <div style={{ marginTop: 10 }}><Src>DMA results file · FDP uptake · New Hospital Programme · ERIC estates · capital allocations · {SECTION_SOURCE.procurement}</Src></div>
+      <div style={{ marginTop: 10 }}><Src>DMA results file · FDP uptake · capital allocations</Src></div>
     </div>
   );
 }
@@ -13499,85 +13453,6 @@ function DataQuality({ data, onPick }) {
 /* ============================================================================
    PAGE 8 — PROCUREMENT & SALES INTENT
 ============================================================================ */
-function Procurement({ data, onPick }) {
-  const sorted = [...data].sort((a, b) => b.buyer - a.buyer);
-  return (
-    <div>
-      <PageHead kicker="Page 8 · Buyer openness · NOT LOADED" title="Procurement & Sales Intent — Planned"
-        blurb="This pillar answers whether there is a route in, via tender notices, board-paper signals, framework presence and CRM relationships. It is the planned fourth pillar of the V1 score." />
-      <div style={{ background: "#FFF4E5", border: "1px solid #F0C36D", borderRadius: 10, padding: "12px 14px", marginBottom: 16, fontSize: 12.5, color: "#7A5B00", lineHeight: 1.5 }}>
-        <b>Planned — not loaded.</b> No live procurement or CRM feed is connected, so buyer openness is <b>not part of the current V0 score</b>. The cards below are illustrative placeholders. Drop a <code>procurement_watchlist.csv</code> (Find a Tender / Contracts Finder / CRM enrichment) into the pipeline to activate this pillar.
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {sorted.map((d) => (
-          <div key={d.code} onClick={() => onPick(d.code)} style={{ ...card(), cursor: "pointer", borderLeft: `4px solid ${d.buyer >= 70 ? C.good : d.buyer >= 55 ? C.mid : C.bandD}` }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-              <div>
-                <div style={{ fontFamily: "Poppins", fontSize: 16, fontWeight: 600, color: C.ink }}>{d.name}</div>
-                <div style={{ fontSize: 11, color: C.muted }}>{d.region} · {d.icb}</div>
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: .4 }}>Buyer openness</div>
-                <div style={{ fontFamily: "Poppins", fontSize: 24, fontWeight: 700, color: C.purple, lineHeight: 1 }}>{d.buyer}</div>
-              </div>
-            </div>
-            <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 10.5, color: C.muted, textTransform: "uppercase", letterSpacing: .4, marginBottom: 5 }}>Procurement notices</div>
-              {d.procurement.length ? d.procurement.map((p, j) => {
-                const tm = noticeTiming(p);
-                return (
-                  <div key={j} style={{ padding: "6px 0", borderBottom: j < d.procurement.length - 1 ? `1px solid ${C.line}` : "none" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5 }}>
-                      <span style={{ color: C.ink, fontWeight: 600 }}>{p.k}</span>
-                      <span style={{ color: p.d === "live" ? C.good : C.mid, fontWeight: 600 }}>{p.v} · {p.d}</span>
-                    </div>
-                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 3, fontSize: 11, color: C.muted }}>
-                      <span>Notice {tm.notice}</span>
-                      <span>{tm.dl}</span>
-                      <span>{tm.end}</span>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Buyer match
-                        <span style={{ fontWeight: 600, color: tm.mc === "Exact" ? C.good : tm.mc === "High" ? C.mid : C.warn }}>{tm.mc}</span>
-                      </span>
-                    </div>
-                  </div>
-                );
-              }) : <div style={{ fontSize: 12, color: C.muted, fontStyle: "italic" }}>No notices in last 24 months</div>}
-            </div>
-            <div style={{ display: "flex", gap: 14, borderTop: `1px solid ${C.line}`, paddingTop: 10, flexWrap: "wrap" }}>
-              <Inline label="Board signal" value={d.board} sc="curated" />
-              <Inline label="Route to market" value={d.route} sc="curated" />
-              <div style={{ flex: 1, minWidth: 130 }}>
-                <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: .4, marginBottom: 3, display: "flex", alignItems: "center", gap: 5 }}>
-                  <SrcDot k="crm" />CRM
-                </div>
-                <Chip label={d.crm} tone={crmTone(d.crm)} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: 16, marginTop: 12, fontSize: 11, color: C.muted, alignItems: "center", flexWrap: "wrap" }}>
-        <b style={{ color: C.ink, fontWeight: 600 }}>Source confidence:</b>
-        {["public", "inferred", "curated", "crm"].map((k) => (
-          <span key={k} style={{ display: "flex", alignItems: "center", gap: 5 }}><SrcDot k={k} />{SRC_CONF_LABEL[k]}</span>
-        ))}
-        <span style={{ fontStyle: "italic" }}>Notices are confirmed; board signals, route and CRM are curated/manual — expect these sparse until CRM and board-paper inputs are loaded.</span>
-      </div>
-      <div style={{ marginTop: 10 }}><Src detail="Find a Tender OCDS API + Contracts Finder V2 API (near-real-time) with an NHS buyer alias table and match-confidence score · board-paper signals, framework/route and CRM are curated/manual inputs">Find a Tender + Contracts Finder (buyer alias + match confidence) · board signals, route &amp; CRM curated</Src></div>
-    </div>
-  );
-}
-
-/* Synthesises notice timing + buyer-match confidence from notice stage.
-   In production these come from the procurement APIs and the buyer alias table. */
-function noticeTiming(p) {
-  if (p.d === "live") return { notice: "Apr 2026", dl: "Deadline Jul 2026", end: "—", mc: "Exact" };
-  if (p.d.startsWith("awarded")) return { notice: "Feb 2026", dl: "Awarded", end: "Contract ends 2029", mc: "Exact" };
-  if (p.d === "planning") return { notice: "—", dl: "Expected Q3 2026", end: "—", mc: "High" };
-  return { notice: "—", dl: "Early engagement", end: "—", mc: "Fuzzy" };
-}
-
 const Inline = ({ label, value, sc, emptyLabel = "Not yet loaded" }) => (
   <div style={{ flex: 1, minWidth: 130 }}>
     <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: .4, marginBottom: 3, display: "flex", alignItems: "center", gap: 5 }}>
@@ -13714,19 +13589,14 @@ function Methodology() {
       <div style={{ ...card(), marginBottom: 16 }}>
         <SectionTitle><ScrollText size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />How the target score is built</SectionTitle>
         <div style={{ background: C.bg, borderRadius: 10, padding: "14px 16px", marginBottom: 18 }}>
-          <div style={{ fontFamily: "Poppins", fontSize: 12, fontWeight: 700, letterSpacing: .5, color: C.purple, marginBottom: 6 }}>CURRENT V0 SCORE — LIVE</div>
           <div style={{ fontFamily: "Poppins", fontSize: 15, fontWeight: 600, color: C.ink, textAlign: "center", marginBottom: 10 }}>
             0.41 · Operational pain&nbsp; + &nbsp;0.35 · Budget likelihood&nbsp; + &nbsp;0.24 · Digital / capital&nbsp; − &nbsp;severe-distress penalty
           </div>
-          <div style={{ fontSize: 12, color: C.muted, marginBottom: 16, lineHeight: 1.5 }}>
-            Buyer openness has no data source yet, so Model A 0.15 weight is re-normalised across the three live pillars (0.35/0.30/0.20 to 0.41/0.35/0.24). <b style={{ color: C.ink }}>Procurement / buyer openness is NOT part of the current score.</b>
-          </div>
-          <div style={{ fontFamily: "Poppins", fontSize: 12, fontWeight: 700, letterSpacing: .5, color: C.muted, marginBottom: 6 }}>TARGET V1 SCORE — WHEN BUYER OPENNESS IS LOADED</div>
-          <div style={{ fontFamily: "Poppins", fontSize: 14, fontWeight: 600, color: C.muted, textAlign: "center" }}>
-            0.35 · Pain&nbsp; + &nbsp;0.30 · Budget&nbsp; + &nbsp;0.20 · Digital / capital&nbsp; + &nbsp;0.15 · Buyer openness&nbsp; − &nbsp;distress
+          <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.5 }}>
+            Three pillars, each ranked as a percentile within the 134 acute peers, then blended with the weights above (they sum to 1). A higher score means a stronger commercial opportunity. The score measures <b style={{ color: C.ink }}>opportunity attractiveness, not live buying intent</b>.
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
           {PILLARS.map((p) => (
             <div key={p.key} style={{ border: `1px solid ${C.line}`, borderRadius: 10, overflow: "hidden" }}>
               <div style={{ background: p.colour, color: "#fff", padding: "10px 12px" }}>
@@ -14009,7 +13879,6 @@ const NAV = [
   { id: "pain", label: "Operational Pain", Icon: Activity },
   { id: "digital", label: "Digital & Capital", Icon: Cpu },
   { id: "dq", label: "Data Quality & Governance", Icon: Gauge },
-  { id: "procurement", label: "Procurement & Intent", Icon: ShoppingCart },
   { id: "geography", label: "Geography & Context", Icon: Globe2 },
   { id: "method", label: "Methodology & Sources", Icon: ScrollText },
   { id: "glossary", label: "Glossary", Icon: FileText },
@@ -14087,7 +13956,6 @@ export default function App() {
           {page === "pain" && <OperationalPain data={filtered} onPick={goTrust} />}
           {page === "digital" && <DigitalCapital data={filtered} onPick={goTrust} />}
           {page === "dq" && <DataQuality data={filtered} onPick={goTrust} />}
-          {page === "procurement" && <Procurement data={TRUSTS} onPick={goTrust} />}
           {page === "geography" && <Geography data={filtered} onPick={goTrust} />}
           {page === "method" && <Methodology />}
           {page === "glossary" && <Glossary />}

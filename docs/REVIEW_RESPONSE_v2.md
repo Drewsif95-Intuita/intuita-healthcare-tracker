@@ -1,5 +1,9 @@
 # Response to external review (V0.2)
 
+> **Later note:** buyer openness has since been **removed from scope** — the model is now three
+> pillars (pain / budget / digital). Mentions of a fourth pillar, a procurement watchlist or a
+> "V1" below are retained only as a record of the review response at the time.
+
 Point-by-point status against the review. "Done" = changed in this build; "Scaffolded" =
 mechanism in place, needs your data; "Needs file/decision" = blocked on input.
 

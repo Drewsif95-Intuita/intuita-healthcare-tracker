@@ -39,7 +39,7 @@ level, and a rich Trust 360 profile (finance, operational pain, digital/capital,
 catchment). Key metrics carry hover **info-tooltips** explaining why each matters commercially,
 and a **Glossary** page documents every term.
 
-**At a glance:** 134 acute trusts · 3 live scoring pillars (a 4th, buyer openness, is planned)
+**At a glance:** 134 acute trusts · 3 scoring pillars — pain, budget, digital
 · evidence layer of CQC, SHMI, DQMI, FDP and a modelled population catchment · all from public
 sources.
 
@@ -73,10 +73,10 @@ reviewed without building it.
 
 Every metric is converted to a **percentile rank within the 134 acute peers** (0–100),
 oriented so higher always means a stronger commercial signal. Pillars are the mean of their
-features; the live **V0** target is their re-normalised weighted sum:
+features; the target is their weighted sum:
 
 ```
-Target (V0) = 0.41 · Operational pain  +  0.35 · Budget likelihood  +  0.24 · Digital / capital
+Target = 0.41 · Operational pain  +  0.35 · Budget likelihood  +  0.24 · Digital / capital
               − severe-distress adjustment
 ```
 
@@ -85,14 +85,13 @@ Target (V0) = 0.41 · Operational pain  +  0.35 · Budget likelihood  +  0.24 ·
 | Operational pain | 0.41 | A&E 4hr/12hr, cancer 62-day/FDS, diagnostics >6wk, RTT 52/18-wk |
 | Budget likelihood | 0.35 | operating income (scale) + actual operating margin (health) |
 | Digital / capital | 0.24 | digital-maturity gap + productivity gap + capital-envelope trigger |
-| *Buyer openness* | *planned* | *no procurement source yet — weight re-normalised away in V0* |
 
-These are the original **Model A** weights (Pain .35 / Budget .30 / Digital .20 / Buyer .15)
-re-normalised after dropping buyer openness; the four-pillar version is the **target V1**.
+The weights sum to 1 (pain carries the most, then budget, then digital). The model measures
+opportunity *attractiveness*, not live buying intent — there is no procurement/CRM data in it.
 Trusts in NHS Oversight Framework **segment 4** take a distress penalty and are capped at
 Band C. **Confidence is scored separately** from the target, so weak data can never inflate a
 ranking. Full detail, worked examples and an independent verification are in
-[`METHODOLOGY.md`](METHODOLOGY.md) and [`WORKED_EXAMPLES_AND_SOURCES.md`](WORKED_EXAMPLES_AND_SOURCES.md).
+[`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) and [`docs/WORKED_EXAMPLES_AND_SOURCES.md`](docs/WORKED_EXAMPLES_AND_SOURCES.md).
 
 ## Data sources
 
@@ -111,82 +110,97 @@ pages but do not change the score.
 | **Evidence** | Federated Data Platform (live + benefits) | NHS England |
 | **Evidence** | In-year finance (Q3 variance, forecast, DSF) | NHS England |
 | **Catchment** | ODS sites + NSPL + Census 2021 + IMD 2025 | NHS England Digital / ONS / MHCLG |
-| **Planned** | Procurement (Find a Tender / Contracts Finder / CRM) | Cabinet Office |
 
-See [`WORKED_EXAMPLES_AND_SOURCES.md`](WORKED_EXAMPLES_AND_SOURCES.md) for the full provenance
-table and [`REVIEW_RESPONSE_v2.md`](REVIEW_RESPONSE_v2.md) for sources reviewed but not used
+See [`docs/WORKED_EXAMPLES_AND_SOURCES.md`](docs/WORKED_EXAMPLES_AND_SOURCES.md) for the full provenance
+table and [`docs/REVIEW_RESPONSE_v2.md`](docs/REVIEW_RESPONSE_v2.md) for sources reviewed but not used
 (NHP, ERIC, Discharge) and why.
 
 ## Repository structure
 
 ```
 .
-├── README.md                       ← you are here
-├── METHODOLOGY.md                  ← full scoring methodology (authoritative)
-├── WORKED_EXAMPLES_AND_SOURCES.md  ← source provenance + worked examples + verification
-├── TARGET_EXAMPLES.md              ← three data-driven example targets and why
-├── EXTENSION_ROADMAP.md            ← prioritised extensions and their rationale
-├── REVIEW_RESPONSE_v2.md           ← point-by-point response to external review
+├── README.md            ← you are here (the front door)
+├── AGENTS.md            ← how an AI agent should REFRESH the model (read first)
+├── REFRESH.md           ← per-source runbook: cadence, where to get each file, expected coverage
+├── validate.py          ← post-build checks; fails loudly on data drift
+│
+├── data/                ← INPUTS — drop source files here (gitignored); see data/README.md
+│
+├── nhs_targeting_transform/   ← THE PIPELINE (run as `python -m nhs_targeting_transform.…`)
+│   ├── config.py              ← weights + feature definitions
+│   ├── loaders.py             ← per-source readers (glob-matched)
+│   ├── scoring.py             ← percentile pillars, distress, bands, confidence
+│   ├── build.py               ← orchestration + CLI → outputs/sales_scorecard.csv
+│   ├── catchment.py           ← NSPL + sites + Census + IMD → catchment files
+│   ├── cqc_extract.py         ← streams the large CQC ODS → ratings CSV
+│   └── requirements.txt
+│
+├── outputs/             ← GENERATED ARTEFACTS (the model output)
+│   ├── sales_scorecard.csv          ← 134 trusts scored
+│   ├── feature_table.csv            ← raw inputs behind every score (audit)
+│   ├── catchment_bridge.csv         ← LSOA→trust assignments
+│   ├── catchment_summary.csv        ← per-trust population / age / ethnicity / IMD
+│   ├── cqc_ratings_extracted.csv    ← trust-level CQC Overall + Well-led
+│   └── fdp_live_organisations_extracted.csv
 │
 ├── src/components/NhsTargetingPrototype.jsx
-│                                      ← the interactive app (single-file React)
-├── screenshots/                    ← all 11 pages rendered on real data
-│
-├── sales_scorecard.csv             ← GOLD OUTPUT: 134 trusts scored
-├── feature_table.csv               ← raw inputs behind every score (audit)
-├── catchment_bridge.csv            ← 33,755 LSOA→trust assignments
-├── catchment_summary.csv           ← per-trust population / age / ethnicity / IMD
-├── cqc_ratings_extracted.csv       ← trust-level CQC Overall + Well-led
-├── fdp_live_organisations_extracted.csv  ← FDP live + benefits flags
-├── procurement_watchlist_TEMPLATE.csv    ← drop-in template to activate buyer openness
-│
-├── nhs_targeting_transform/        ← scoring pipeline (the core logic)
-│   ├── config.py                   ← weights + feature definitions
-│   ├── loaders.py                  ← per-source readers
-│   ├── scoring.py                  ← percentile pillars, distress, bands, confidence
-│   ├── build.py                    ← orchestration + CLI → sales_scorecard.csv
-│   ├── catchment.py                ← NSPL + sites + Census → catchment bridge
-│   ├── cqc_extract.py              ← streams the 1 GB CQC ODS → ratings CSV
-│   └── requirements.txt
-└── nhs_targeting_ingest/           ← bronze source discovery / fetch
+│                                      ← the interactive app (single-file React, data inlined)
+├── screenshots/         ← the report pages rendered on real data
+└── docs/                ← all methodology & design docs
+    ├── METHODOLOGY.md               ← authoritative scoring logic + Appendix A (files→loaders→fields)
+    ├── WORKED_EXAMPLES_AND_SOURCES.md
+    ├── TARGET_EXAMPLES.md
+    ├── EXTENSION_ROADMAP.md
+    ├── INTERACTION_MODEL.md
+    └── REVIEW_RESPONSE_v2.md
 ```
 
-## Reproducing the outputs
+## Reproducing / refreshing the outputs
+
+**Refreshing the model is running this pipeline against new files — not a chat session.** If you
+are an AI assistant asked to refresh it, read [`AGENTS.md`](AGENTS.md) first; per-source detail is
+in [`REFRESH.md`](REFRESH.md).
 
 ```bash
-pip install pandas openpyxl scipy odfpy
+pip install -r nhs_targeting_transform/requirements.txt
 
-# 1) Scoring pipeline → sales_scorecard.csv + feature_table.csv
-python -m nhs_targeting_transform.build --input <dir-of-source-extracts> --out ./gold
+# one-off precomputes (only if those sources changed)
+python -m nhs_targeting_transform.cqc_extract --ods data/cqc_ratings.ods --out data
+python -m nhs_targeting_transform.catchment   --nspl data/NSPL_*.zip --sites data/nhs-trust_sites.csv \
+        --census data --input data --out outputs
 
-# 2) Catchment bridge (needs NSPL + ODS sites + Census + IMD)
-python -m nhs_targeting_transform.catchment \
-    --nspl NSPL_MAY_2025_UK.zip --sites nhs-trust_sites.csv \
-    --census <dir-with-census-lsoa-csvs> --input <dir-with-NOF> --out ./gold
+# main scoring build → outputs/sales_scorecard.csv + feature_table.csv
+python -m nhs_targeting_transform.build --input data --out outputs
 
-# 3) CQC ratings (one-off; streams the ~1 GB ratings ODS to a small CSV)
-python -m nhs_targeting_transform.cqc_extract --ods cqc_ratings.ods --out ./gold
+# verify the build before publishing
+python validate.py
 ```
 
-Loaders locate each file by glob pattern, so exact filenames don't matter as long as the files
-are present. Source data is **not** committed to this repo (size + licensing — see below);
-point `--input` at your own copy of the extracts.
+Loaders locate each file by glob pattern, so exact filenames don't matter as long as a matching
+file is present. Source data is **not** committed (size + licensing — see below); put your copy in
+`data/`. A few inputs (TAC, capital, Q3, FDP) arrive pre-cleaned upstream — see the warning in
+`REFRESH.md`.
 
 ## Documentation
 
 | Document | What's in it |
 |---|---|
-| [`METHODOLOGY.md`](METHODOLOGY.md) | the scoring model, weights, distress, confidence, catchment, every design decision |
-| [`WORKED_EXAMPLES_AND_SOURCES.md`](WORKED_EXAMPLES_AND_SOURCES.md) | full source provenance, two number-by-number worked traces, independent verification |
-| [`TARGET_EXAMPLES.md`](TARGET_EXAMPLES.md) | three example targets with data-driven rationale |
-| [`EXTENSION_ROADMAP.md`](EXTENSION_ROADMAP.md) | where to take it next, in value-for-effort order |
-| [`REVIEW_RESPONSE_v2.md`](REVIEW_RESPONSE_v2.md) | response to external review; status of every source |
-| [`INTERACTION_MODEL.md`](INTERACTION_MODEL.md) | build spec for in-app methodology tooltips + cross-filter/drilldown |
+| [`AGENTS.md`](AGENTS.md) | **how to refresh the model** — read first if you're picking this up |
+| [`REFRESH.md`](REFRESH.md) | per-source runbook: pattern, loader, cadence, where to get it, expected coverage |
+| [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) | the scoring model, weights, distress, confidence, catchment + Appendix A (files→loaders→fields) |
+| [`docs/WORKED_EXAMPLES_AND_SOURCES.md`](docs/WORKED_EXAMPLES_AND_SOURCES.md) | full source provenance, two number-by-number worked traces, independent verification |
+| [`docs/TARGET_EXAMPLES.md`](docs/TARGET_EXAMPLES.md) | three example targets with data-driven rationale |
+| [`docs/EXTENSION_ROADMAP.md`](docs/EXTENSION_ROADMAP.md) | where to take it next, in value-for-effort order |
+| [`docs/INTERACTION_MODEL.md`](docs/INTERACTION_MODEL.md) | build spec for in-app methodology tooltips + cross-filter/drilldown |
+| [`docs/REVIEW_RESPONSE_v2.md`](docs/REVIEW_RESPONSE_v2.md) | response to external review; status of every source |
 
 In-app, the **Glossary** page and the hover info-tooltips on each metric document terms for
 non-specialist readers.
 
 ## Screenshots
+
+> Note: these images are from an earlier build and predate the removal of buyer openness — the
+> live app no longer has a Procurement page, an "Active procurement" tile, or a Buyer pillar bar.
 
 | | |
 |---|---|
@@ -200,15 +214,16 @@ non-specialist readers.
 1. **Bands are uncalibrated.** Percentile pillars centre the target near ~48, so the A/B/C/D
    cut-offs are deliberately tight. **Trust the ranking, not the band letters**, until
    calibrated against CRM win/loss history.
-2. **Buyer openness is not in the score** (no procurement source yet). The score answers "is
-   this an interesting opportunity?" better than "is this actionable now?".
+2. **Opportunity, not live intent.** The score answers "is this an interesting opportunity?"
+   (a clear problem + budget + a digital reason), not "are they buying right now?" — there is
+   no procurement/CRM data in the model, by design.
 3. **Evidence vs scored.** CQC, SHMI, DQMI, FDP, Q3 finance and catchment are shown but not in
    the score, to keep rankings stable pre-calibration.
 4. **Catchment is a geographic proxy**, not patient-flow; it understates specialist trusts.
 5. **Large-trust bias:** the score correlates with operating income (bigger trusts → bigger
    potential deals); pair with a per-capita view where intensity matters.
 
-The [roadmap](EXTENSION_ROADMAP.md) addresses each of these.
+The [roadmap](docs/EXTENSION_ROADMAP.md) addresses each of these.
 
 ## Data & licensing
 

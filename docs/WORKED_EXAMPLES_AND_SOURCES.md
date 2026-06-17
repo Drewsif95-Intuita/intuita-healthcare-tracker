@@ -30,7 +30,7 @@ the pages but do not change the score; the rest are join keys, fallbacks, or con
 | Financial Performance Q3 PDF | in-year provider position | Available, **not wired** | NHS England — Financial performance report 2025/26 Q3 (provider names need alias review) |
 | CQC ratings + directory | regulatory rating | **Blocked** | Care Quality Commission — needs a CQC-provider→ODS bridge |
 | IMD 2025 | deprivation decile | **Blocked** | GOV.UK / MHCLG — not yet supplied (would complete Geography deprivation) |
-| Procurement (Find a Tender / Contracts Finder) | buyer-openness pillar (0.15, currently empty) | **Open** | Cabinet Office / GOV.UK OCDS APIs |
+| Procurement (Find a Tender / Contracts Finder) | buyer openness — *considered, then excluded by design* | **Out of scope** | Cabinet Office / GOV.UK OCDS APIs |
 
 ---
 

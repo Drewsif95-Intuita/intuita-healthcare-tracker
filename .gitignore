@@ -33,6 +33,10 @@ __pycache__/
 /gold/
 /extra/
 
+# Source input folder (keep the runbook, ignore raw files)
+data/*
+!data/README.md
+
 # Raw source data files (public, but not committed - size + licensing; see README)
 *.xlsx
 *.ods
@@ -41,3 +45,4 @@ NSPL_*.zip
 
 # Packaged snapshots of this repo
 nhs_targeting_review_bundle*.zip
+nhs-acute-targeting-repo*.zip

@@ -26,9 +26,9 @@ Three layers, from quick to deep — already in the prototype:
   `digital`, `rawOpp`, `target`, `finance.income/margin/capital`, `dmaRaw`, `topPain`), so they
   are exact, not narrated. Keep them in sync with the scoring code — ideally generate the
   tooltip strings from the same constants as the scorer.
-- Pillar weights shown on Trust 360 are the **live V0** weights (Pain 0.41 / Budget 0.35 /
-  Digital 0.24; Buyer not in V0). Do **not** revert to the 0.30/0.35/0.20/0.15 Model-A display —
-  that was an earlier inconsistency; V1 weights apply only once buyer openness is loaded.
+- Pillar weights shown on Trust 360 are **Pain 0.41 / Budget 0.35 / Digital 0.24** (three
+  pillars, summing to 1). Do **not** revert to the old 0.30/0.35/0.20/0.15 four-pillar display —
+  that earlier design included a "buyer openness" pillar that has since been removed from scope.
 - Consider promoting the per-trust calculation to a small expandable "How this score was built"
   panel on Trust 360 for stakeholders who want the full breakdown rather than a hover.
 

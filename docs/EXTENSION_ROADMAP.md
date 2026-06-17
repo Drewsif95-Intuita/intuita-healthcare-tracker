@@ -1,19 +1,19 @@
 # Extension Roadmap — Where to Take This Next, and Why
 
-The tool is a credible V0: it answers "which trusts are an interesting commercial
+The tool is a credible model: it answers "which trusts are an interesting commercial
 opportunity?" well. The extensions below move it toward answering "which trusts are
 **actionable now**?" — the full sales question. Ordered by value-for-effort.
 
 ## Tier 1 — Turns the prototype into a usable sales engine
 
-### 1. Buyer-openness pillar (the biggest commercial gap)
-**What:** load procurement / route-to-market signals (Find a Tender, Contracts Finder, board
-papers, framework presence, CRM contact strength) to populate the deferred fourth pillar.
-**Why it matters:** today the tool finds trusts with a *problem* and the *budget*, but cannot
-say which will actually go to market. Buyer openness is the difference between a good-fit
-target and an actionable one. A `procurement_watchlist.csv` template is already in the bundle;
-the loader hook is the only build step. This single addition takes the model from three live
-pillars to the full four-pillar V1.
+### 1. (Optional, parked) Buyer-openness signal
+**Status: deliberately out of scope.** Buyer openness was considered as a fourth pillar, but
+there is no reliable, easily-refreshed trust-level source for procurement/CRM intent, and
+adding it would make the model harder to re-run — which conflicts with keeping refresh simple.
+It is therefore **excluded by design**. Only revisit if the data below becomes easy to source.
+**What it would add:** procurement / route-to-market signals (Find a Tender, Contracts Finder,
+board papers, supplier spend, CRM contact strength) to distinguish a good-fit target from one
+that is actively going to market.
 
 **Supplier spend (£25k transparency) as a complementary buyer signal.** Every NHS body
 publishes monthly "spend over £25k" data (supplier, amount, expense type/area). Collected
@@ -36,7 +36,7 @@ a prompt for manual review.
 ### 3. Fold the evidence layer into the score (deliberately, post-calibration)
 **What:** promote signals currently shown but not scored — CQC (regulatory pressure), Q3
 in-year finance (current pressure, DSF), DQMI (data-quality need) — into the relevant pillars.
-**Why it matters:** these are live and validated in the bundle but held out to keep V0 stable.
+**Why it matters:** these are live and validated but held out of the score to keep the live model stable.
 Once weights are calibrated, folding them in sharpens the score with information already on
 screen — e.g. CQC "Requires improvement" as a board-urgency boost, Q3 deterioration as a
 budget-risk signal.
@@ -110,7 +110,7 @@ outcomes are exactly what the calibration in Tier 1 needs to keep improving.
 ---
 
 ### Suggested sequence
-**Now:** buyer-openness watchlist (#1) → it unlocks the missing pillar with data you can
-assemble manually. **Next:** calibration (#2) once any CRM history exists. **Then:** the
+**Now:** band calibration (#2) once any CRM win/loss history exists — it tightens the A/B/C/D
+bands against real outcomes. **Then:** the
 scoring refinements (#4–#6), which are small, localised changes to `config.py`/`build.py`.
 Coverage and productionisation (Tiers 3–4) follow as the tool earns its place in the workflow.

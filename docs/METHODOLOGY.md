@@ -19,27 +19,23 @@ digital/transformation reason to engage. Clinical quality is used only as contex
 - Non-acute and independent-sector providers present in some source files are filtered out
   by joining to the NOF acute list.
 
-## 3. Scoring model (Model A)
+## 3. Scoring model
 
-Original Model A pillar weights:
+The model uses **three pillars**, each scored 0–100 as a percentile within the 134 acute peers
+and blended with these weights (they sum to 1):
 
-| Pillar | Original weight |
+| Pillar | Weight |
 |---|---|
-| Operational pain | 0.35 |
-| Budget likelihood | 0.30 |
-| Digital / capital | 0.20 |
-| Buyer openness | 0.15 |
+| Operational pain | 0.41 |
+| Budget likelihood | 0.35 |
+| Digital / capital | 0.24 |
 
-Buyer-openness has **no data source** in this MVP (no procurement feed pulled), so the live
-**V0 score** drops it and **re-normalises** the remaining three weights to sum to 1.0. The
-four-pillar version is the **target V1** model (activated once a procurement/CRM watchlist is
-loaded). Both are shown explicitly in the app:
-
-| Pillar | Re-normalised weight |
-|---|---|
-| Operational pain | 0.412 |
-| Budget likelihood | 0.353 |
-| Digital / capital | 0.235 |
+A higher score means a stronger commercial opportunity. The model deliberately measures
+**opportunity attractiveness, not live buying intent**. An earlier design also considered a
+fourth "buyer openness" pillar, but there is no reliable, easily-refreshed trust-level source
+for procurement/CRM intent, so it is **excluded by design** to keep the model simple to re-run.
+(The .41/.35/.24 values are the original pain/budget/digital weights re-normalised after that
+exclusion.)
 
 ### 3.1 Feature scoring
 
@@ -140,7 +136,7 @@ Trust 360 also shows a sales-enablement block (recommended first conversation, l
 persona, relevant service offer, route to market, known contacts, last touched). The
 conversation / persona / offer are **heuristics mapped from the sales play**; route to market,
 CRM contacts and "last touched" are **placeholders pending the procurement/CRM integration**
-(the buyer-openness pillar) and are labelled "not loaded" in the app. They are presentation
+and are labelled "not loaded" in the app. They are presentation
 scaffolding, not scored inputs or sourced data.
 
 ## 6. Evidence layer (shown, not scored)
@@ -191,7 +187,7 @@ sites + Census 2021 + IMD 2025).
 
 **Reviewed but not used:** Discharge (trust-level data too patchy), ERIC (no backlog column in the
 extract), NHP/RAAC (the PDF is a policy-narrative paper, not a scheme→trust register), Staff
-survey / WLMDS (low marginal value). **Still open:** buyer-openness needs a procurement/CRM source.
+survey / WLMDS (low marginal value). **Out of scope (by design):** buyer openness / live procurement intent — no reliable, easily-refreshed trust-level source, so it is excluded to keep the model easy to run.
 
 The exact files, loaders, columns and field mappings are in **Appendix A**.
 
@@ -199,15 +195,14 @@ The exact files, loaders, columns and field mappings are in **Appendix A**.
 
 `sales_scorecard.csv` (gold), `feature_table.csv` (audit), `catchment_bridge.csv` and
 `catchment_summary.csv` (incl. IMD decile), `cqc_ratings_extracted.csv`,
-`fdp_live_organisations_extracted.csv`, the `nhs_targeting_transform` pipeline, the
-`nhs_targeting_ingest` package, and the interactive prototype.
+`fdp_live_organisations_extracted.csv`, the `nhs_targeting_transform` pipeline, and the interactive prototype.
 
 ## 10. Calibration plan (the key open item)
 
 Before the bands drive real sales effort: backtest against CRM win/loss outcomes; tune band
 cut-offs and, if warranted, pillar weights to maximise precision@top-20–30; then optionally
 fold the evidence-layer signals (DQMI/SHMI/FDP) and TAC operating income into the scored
-pillars, and add a procurement feed to populate the buyer-openness pillar.
+pillars.
 
 ---
 
@@ -222,13 +217,13 @@ matches. All joins are on the **3-letter ODS trust code**.
 ### A.1 Directory layout
 
 ```
-<input_dir>/        # all source extracts live here (any filenames matching the patterns below)
-<out_dir>/          # pipeline writes sales_scorecard.csv + feature_table.csv here
+data/               # all source extracts live here (any filenames matching the patterns below)
+outputs/            # pipeline writes sales_scorecard.csv + feature_table.csv here
 ```
 
 The catchment and CQC steps are **one-off precomputes**: they read large raw files (NSPL,
 Census, IMD, the CQC ODS) and write small CSVs (`catchment_*`, `cqc_ratings_extracted.csv`)
-back into `<input_dir>`, which the main `build` step then consumes like any other source.
+into `data/`/`outputs/`, which the main `build` step then consumes like any other source.
 
 ### A.2 Run order
 
@@ -236,12 +231,12 @@ back into `<input_dir>`, which the main `build` step then consumes like any othe
 pip install pandas openpyxl scipy odfpy
 
 # one-off precomputes (write CSVs into <input_dir>)
-python -m nhs_targeting_transform.cqc_extract --ods cqc_ratings.ods --out <input_dir>
-python -m nhs_targeting_transform.catchment  --nspl NSPL_*.zip --sites nhs-trust_sites.csv \
-        --census <input_dir> --input <input_dir> --out <input_dir>
+python -m nhs_targeting_transform.cqc_extract --ods data/cqc_ratings.ods --out data
+python -m nhs_targeting_transform.catchment  --nspl data/NSPL_*.zip --sites data/nhs-trust_sites.csv \
+        --census data --input data --out outputs
 
 # main scoring build (reads everything, writes the gold scorecard)
-python -m nhs_targeting_transform.build --input <input_dir> --out <out_dir>
+python -m nhs_targeting_transform.build --input data --out outputs
 ```
 
 ### A.3 Scored sources
