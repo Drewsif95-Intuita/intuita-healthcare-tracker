@@ -103,9 +103,17 @@ output.
 
 ## 4. Trend
 
-For each trust, a composite "badness" index (mean of oriented pain features) is computed per
-month over the recent window; the slope classifies the trust as Worsening / Improving /
-Volatile / Flat. This is a direction heuristic, not a forecast.
+For each trust, a composite "badness" index (mean of oriented pain features, higher = more pain)
+is computed per month over the 12-month window (stored as the `spark` series) and the slope
+classifies the trust as Worsening / Improving / Volatile / Flat. This is a direction heuristic,
+not a forecast.
+
+On Trust 360 this renders as a plain-English statement plus an auto-scaled line with a dashed
+**peer-average** line (the mean of every trust's `spark` per month), so the trust can be read
+against the pack. The statement's **direction word** maps from the classification (Improving →
+"Pain easing", Worsening → "Pain escalating", Volatile → "Pain volatile", Flat → "Pain broadly
+flat") and the **% change** is `(last − first) / first` of the `spark` series (the same is shown
+for the peer average). Worsening pain = a stronger "why now".
 
 ## 5. Confidence / data completeness (separate from the score)
 
@@ -145,13 +153,51 @@ Beyond the score, the build derives the "so what do I do" layer for each trust:
 - **`next_action`** — mapped from band and distress: distressed → **Qualify funding**; otherwise
   A → **Call**, B → **Enrich**, C → **Monitor**, D → **No action**.
 
-### Illustrative sales-enablement fields
-Trust 360 also shows a sales-enablement block (recommended first conversation, likely buyer
-persona, relevant service offer, route to market, known contacts, last touched). The
-conversation / persona / offer are **heuristics mapped from the sales play**; route to market,
-CRM contacts and "last touched" are **placeholders pending the procurement/CRM integration**
-and are labelled "not loaded" in the app. They are presentation
-scaffolding, not scored inputs or sourced data.
+## 5c. App presentation-layer derivations (for the site build)
+
+These are produced in the app (`src/components/NhsTargetingPrototype.jsx`), **not** the scoring pipeline —
+a tool rebuilding the site must reproduce them from the scorecard fields. Every rule is
+deterministic. Provenance tag: **real** = derived from sourced data; **illustrative** = heuristic
+scaffolding that demonstrates the workflow, not sourced data (shown under an "Illustrative" badge
+in the app).
+
+**"Why this score" box (real).** A plain-English read of the three pillars: each is labelled
+high/strong (>= 66), moderate/some (33–65) or low/limited (< 33); pain names `top_pain`; budget
+cites operating income and margin; digital cites DMA (and capital if present); a distress note is
+added for segment-4 trusts; and the exact arithmetic `0.41·pain + 0.35·budget + 0.24·digital =
+raw_opportunity_score (− 8 distress = target)` is shown.
+
+**Sales play → enablement kit (illustrative).** `sales_play` (§5b) is looked up in a fixed table
+to fill the persona / service offer / proof point / first-conversation cards:
+
+| Sales play | Buyer persona | Service offer | Proof point | First conversation |
+|---|---|---|---|---|
+| UEC / A&E flow | COO | UEC command centre, flow analytics, discharge optimisation | A&E flow dashboard + discharge-delay model | Winter/flow pressure and the cost of 12-hour breaches |
+| Elective recovery / RTT | COO | PTL analytics, theatre productivity, RTT recovery | Elective recovery / PTL dashboard | 52-week reduction and theatre utilisation |
+| Cancer / diagnostics pathway | Cancer / Elective Director | Pathway tracking, breach prevention, PTL analytics | 62-day breach-prevention model | Protecting the 62-day standard and the diagnostic backlog |
+| EPR optimisation (& reporting) | CIO / CCIO | Post-go-live reporting, adoption analytics, benefits realisation | EPR benefits-tracking pack | Realising the value already invested in the EPR |
+| New hospital / estates transformation | SRO / Programme Director | Capital PMO, benefits tracking, estates analytics | Capital programme PMO dashboard | Evidencing the NHP business case and tracking delivery |
+| Data quality & submissions | Chief Data Officer | Submissions assurance, validation, DQMI remediation | Statutory-returns QA dashboard | De-risking national submissions and the DQMI trend |
+| Finance & productivity | CFO | Productivity analytics, agency reduction, model hospital | Productivity & agency-spend dashboard | ROI-led efficiency against the in-year gap |
+| Workforce & change readiness | Chief People Officer | Workforce analytics, change-readiness, adoption | People-team adoption dashboard | Turning staff-survey signals into a change plan |
+
+This demonstrates *how* an offer maps to a problem; it is not a directive. The app presents the
+play as a **"suggested angle — you choose how to play it"** and shows `top_pain` as the pain
+points to lead with.
+
+**Funding route (real — derived from sourced signals).** A trust may carry more than one:
+- *Capital-backed* — a New Hospital Programme scheme is present, **or** the ERIC estates signal
+  is >= 70, **or** the capital-allocation percentile is >= 75.
+- *ROI-led* — the agency-spend signal is >= 7, **or** the play is productivity / elective /
+  discharge / flow.
+- *Digital programme* — EPR status is "Optimising" or "Procuring", **or** FDP is Live, **or**
+  DMA < 55.
+- *Relationship-led* — a warm CRM relationship exists.
+- *None evident* — when none of the above fire.
+
+**CRM-dependent fields (illustrative / blank).** Route to market, known contacts and "last
+touched" are placeholders ("—" / "not loaded") until a CRM feed is connected. "Next touch" is the
+trust's `next_action` (§5b).
 
 ## 6. Evidence layer (shown, not scored)
 

@@ -12952,6 +12952,33 @@ const MiniPillars = ({ t }) => {
 /* ============================================================================
    PAGE 3 — TRUST 360
 ============================================================================ */
+const ScoreWhy = ({ t }) => {
+  const fin = t.finance || {};
+  const lvl = (v, hi, mid, lo) => (v >= 66 ? hi : v >= 33 ? mid : lo);
+  const verdict = { A: "Strong opportunity", B: "Solid opportunity", C: "Watch / nurture", D: "Low priority" }[t.bandValue] || "";
+  const f = (x) => (x === null || x === undefined ? "\u2014" : x);
+  const lines = [
+    lvl(t.pain, "High", "Moderate", "Low") + " operational pain (" + t.pain + "/100 vs peers), led by " + f(t.topPain) + ".",
+    lvl(t.budget, "Strong", "Moderate", "Limited") + " budget likelihood (" + t.budget + ") \u2014 income \u00a3" + f(fin.income) + "m, margin " + f(fin.margin) + "%.",
+    lvl(t.digital, "Strong", "Some", "Limited") + " digital opportunity (" + t.digital + ") \u2014 DMA " + f(t.dmaRaw) + "/5" + (fin.capital != null ? ", capital \u00a3" + fin.capital + "m" : "") + ".",
+  ];
+  if (t.distress) lines.push("In severe distress (NOF segment 4) \u2014 capped at Band C; qualify the funding route first.");
+  return (
+    <div style={{ background: C.bg, border: `1px solid ${C.line}`, borderRadius: 12, padding: "12px 16px", marginBottom: 16 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
+        <span style={{ fontFamily: "Poppins", fontWeight: 700, fontSize: 13, color: C.ink }}>Why this score</span>
+        <span style={{ fontSize: 12, color: C.purple, fontWeight: 600 }}>Band {t.bandValue} · {verdict}</span>
+      </div>
+      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: C.ink, lineHeight: 1.55 }}>
+        {lines.map((l, i) => <li key={i}>{l}</li>)}
+      </ul>
+      <div style={{ fontSize: 11, color: C.muted, marginTop: 8 }}>
+        Target = 0.41×{t.pain} + 0.35×{t.budget} + 0.24×{t.digital} = {t.rawOpp}{t.distress ? " − 8 distress = " + t.target : ""}. Each pillar is a percentile rank within the 134 acute trusts (higher = stronger commercial signal).
+      </div>
+    </div>
+  );
+};
+
 function Trust360({ t, onBack }) {
   const T = TREND_ICON[t.trend];
   const painData = [
@@ -12974,10 +13001,9 @@ function Trust360({ t, onBack }) {
             <Pill b={t.bandValue} />
           </div>
           <div style={{ display: "flex", gap: 16, color: C.muted, fontSize: 13, flexWrap: "wrap" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}><MapPin size={14} />{t.region} · {t.icb}</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}><MapPin size={14} />{t.icb && t.icb !== t.region ? t.region + " · " + t.icb : t.region}</span>
             <span>ODS {t.code}</span>
-            <span>{t.scale ? t.scale.toLocaleString() + ' beds' : '—'} · scale proxy</span>
-            <span>{t.beds} beds</span>
+            <span>{t.scale ? t.scale.toLocaleString() + ' beds · scale proxy' : '—'}</span>
             <span style={{ display: "flex", alignItems: "center", gap: 5, color: T.colour }}><T.Icon size={14} />{t.trend} ({T.note})</span>
           </div>
         </div>
@@ -12996,6 +13022,7 @@ function Trust360({ t, onBack }) {
       <div style={{ fontSize: 11, color: C.muted, margin: "-6px 0 14px", display: "flex", alignItems: "center", gap: 6 }}>
         <Info size={12} />Confidence reflects data quality, not opportunity size — held separate from the score. {t.conf.why}.
       </div>
+      <ScoreWhy t={t} />
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
         {/* pillars */}
@@ -13009,20 +13036,22 @@ function Trust360({ t, onBack }) {
         </div>
         {/* pain profile */}
         <div style={card()}>
-          <SectionTitle>Pain profile <span style={{ fontWeight: 400, color: C.muted, fontSize: 11 }}>(lower = worse)</span></SectionTitle>
+          <SectionTitle>Pain profile <span style={{ fontWeight: 400, color: C.muted, fontSize: 11 }}>(longer bar = more pain = bigger opportunity)</span></SectionTitle>
           <div style={{ height: 150 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={painData} layout="vertical" margin={{ left: 4, right: 12, top: 0, bottom: 0 }}>
                 <XAxis type="number" domain={[0, 100]} hide />
+                <ReferenceLine x={50} stroke={C.muted} strokeDasharray="3 3" ifOverflow="extendDomain" />
                 <YAxis type="category" dataKey="k" width={86} tick={{ fontSize: 11, fill: C.ink }} />
                 <Bar dataKey="v" radius={[0, 4, 4, 0]} barSize={14}>
                   {painData.map((p, i) => (
-                    <Cell key={i} fill={p.v < 40 ? C.bad : p.v < 65 ? C.warn : C.good} />
+                    <Cell key={i} fill={p.v >= 65 ? C.bad : p.v >= 40 ? C.warn : C.good} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
+          <div style={{ fontSize: 10.5, color: C.muted, marginTop: 4 }}>Dashed line = peer midpoint (~50). A bar past it = more pain than the typical trust.</div>
           <Src>{SECTION_SOURCE.pain}</Src>
         </div>
         {/* regulatory / digital */}
@@ -13056,18 +13085,40 @@ function Trust360({ t, onBack }) {
         {/* 12-mo trend */}
         <div style={card()}>
           <SectionTitle><Activity size={15} style={{ verticalAlign: "-2px", marginRight: 6 }} />Pain index · 12-month trend</SectionTitle>
-          <div style={{ height: 150 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={t.spark.map((v, i) => ({ m: ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"][i], v }))} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
-                <CartesianGrid stroke={C.line} vertical={false} />
-                <XAxis dataKey="m" tick={{ fontSize: 10, fill: C.muted }} />
-                <YAxis tick={{ fontSize: 10, fill: C.muted }} domain={[40, 100]} />
-                <Tooltip content={<SimpleTip />} />
-                <Line type="monotone" dataKey="v" stroke={C.bright} strokeWidth={2.5} dot={{ r: 2 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>Composite operational-pain index. 3-month acceleration shown by slope.</div>
+          {(() => {
+            const M = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+            const sp = t.spark || [];
+            const pct = sp[0] ? Math.round((sp[sp.length - 1] - sp[0]) / sp[0] * 100) : 0;
+            const word = { Improving: "Pain easing", Worsening: "Pain escalating", Volatile: "Pain volatile", Flat: "Pain broadly flat" }[t.trend] || t.trend;
+            const arrow = pct < -2 ? "\u2198" : pct > 2 ? "\u2197" : "\u2192";
+            const peer = sp.map((_, i) => {
+              const vals = TRUSTS.map((x) => x.spark && x.spark[i]).filter((v) => v != null);
+              return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10 : null;
+            });
+            const peerPct = peer[0] ? Math.round((peer[peer.length - 1] - peer[0]) / peer[0] * 100) : 0;
+            const data = sp.map((v, i) => ({ m: M[i], v, peer: peer[i] }));
+            return (
+              <>
+                <div style={{ fontSize: 12.5, color: C.ink, margin: "0 0 8px" }}>
+                  <b>{arrow} {word}</b> — index {pct <= 0 ? "down" : "up"} {Math.abs(pct)}% over 12 months
+                  <span style={{ color: C.muted }}> · peers {peerPct <= 0 ? "down" : "up"} {Math.abs(peerPct)}%</span>
+                </div>
+                <div style={{ height: 124 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+                      <CartesianGrid stroke={C.line} vertical={false} />
+                      <XAxis dataKey="m" tick={{ fontSize: 10, fill: C.muted }} />
+                      <YAxis tick={{ fontSize: 10, fill: C.muted }} domain={["dataMin - 5", "dataMax + 5"]} />
+                      <Tooltip content={<SimpleTip />} />
+                      <Line type="monotone" dataKey="peer" stroke={C.muted} strokeWidth={1.5} strokeDasharray="4 3" dot={false} name="Peer avg" />
+                      <Line type="monotone" dataKey="v" stroke={C.bright} strokeWidth={2.5} dot={{ r: 2 }} name="This trust" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>Composite operational-pain index (higher = more pain). Dashed grey = average across all 134 trusts. Worsening pain = a stronger "why now".</div>
+              </>
+            );
+          })()}
           <Src>{SECTION_SOURCE.trend}</Src>
         </div>
       </div>
@@ -13085,9 +13136,15 @@ function Trust360({ t, onBack }) {
           </div>
         </div>
         <div style={{ ...card(), background: C.purple, color: "#fff" }}>
-          <div style={{ fontSize: 11, opacity: .8, textTransform: "uppercase", letterSpacing: .5, marginBottom: 6 }}>Suggested sales play</div>
-          <div style={{ fontFamily: "Poppins", fontSize: 22, fontWeight: 700, marginBottom: 10 }}>{t.play}</div>
-          <div style={{ fontSize: 13, lineHeight: 1.5, opacity: .92 }}>{BAND_META[t.bandValue].action}</div>
+          <div style={{ fontSize: 11, opacity: .8, textTransform: "uppercase", letterSpacing: .5, marginBottom: 8 }}>Pain points to lead with</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+            {t.topPain.map((pp) => (
+              <span key={pp} style={{ background: "rgba(255,255,255,0.18)", color: "#fff", fontSize: 12.5, fontWeight: 600, padding: "5px 11px", borderRadius: 6 }}>{pp}</span>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, opacity: .8, textTransform: "uppercase", letterSpacing: .5, marginBottom: 4 }}>Suggested angle <span style={{ textTransform: "none", letterSpacing: 0, opacity: .85 }}>· you choose how to play it</span></div>
+          <div style={{ fontFamily: "Poppins", fontSize: 18, fontWeight: 700, marginBottom: 6 }}>{t.play}</div>
+          <div style={{ fontSize: 12.5, lineHeight: 1.5, opacity: .85 }}>One way in, off the lead pain point — adapt the approach to the account.</div>
           <button style={{ marginTop: 16, background: "#fff", color: C.purple, border: "none", borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
             <Stethoscope size={15} />Build account plan <ArrowUpRight size={15} />
           </button>
@@ -13345,7 +13402,7 @@ function DigitalCapital({ data, onPick }) {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: "#FAF8FC", borderBottom: `2px solid ${C.line}` }}>
-              {[["Trust", null], ["Digital maturity", "public"], ["YoY", null], ["EPR status", "curated"], ["FDP", "public"], ["Capital / NHP", "public"], ["Estate backlog", "public"], ["Active triggers", "inferred"]].map(([h, sc]) => (
+              {[["Trust", null], ["Digital opportunity", null], ["Digital maturity (DMA)", "public"], ["EPR status", "curated"], ["FDP", "public"], ["Capital / NHP", "public"], ["Estate backlog", "public"], ["Active triggers", "inferred"]].map(([h, sc]) => (
                 <th key={h} style={{ textAlign: "left", padding: "11px 14px", fontSize: 10.5, fontWeight: 600, color: C.muted, textTransform: "uppercase", letterSpacing: .4 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                     {sc && <span title={`Source confidence: ${sc}`} style={{ width: 7, height: 7, borderRadius: 999, background: SRC_CONF[sc], display: "inline-block" }} />}{h}
@@ -13362,10 +13419,8 @@ function DigitalCapital({ data, onPick }) {
                   <div style={{ fontWeight: 600, color: C.ink }}>{d.name}</div>
                   <div style={{ fontSize: 11, color: C.muted }}>{d.region}</div>
                 </td>
+                <td style={{ padding: "11px 14px" }}><span style={{ fontFamily: "Poppins", fontSize: 16, fontWeight: 700, color: C.purple }}>{d.digital}</span></td>
                 <td style={{ padding: "11px 14px", minWidth: 120 }}><BarCell v={d.dma} c={d.dma >= 75 ? C.good : d.dma >= 55 ? C.mid : C.warn} /></td>
-                <td style={{ padding: "11px 14px" }}>
-<span style={{ fontSize: 12, color: C.muted }}>—</span>
-                </td>
                 <td style={{ padding: "11px 14px" }}><Chip label={d.epr} tone={eprTone(d.epr)} /></td>
                 <td style={{ padding: "11px 14px" }}><Chip label={d.fdp === "—" ? "None" : d.fdpBenefits ? "Live · benefits" : "Live"} tone={d.fdp === "Live" ? "good" : "off"} /></td>
                 <td style={{ padding: "11px 14px", fontSize: 12 }}>
@@ -13392,6 +13447,7 @@ function DigitalCapital({ data, onPick }) {
         ))}
         <span style={{ fontStyle: "italic" }}>No single national EPR-status file exists — EPR is triangulated/curated, not a confirmed feed.</span>
       </div>
+      <div style={{ fontSize: 11, color: C.muted, marginTop: 10, lineHeight: 1.5 }}><b style={{ color: C.ink, fontWeight: 600 }}>Digital opportunity</b> is the scored pillar used across the tool and on Trust 360 (higher = bigger opportunity). <b style={{ color: C.ink, fontWeight: 600 }}>Digital maturity (DMA)</b> is a raw input on a 0–100 scale — low maturity is part of what drives a high opportunity score, so the two are intentionally different numbers.</div>
       <div style={{ marginTop: 10 }}><Src>DMA results file · FDP uptake · capital allocations</Src></div>
     </div>
   );
@@ -13889,9 +13945,26 @@ export default function App() {
   const [page, setPage] = useState("overview");
   const [active, setActive] = useState(TRUSTS[0].code);
   const [bandFilter, setBandFilter] = useState(null);
-  const filtered = useMemo(() => bandFilter ? TRUSTS.filter((t) => t.bandValue === bandFilter) : TRUSTS, [bandFilter]);
+  const [focus, setFocus] = useState(null);   // a focused trust scopes every list/evidence page to it
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() => (
+    focus ? TRUSTS.filter((t) => t.code === focus)
+      : bandFilter ? TRUSTS.filter((t) => t.bandValue === bandFilter)
+      : TRUSTS
+  ), [bandFilter, focus]);
   const trust = useMemo(() => TRUSTS.find((t) => t.code === active), [active]);
-  const goTrust = (code) => { setActive(code); setPage("trust"); };
+  const goTrust = (code) => { setActive(code); setFocus(code); setPage("trust"); };
+  const focusName = focus ? (TRUSTS.find((t) => t.code === focus) || {}).name || "" : "";
+  const searchMatches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return TRUSTS.filter((t) =>
+      t.name.toLowerCase().includes(q) ||
+      (t.region || "").toLowerCase().includes(q) ||
+      (t.icb || "").toLowerCase().includes(q) ||
+      (t.play || "").toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [query]);
 
   return (
     <div style={{ fontFamily: "Inter, system-ui, sans-serif", background: C.bg, minHeight: "100vh", color: C.ink, display: "flex" }}>
@@ -13939,13 +14012,28 @@ export default function App() {
       {/* topbar + content */}
       <main style={{ flex: 1, minWidth: 0 }}>
         <div style={{ background: C.paper, borderBottom: `1px solid ${C.line}`, padding: "12px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 5 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.bg, borderRadius: 9, padding: "7px 12px", width: 320 }}>
-            <Search size={15} color={C.muted} />
-            <span style={{ fontSize: 13, color: C.muted }}>Search trust, region, ICB or play…</span>
+          <div style={{ position: "relative", width: 340 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.bg, borderRadius: 9, padding: "7px 12px" }}>
+              <Search size={15} color={C.muted} />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search trust, region, ICB or play…"
+                style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, color: C.ink, width: "100%" }} />
+              {query && <span onClick={() => setQuery("")} style={{ cursor: "pointer", color: C.muted, fontSize: 13 }}>✕</span>}
+            </div>
+            {searchMatches.length > 0 && (
+              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 6, background: "#fff", border: `1px solid ${C.line}`, borderRadius: 10, boxShadow: "0 8px 24px rgba(20,10,40,0.14)", zIndex: 30, overflow: "hidden" }}>
+                {searchMatches.map((m) => (
+                  <div key={m.code} onClick={() => { goTrust(m.code); setQuery(""); }} style={{ padding: "9px 12px", cursor: "pointer", borderBottom: `1px solid ${C.line}` }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = C.bg)} onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: C.ink }}>{m.name}</div>
+                    <div style={{ fontSize: 11, color: C.muted }}>{m.region} · Band {m.bandValue} · {m.play}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <FilterChip label="Acute" active /><FilterChip label="England" active />
-            <FilterChip label={bandFilter ? ("Band " + bandFilter + "  \u2715") : "All bands"} active={!!bandFilter} onClick={() => bandFilter && setBandFilter(null)} /><FilterChip label="Q1 2026/27" />
+            <FilterChip label={bandFilter ? ("Band " + bandFilter + "  \u2715") : "All bands"} active={!!bandFilter} onClick={() => bandFilter && setBandFilter(null)} />{focus && <FilterChip label={"Focus: " + focusName.slice(0, 22) + (focusName.length > 22 ? "…" : "") + "  \u2715"} active onClick={() => setFocus(null)} />}<FilterChip label="Q1 2026/27" />
           </div>
         </div>
 

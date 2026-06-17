@@ -29,7 +29,7 @@ refresh.
 | `validate.py` | Post-build checks; fails loudly on drift. | Run it every time |
 | `docs/METHODOLOGY.md` | Authoritative logic + **Appendix A** (files → loaders → fields). | Keep in sync if you change anything |
 | `docs/EXTENSION_ROADMAP.md` | How to add new sources/features, with rationale. | Read before adding a source |
-| `src/components/NhsTargetingPrototype.jsx` | The interactive prototype (data inlined). | Regenerate its data after a refresh |
+| `src/components/NhsTargetingPrototype.jsx` | The interactive prototype (data inlined). Its presentation-layer derivations (the "why this score" box, the play→enablement-kit mapping, funding-route rules, the 12-month trend statement) are specified in METHODOLOGY **§4 and §5c** — reproduce them from the scorecard fields, don't invent new ones. | Regenerate its data after a refresh |
 | `REFRESH.md` | Per-source runbook: cadence, where to get each file, expected coverage. | Your shopping list |
 
 ## Decision: which kind of refresh is this?
