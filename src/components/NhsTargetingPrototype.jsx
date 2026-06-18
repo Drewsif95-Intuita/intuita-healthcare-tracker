@@ -13330,9 +13330,9 @@ function Finance({ data, onPick }) {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: "#FAF8FC", borderBottom: `2px solid ${C.line}` }}>
-              {[["name", "Trust"], ["income", "Op. income (£m)"], ["margin", "Op. margin"], ["capital", "Capital 26-30 (£m)"], ["route", "Funding route"], ["budget", "Budget score"]].map(([k, l]) => (
+              {[["name", "Trust"], ["income", "Op. income (£m)"], ["margin", "Op. margin"], ["q3", "In-year (Q3)"], ["capital", "Capital 26-30 (£m)"], ["route", "Funding route"], ["budget", "Budget score"]].map(([k, l]) => (
                 <th key={k} onClick={() => ["budget", "income", "capAlloc", "name"].includes(k) && setSort(k)}
-                  style={{ textAlign: k === "name" || k === "route" ? "left" : "right", padding: "11px 14px", fontSize: 10.5, fontWeight: 600, color: C.muted, textTransform: "uppercase", letterSpacing: .4, cursor: ["budget", "income", "capAlloc", "name"].includes(k) ? "pointer" : "default" }}>
+                  style={{ textAlign: k === "name" || k === "route" || k === "q3" ? "left" : "right", padding: "11px 14px", fontSize: 10.5, fontWeight: 600, color: C.muted, textTransform: "uppercase", letterSpacing: .4, cursor: ["budget", "income", "capAlloc", "name"].includes(k) ? "pointer" : "default" }}>
                   {l}{sort === k && " ↓"}
                 </th>
               ))}
@@ -13350,6 +13350,10 @@ function Finance({ data, onPick }) {
                   </td>
                   <td style={{ padding: "11px 14px", textAlign: "right", fontWeight: 600 }}>{d.finance.income != null ? d.finance.income.toLocaleString() : "—"}</td>
                   <td style={{ padding: "11px 14px", textAlign: "right", fontWeight: 600, color: d.finance.margin == null ? C.muted : d.finance.margin < -1 ? C.bad : d.finance.margin < 0 ? C.warn : C.good }}>{d.finance.margin == null ? "—" : d.finance.margin.toFixed(1) + "%"}</td>
+                  <td style={{ padding: "11px 14px" }}>
+                    {d.q3Var != null ? <span style={{ fontWeight: 600, fontSize: 12.5, color: d.q3Var < -1 ? C.bad : d.q3Var < 0 ? C.warn : C.good }}>{d.q3Var > 0 ? "+" : ""}{d.q3Var}% var</span> : <span style={{ color: C.muted }}>—</span>}
+                    {d.q3Dsf && <div style={{ marginTop: 4 }}><Chip label="On DSF" tone="warn" /></div>}
+                  </td>
                   <td style={{ padding: "11px 14px", textAlign: "right" }}>{d.finance.capital != null ? d.finance.capital.toLocaleString() : "—"}</td>
                   <td style={{ padding: "11px 14px", maxWidth: 230 }}>
                     <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
@@ -13397,12 +13401,12 @@ function DigitalCapital({ data, onPick }) {
   return (
     <div>
       <PageHead kicker="Page 6 · Transformation trigger" title="Digital & Capital"
-        blurb="Why now? Transformation events are the difference between 'someday' and 'this year' demand. Digital maturity (DMA), EPR and FDP status, New Hospital Programme placement, RAAC and estate backlog together tell you which trusts are mid-change and open to external support." />
+        blurb="Why now? Transformation events are the difference between 'someday' and 'this year' demand. Digital maturity (DMA), FDP status and capital allocation flag which trusts are mid-change and open to external support." />
       <div style={{ ...card(), padding: 0, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr style={{ background: "#FAF8FC", borderBottom: `2px solid ${C.line}` }}>
-              {[["Trust", null], ["Digital opportunity", null], ["Digital maturity (DMA)", "public"], ["EPR status", "curated"], ["FDP", "public"], ["Capital / NHP", "public"], ["Estate backlog", "public"], ["Active triggers", "inferred"]].map(([h, sc]) => (
+              {[["Trust", null], ["Digital opportunity", null], ["Digital maturity (DMA)", "public"], ["FDP", "public"], ["Capital / NHP", "public"], ["Active triggers", "inferred"]].map(([h, sc]) => (
                 <th key={h} style={{ textAlign: "left", padding: "11px 14px", fontSize: 10.5, fontWeight: 600, color: C.muted, textTransform: "uppercase", letterSpacing: .4 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                     {sc && <span title={`Source confidence: ${sc}`} style={{ width: 7, height: 7, borderRadius: 999, background: SRC_CONF[sc], display: "inline-block" }} />}{h}
@@ -13421,12 +13425,10 @@ function DigitalCapital({ data, onPick }) {
                 </td>
                 <td style={{ padding: "11px 14px" }}><span style={{ fontFamily: "Poppins", fontSize: 16, fontWeight: 700, color: C.purple }}>{d.digital}</span></td>
                 <td style={{ padding: "11px 14px", minWidth: 120 }}><BarCell v={d.dma} c={d.dma >= 75 ? C.good : d.dma >= 55 ? C.mid : C.warn} /></td>
-                <td style={{ padding: "11px 14px" }}><Chip label={d.epr} tone={eprTone(d.epr)} /></td>
                 <td style={{ padding: "11px 14px" }}><Chip label={d.fdp === "—" ? "None" : d.fdpBenefits ? "Live · benefits" : "Live"} tone={d.fdp === "Live" ? "good" : "off"} /></td>
                 <td style={{ padding: "11px 14px", fontSize: 12 }}>
                   {d.finance && d.finance.capital != null ? <span style={{ fontSize: 12.5, fontWeight: 600, color: C.ink }}>£{d.finance.capital.toLocaleString()}m</span> : <NotYet label="—" />}
                 </td>
-                <td style={{ padding: "11px 14px", minWidth: 100 }}><BarCell v={d.eric} c={d.eric >= 70 ? C.bad : d.eric >= 45 ? C.warn : C.mid} /></td>
                 <td style={{ padding: "11px 14px", maxWidth: 200 }}>
                   <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                     {triggers(d).slice(0, 3).map(([l, t], j) => <Chip key={j} label={l} tone={t} />)}
@@ -13445,7 +13447,7 @@ function DigitalCapital({ data, onPick }) {
             <span style={{ width: 9, height: 9, borderRadius: 999, background: SRC_CONF[k], display: "inline-block" }} />{l}
           </span>
         ))}
-        <span style={{ fontStyle: "italic" }}>No single national EPR-status file exists — EPR is triangulated/curated, not a confirmed feed.</span>
+        <span style={{ fontStyle: "italic" }}>EPR status and estate backlog are not currently loaded (no usable national trust-level source), so they are not shown here.</span>
       </div>
       <div style={{ fontSize: 11, color: C.muted, marginTop: 10, lineHeight: 1.5 }}><b style={{ color: C.ink, fontWeight: 600 }}>Digital opportunity</b> is the scored pillar used across the tool and on Trust 360 (higher = bigger opportunity). <b style={{ color: C.ink, fontWeight: 600 }}>Digital maturity (DMA)</b> is a raw input on a 0–100 scale — low maturity is part of what drives a high opportunity score, so the two are intentionally different numbers.</div>
       <div style={{ marginTop: 10 }}><Src>DMA results file · FDP uptake · capital allocations</Src></div>
@@ -13947,11 +13949,12 @@ export default function App() {
   const [bandFilter, setBandFilter] = useState(null);
   const [focus, setFocus] = useState(null);   // a focused trust scopes every list/evidence page to it
   const [query, setQuery] = useState("");
+  const [subtypeFilter, setSubtypeFilter] = useState(null);
+  const SUBTYPES = useMemo(() => [...new Set(TRUSTS.map((t) => t.subtype))].sort(), []);
   const filtered = useMemo(() => (
     focus ? TRUSTS.filter((t) => t.code === focus)
-      : bandFilter ? TRUSTS.filter((t) => t.bandValue === bandFilter)
-      : TRUSTS
-  ), [bandFilter, focus]);
+      : TRUSTS.filter((t) => (!bandFilter || t.bandValue === bandFilter) && (!subtypeFilter || t.subtype === subtypeFilter))
+  ), [bandFilter, focus, subtypeFilter]);
   const trust = useMemo(() => TRUSTS.find((t) => t.code === active), [active]);
   const goTrust = (code) => { setActive(code); setFocus(code); setPage("trust"); };
   const focusName = focus ? (TRUSTS.find((t) => t.code === focus) || {}).name || "" : "";
@@ -14032,7 +14035,7 @@ export default function App() {
             )}
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <FilterChip label="Acute" active /><FilterChip label="England" active />
+            <FilterChip label="Acute" active /><FilterChip label="England" active /><select value={subtypeFilter || ""} onChange={(e) => setSubtypeFilter(e.target.value || null)} style={{ fontSize: 12, fontWeight: 500, padding: "6px 10px", borderRadius: 999, border: `1px solid ${subtypeFilter ? C.purple : C.line}`, background: subtypeFilter ? C.purple : "#fff", color: subtypeFilter ? "#fff" : C.muted, cursor: "pointer" }}><option value="">All types</option>{SUBTYPES.map((st) => <option key={st} value={st} style={{ color: "#1a1a1a" }}>{st.replace("Acute - ", "")}</option>)}</select>
             <FilterChip label={bandFilter ? ("Band " + bandFilter + "  \u2715") : "All bands"} active={!!bandFilter} onClick={() => bandFilter && setBandFilter(null)} />{focus && <FilterChip label={"Focus: " + focusName.slice(0, 22) + (focusName.length > 22 ? "…" : "") + "  \u2715"} active onClick={() => setFocus(null)} />}<FilterChip label="Q1 2026/27" />
           </div>
         </div>
